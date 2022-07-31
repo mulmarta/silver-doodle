@@ -98,7 +98,7 @@ The following lemma formalizes the correctness of $\addleaf$. We prove it in \cr
 
   Else, $\mpow(n)=\mpow(n+1)$ (this holds since $n\geq\treeArity$). Moreover, it is easy to see that only the last node in $r.\children$ can be non-full. This means that the root $r'$ of $\tree'$ has the following children (in order):
   \begin{itemize}
-    \item All children of the root $r$ of $\tree$ which have full subtrees. These subtrees are equal to $\lbt{\treeArity}{\mpow(n)}=\lbt{\treeArity}{\mpow(n+1)}$.
+    \item All children of the root $r$ of $\tree$ which have full subtrees. These subtrees are equal to $\lbt{\treeArity}{\mpow(n)}$ which is the same as $\lbt{\treeArity}{\mpow(n+1)}$.
     \item If $r$ has no non-full subtrees, then the last child of $r'$ is $v$ with subtree $\lbt{\treeArity}{1}$.
     \item Else if the last child $u$ of $r$ is non-full and equals to $\lbt{\treeArity}{x}$ for $x<\mpow(n)$, then the last child of $r'$ is $\lbt{\treeArity}{x+1}$ by induction hypothesis.
   \end{itemize}

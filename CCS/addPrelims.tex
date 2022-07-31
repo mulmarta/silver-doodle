@@ -211,7 +211,7 @@ Message authentication codes are defined in \cref{def:mac}.
     \item[$\mactag(k, m)\getsl \mtag$:] The tagging algorithm takes a key $k$ and a message $m$ and outputs
       a tag $t$.
     \item[$\macvrf(k, m, \mtag)\getsl\bits$:] The verification algorithm takes a key $k$, a message $m$ and
-      a tag $\mtag$ and outputs either $0$ or $1$.
+      a tag $\mtag$ and outputs $0$ or $1$.
     \end{itemize}
     A mac \mac is correct, if for all $k\in\mackeyspace$ and messages $m$
     \[

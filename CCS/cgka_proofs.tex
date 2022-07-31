@@ -313,7 +313,7 @@ Observe that the only dependencies between $\initSecret$, $\epochSecret$, $\join
 Assume for a moment that $\hgnodeid$ is confidential. Then, no party in $\hgnodeid$ is corrupted, so dependency 1) does not exist. Recall that confidentiality requires either $\safeGrpSecsSecure(\hgnodeid_p)$ is true or $\safeRestoresGrpSec(\hgnodeid)$ is true. Observe that dependency 2) does not exist either unless one of the following events occurs:
 \begin{description}
   \item[] {\bf Event $\initHash_{\hgnodeid_p}$ : } At the end of the experiment, the value of the predicate $\safeGrpSecsSecure(\hgnodeid_p)$ is true and $\initSecret_p$ (of $\hgnodeid_p$) is contained in some value inputted by $\Adv$ to the RO.
-  \item[] {\bf Event $\commitHash_{\hgnodeid}$ : } At the end of the experiment, the predicate $\safeRestoresGrpSec($ $\hgnodeid)$ is true and $\commitSecret$ (of $\hgnodeid$) is contained in some value inputted by $\Adv$ to the RO.
+  \item[] {\bf Event $\commitHash_{\hgnodeid}$ : } At the end of the experiment, the predicate $\safeRestoresGrpSec($ $\hgnodeid)$ is true and $\commitSecret$ (of $\hgnodeid$) is contained in some value inputted by $\Adv$ to RO.
 \end{description}
 
 This means that unless $\initHash_{\hgnodeid_p}$ or $\commitHash_{\hgnodeid}$ occurs, $\Adv$ has no information about $\initSecret$ and $\epochSecret$. Therefore, the best strategy for $\Adv$ to trigger $\secsHash_\hgnodeid$ is to either guess $\initSecret$ or $\epochSecret$ at random, or trigger one of the above events, or input the joiner secret based only on dependency 3). We capture the last event by
@@ -327,7 +327,7 @@ Therefore, we have
 \end{multline*}
 By definition, $\Pr[\initHash_{\hgnodeid_p}] \leq \Pr[\secsHash_{\hgnodeid_p}]$. Moreover, we define
 \begin{description}
-  \item[] {\bf Event $\breaksRcca_\hgnodeid$ : } Either the event $\commitHash_{\hgnodeid}$ or $\joinerHash_{\hgnodeid}$ occurs.\footnote{Intuitively,
+  \item[] {\bf Event $\breaksRcca_\hgnodeid$ : } Either $\commitHash_{\hgnodeid}$ or $\joinerHash_{\hgnodeid}$ occurs.\footnote{Intuitively,
     the only dependency between the commit and joiner secrets comes from encryptions, so inputting the secrets to the RO requires breaking \indrcca.}
 \end{description}
 This proves the claim.
@@ -444,7 +444,7 @@ Finally, we show that case 2) cannot occur as well.
 
   We first observe that $v$'s subtree is the same in the ratchet trees of all epochs $\hgnodeid_0, \dots, \hgnodeid_\ell$, because any modification replaces $v$'s keys. Moreover, $\hgnodeid$ is one of these epochs, so this subtree is the same as in $\tree$. Let $\id[1], \dots, \id_n$ be the parties in $v$'s subtree in $\tree$.
 
-  Second, we observe that if $\safeRestoresGrpSec(\hgnodeid)$ is true, then no $\id_i$ is corrupted in any epoch $\hgnodeid_j$. The reason is that for any $\id_i$, each $\hgnodeid_j$ is connected to $\hgnodeid$, which is one of $\hgnodeid_0, \dots, \hgnodeid_\ell$, by a sequence of epochs not created by $\id_i$ and not removing or adding it. This is because any such operation would replace $v$'s keys. Therefore, if $\id_i$ was corrupted in some $\hgnodeid_j$, then the predicate $\safeIndSecsSecure(\hgnodeid, \id_i)$ would be false and the predicate $\safeRestoresGrpSec(\hgnodeid)$ would be false, which contradicts $\variable{CommitHashed}_\hgnodeid$.
+  Second, we observe that if $\safeRestoresGrpSec(\hgnodeid)$ is true, then no $\id_i$ is corrupted in any epoch $\hgnodeid_j$. The reason is that for any $\id_i$, each $\hgnodeid_j$ is connected to $\hgnodeid$, and $\hgnodeid$ is one of $\hgnodeid_0, \dots, \hgnodeid_\ell$, by a sequence of epochs not created by $\id_i$ and not removing or adding it. This is because any such operation would replace $v$'s keys. Therefore, if $\id_i$ was corrupted in some $\hgnodeid_j$, then the predicate $\safeIndSecsSecure(\hgnodeid, \id_i)$ would be false and the predicate $\safeRestoresGrpSec(\hgnodeid)$ would be false, which contradicts $\variable{CommitHashed}_\hgnodeid$.
 
   Finally, it is left to show that $v.\mmpkesk$ is held only by $\id[1], \dots, \id_n$ in epochs $\hgnodeid_0, \dots, \hgnodeid_\ell$. It is easy to see that this is implied by the following statement:
   \begin{description}
@@ -478,7 +478,7 @@ In the remainder of this section, we show that if $\sigscheme$ and $\mac$ are un
 We observe that hybrids 3 and 4 are identical unless a bad event $\forges$ occurs. Roughly, $\forges$ happens if $\Adv$ breaks authenticity, that is, if it successfully impersonates an $\id_s$ towards $\id_r$ in an epoch $\hgnodeid$ such that \KwAuth{} is true for $\id_s$ in $\hgnodeid$. Therefore, $\Adv$'s advantage in distinguishing the hybrids is upper bounded by the probability of $\forges$. This means that distinguishing hybrids 3 and 4 can be seen as a typical authenticity game, where the adversary wins by forging messages accepted by the protocol, as expressed by $\forges$.
 
 \headingB{Bad events.}
-Let $\Adv$ be any environment. The hybrids are identical unless the following event $\forges$ occurs: There exists an epoch $\hgnodeid$ with two members $\id_s$ and $\id_r$ such that the following condition holds:
+Let $\Adv$ be any environment. The hybrids are identical unless the following event $\forges$ occurs: There exists an epoch $\hgnodeid$ with two members $\id_s$ and $\id_r$ s.t. the following condition holds:
 \begin{description}
   \item[] {\bf Condition $\forges(\hgnodeid, \id_s, \id_r)$: } $\KwAuth{}(\hgnodeid, \id_s)$ is true and $\Adv$ makes $\id_r$ accept a message that either (A) makes $\id_r$ transition to a new epoch $\hgnodeid'$ with $\hg[\hgnodeid'].\hginj$ true ($\hgnodeid'$ is injected) and $\hg[\hgnodeid].\hgorig=\id_s$ or (B) removes $\id_r$ and $\id_s$ did not remove $\id_r$.
 \end{description}
@@ -523,13 +523,13 @@ We next show that no party holding the secret key $\erssk_r$ corresponding to $\
   Assume towards a contradiction that \forgesa occurs and a party holding $\erssk_r$ is corrupted in some epoch $\hgnodeid^\bot$. Let $\hgnodeid_0^\bot$ be the epoch before $\hgnodeid^\bot$ which introduces $\erssk_r$ into its state.
 
   Observe that (honest) parties only store the signing keys that they generate themselves while creating epochs or that the AKS generates for them when they are added. Moreover, such honestly generated keys are not re-computed and the AKS generates a fresh key pair each time a party is added.
-  This means that the corrupted party is $\id_s$. Moreover, if $\hgnodeid_0^\bot$ is not injected, then it is the epoch $\hgnodeid_0$ which introduces $\ersvk_r$ into the state of $\id_r$. If, on the other hand, $\hgnodeid_0^\bot$ is injected, then it must add $\id_s$ (and not be created by it).
+  This means that the corrupted party is $\id_s$. Moreover, if $\hgnodeid_0^\bot$ is not injected, then it is the epoch $\hgnodeid_0$ which introduces $\ersvk_r$ into the state of $\id_r$. On the other hand if $\hgnodeid_0^\bot$ is injected, then it must add $\id_s$ (and not be created by it).
 
-  Observe further that $\hgnodeid_0^\bot$ and $\hgnodeid^\bot$ are connected by a path of epochs not created by $\id_s$ and not removing it, as this would remove $\erssk_r$. The epochs $\hgnodeid_0$ and $\hgnodeid_s$ are connected by a path with the same property. Therefore, if $\hgnodeid_0^\bot$ is not injected, then $\hgnodeid_s$ can be reached, through $\hgnodeid_0^\bot=\hgnodeid_0$, from $\hgnodeid^\bot$ where $\id_s$ is corrupted via a path with above property. This makes $\safeIndSecsSecure(\hgnodeid_s, \id_s)$ false, contradicting $\forgesa$.
-  Moreover, it is easy to see that if $\hgnodeid_0^\bot$ is injected, then $\safeWeakAdd(\hgnodeid_s,\id_s)$ would be true, which again makes $\safeIndSecsSecure(\hgnodeid_s, \id_s)$ false.
+  Observe further that $\hgnodeid_0^\bot$ and $\hgnodeid^\bot$ are connected by a path of epochs not created by $\id_s$ and not removing it, as this would remove $\erssk_r$. The epochs $\hgnodeid_0$ and $\hgnodeid_s$ are connected by a path with the same property. Therefore, if $\hgnodeid_0^\bot$ is not injected, then $\hgnodeid_s$ can be reached, through $\hgnodeid_0^\bot=\hgnodeid_0$, from $\hgnodeid^\bot$ where $\id_s$ is corrupted via a path with above property. This makes the prdicate $\safeIndSecsSecure(\hgnodeid_s, \id_s)$ false, contradicting $\forgesa$.
+  Moreover, it is easy to see that if $\hgnodeid_0^\bot$ is injected, then the predicate $\safeWeakAdd(\hgnodeid_s,\id_s)$ would be true, which again makes $\safeIndSecsSecure(\hgnodeid_s, \id_s)$ false.
 \end{proof}
 
-By the above claims, with probability at least $\Pr[\forgesa]/(2q_e)$, both $\forgesa$ occurs and $\id_r$ uses $\ersvk_r=\ersvk^*$ (since there are at most $2q_e$ honestly generated keys). It is left to show that if this happens, then $\Bdv[1]$ wins.
+By the two claims, with probability at least $\Pr[\forgesa]/(2q_e)$, both $\forgesa$ occurs and $\id_r$ uses $\ersvk_r=\ersvk^*$ (since there are at most $2q_e$ honestly generated keys). It is left to show that if this happens, then $\Bdv[1]$ wins.
 \begin{claim}
   If $\forgesa$ occurs and $\ersvk_r=\ersvk^*$, then $\Bdv[1]$ wins.
 \end{claim}
@@ -538,7 +538,7 @@ By the above claims, with probability at least $\Pr[\forgesa]/(2q_e)$, both $\fo
 
   In case (A), $\id_r$ checks that $\sigvrf(\ersvk^*, \confTag', \sig)$ is true. Notice that $\confTag'$ uniquely identifies $\hgnodeid'$, because it is derived by hashing $\epochSecret$ which identifies $\hgnodeid$ by definition (see the proof of \saik consistency). Since the epoch is injected and not created by an honest party, no honest party signed $\confTag'$. In particular $\Bdv[1]$ never had to send $\confTag'$ to the sign oracle. Therefore, $\Bdv[1]$ wins with the forgery $(\confTag', \sig)$.
 
-  In case (B),  party $\id_r$ checks that $\sigvrf(\ersvk^*, (\id_s, \hglr\md\id_r, $ $\confTag), \sig)$ is true, where $\confTag$ uniquely identifies $\hgnodeid$. $\forgesa$ guarantees that $\id_s$ did not remove $\id_r$ in $\hgnodeid$, so it did not sign such a triple. Therefore, $\Bdv[1]$ wins with $((\id_s, \hglr\md\id_r, \confTag), \sig)$.
+  For case (B), $\id_r$ checks that $\sigvrf(\ersvk^*, (\id_s, \hglr\md\id_r, \confTag),$ $ \sig)$ is true, where $\confTag$ uniquely identifies $\hgnodeid$. $\forgesa$ guarantees that $\id_s$ did not remove $\id_r$ in $\hgnodeid$, so it did not sign such a triple. Therefore, $\Bdv[1]$ wins with $((\id_s, \hglr\md\id_r, \confTag), \sig)$.
 \end{proof}
 
 \newcommand{\hybridThreeN}{3$^*$\xspace}
@@ -566,7 +566,7 @@ Formally, we first define the new hybrid.
 
 Further, the following event is analogous to \forgess but in hybrid \hybridThreeN.
 \begin{description}
-  \item[] {\bf Event \forgessN : } In hybrid \hybridThreeN, there exist two members $\id_s$ and $\id_r$ in $\hgnodeid$ announced by $\Adv$ such that $\safeGrpSecsSecure(\hgnodeid)$ and $\forges(\hgnodeid, \id_s, \id_r)$ are true.
+  \item[] {\bf Event \forgessN : } In hybrid \hybridThreeN, there exist two members $\id_s$ and $\id_r$ in $\hgnodeid$ announced by $\Adv$ s.t. $\safeGrpSecsSecure(\hgnodeid)$ and $\forges(\hgnodeid, \id_s, \id_r)$ are true.
 \end{description}
 
 Next, we show that changing to hybrid \hybridThreeN does not affect the probability of the bad event much.
@@ -586,8 +586,8 @@ Next, we show that changing to hybrid \hybridThreeN does not affect the probabil
 
 Finally, it is left to bound the probability of \forgessN. To this end, we define two sub-events:
 \begin{description}
-  \item[] {\bf Event $\forgessN(A)$ : } In hybrid \hybridThreeN, there exist two members $\id_s$ and $\id_r$ in $\hgnodeid$ announced by $\Adv$ such that $\safeGrpSecsSecure(\hgnodeid)$ is true and (A) $\id_r$ accepts a message that makes it transition to an epoch $\hgnodeid'$ with $\hg[\hgnodeid'].\hginj$ true.
-  \item[] {\bf Event \forgessN(B) : } In hybrid \hybridThreeN, there exist two members $\id_s$ and $\id_r$ in $\hgnodeid$ announced by $\Adv$ such that $\safeGrpSecsSecure(\hgnodeid)$ is true and (B) $\id_r$ accepts a message that removes it but $\id_s$ did not remove $\id_r$ in $\hgnodeid$.
+  \item[] {\bf Event $\forgessN(A)$ : } In hybrid \hybridThreeN, there exist two members $\id_s$ and $\id_r$ in $\hgnodeid$ announced by $\Adv$ such that the predicate $\safeGrpSecsSecure(\hgnodeid)$ is true and (A) $\id_r$ accepts a message that makes it transition to an epoch $\hgnodeid'$ with $\hg[\hgnodeid'].\hginj$ true.
+  \item[] {\bf Event \forgessN(B) : } In hybrid \hybridThreeN, there exist two members $\id_s$ and $\id_r$ in $\hgnodeid$ announced by $\Adv$ such that the predicate $\safeGrpSecsSecure(\hgnodeid)$ is true and (B) $\id_r$ accepts a message that removes it but $\id_s$ did not remove $\id_r$ in $\hgnodeid$.
 \end{description}
 
 We next bound the probability of each sub-event.

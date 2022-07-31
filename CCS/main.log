@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.2)  31 JUL 2022 06:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.2)  31 JUL 2022 08:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1834,29 +1834,32 @@ Package textcomp Info: Symbol \textrightarrow not provided by
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-(./intro.tex [1.1{/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdf
-tex.map}
+(./intro.tex
+Underfull \vbox (badness 1242) has occurred while \output is active []
+
+ [1.1{/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 171.
+(Font)              scaled to size 9.0pt on input line 165.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- (/usr/local/texlive/2022/texmf-dist/tex/latex/microtype/mt-msa.cfg
+
+(/usr/local/texlive/2022/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
 (/usr/local/texlive/2022/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 171.
+(Font)              scaled to size 7.3pt on input line 165.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 172.
+(Font)              scaled to size 5.5pt on input line 166.
  [2.2]
 
-LaTeX Warning: Reference `sec:saik_sec' on page 1 undefined on input line 340.
+LaTeX Warning: Reference `sec:saik_sec' on page 1 undefined on input line 332.
 
 [3.3]) (./prelims.tex
 LaTeX Font Info:    Trying to load font information for U+bbm on input line 5.
@@ -1909,11 +1912,10 @@ n in-put a multi-recipient
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
 (Font)              scaled to size 7.0pt on input line 53.
 
-Overfull \hbox (5.44904pt too wide) in paragraph at lines 51--60
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) the fi-nal ci-pher-text has the form $\LMS/
-ntxsy/m/n/9 π\OML/nxlmi/m/it/9 g[]; []\LMS/ntxsy/m/n/9 π\OML/nxlmi/m/it/9 k[]; 
-m[]\LMS/ntxsy/m/n/9 ∫\OML/nxlmi/m/it/9 ; []\LMS/ntxsy/m/n/9 π\OML/nxlmi/m/it/9 
-k[]; m[]\LMS/ntxsy/m/n/9 ∫\OML/nxlmi/m/it/9 ; []\LMS/ntxsy/m/n/9 ∫$
+Overfull \hbox (1.45808pt too wide) in paragraph at lines 51--60
+[]\LMS/ntxsy/m/n/9 ª\U/bbm/m/n/9 G\OML/nxlmi/m/it/9 ; g; p; []; H\LMS/ntxsy/m/n
+/9 º$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) and give a for-mal de-scrip-tion in [
+]Fig. 8[]
  []
 
 [4.4]
@@ -1978,8 +1980,8 @@ OML/nxlmi/m/it/9 E\LMS/ntxsy/m/n/9 ∫$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) or $[
 [9.9]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/scit' will be
 (Font)              scaled to size 9.0pt on input line 96.
-) (./eval.tex (./fig_trees.tex [10.10])
-<../plots/Final_Figures_Avg.png, id=514, 542.025pt x 542.025pt>
+) (./eval.tex (./fig_trees.tex) [10.10]
+<../plots/Final_Figures_Avg.png, id=517, 542.025pt x 542.025pt>
 File: ../plots/Final_Figures_Avg.png Graphic file (type png)
 <use ../plots/Final_Figures_Avg.png>
 Package pdftex.def Info: ../plots/Final_Figures_Avg.png  used on input line 74.
@@ -2003,15 +2005,16 @@ LinuxBiolinumT-TLF/m/n/9 (-20) SAIK \T1/LinuxLibertineT-TLF/m/n/9 (-20) and \T1
 /LinuxBiolinumT-TLF/m/n/9 (-20) CmPKE\T1/LinuxLibertineT-TLF/m/n/9 (-20) .
  []
 
-) (./extensions.tex
-Underfull \vbox (badness 1028) has occurred while \output is active []
-
- [11.11 <../plots/Final_Figures_Avg.png>]
+) (./extensions.tex [11.11 <../plots/Final_Figures_Avg.png>]
 
 LaTeX Warning: Reference `secsec:bgm_prot_proof' on page 1 undefined on input l
 ine 35.
 
-) (./main.bbl
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+)
+(./main.bbl
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 7.0pt on input line 50.
  [12.12]
@@ -2311,11 +2314,6 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 Underfull \vbox (badness 1546) has occurred while \output is active []
 
  [27.27]
-Overfull \hbox (32.20668pt too wide) in paragraph at lines 330--332
-[]\T1/LinuxLibertineT-TLF/b/n/9 (-20) Event $[][]$ :  \T1/LinuxLibertineT-TLF/m
-/n/9 (-20) Ei-ther the event $[][]$ or $[][]$
- []
-
 [28.28]
 Overfull \hbox (3.3497pt too wide) in paragraph at lines 392--393
 []\T1/LinuxLibertineT-TLF/m/n/9 (-20) Generate the new epoch's ratchet tree: Co
@@ -2332,13 +2330,6 @@ Overfull \hbox (4.13252pt too wide) in paragraph at lines 429--430
 OML/nxlmi/m/it/9 ; [][]\LMS/ntxsy/m/n/9 ∫$
  []
 
-
-Overfull \hbox (12.75056pt too wide) in paragraph at lines 447--448
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) any $[][]$, each $[][]$ is con-nected to $[
-]$, which is one of $[][]\OML/nxlmi/m/it/9 ; [] ; [][]$\T1/LinuxLibertineT-TLF/
-m/n/9 (-20) ,
- []
-
 [30.30]
 Overfull \hbox (2.91081pt too wide) in paragraph at lines 492--493
 \T1/LinuxLibertineT-TLF/m/n/9 (-20) It re-mains to bound the prob-a-bil-ity of 
@@ -2348,57 +2339,8 @@ each $[]$ and $[]$.
 Package hyperref Info: bookmark level for unknown claim defaults to 0 on input 
 line 508.
 [31.31]
-Overfull \hbox (23.67113pt too wide) in paragraph at lines 528--530
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) via a path with above prop-erty. This makes
- $[]\LMS/ntxsy/m/n/9 π[][]\OML/nxlmi/m/it/9 ; [][]\LMS/ntxsy/m/n/9 ∫$
- []
-
-
-Overfull \hbox (2.88666pt too wide) in paragraph at lines 528--530
-[][]$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) is in-jected, then $[]\LMS/ntxsy/m/n/
-9 π[][]\OML/nxlmi/m/it/9 ; [][]\LMS/ntxsy/m/n/9 ∫$ \T1/LinuxLibertineT-TLF/m/n/
-9 (-20) would
- []
-
-
-Overfull \hbox (7.89874pt too wide) in paragraph at lines 532--534
-[]\T1/LinuxLibertineT-TLF/m/n/9 (-20) By the above claims, with prob-a-bil-ity 
-at least $[]\LMS/ntxsy/m/n/9 ª[]ºùπ\OT1/LinuxLibertineT-TLF/m/n/9 (-20) 2\OML/n
-xlmi/m/it/9 q[]\LMS/ntxsy/m/n/9 ∫$\T1/LinuxLibertineT-TLF/m/n/9 (-20) ,
- []
-
-
-Overfull \hbox (31.7444pt too wide) in paragraph at lines 541--542
-[]\T1/LinuxLibertineT-TLF/m/n/9 (-20) In case (B), party $[][]$ checks that $[]
-\OML/nxlmi/m/it/9 :[]\LMS/ntxsy/m/n/9 π[][]\OML/nxlmi/m/it/9 ; \LMS/ntxsy/m/n/9
- π[][]\OML/nxlmi/m/it/9 ; [][][][];$ $[]\LMS/ntxsy/m/n/9 ∫\OML/nxlmi/m/it/9 ; [
-]\LMS/ntxsy/m/n/9 ∫$
- []
-
-
-Overfull \hbox (19.11302pt too wide) in paragraph at lines 569--570
-[][]$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) in $[]$ an-nounced by $\LMS/ntxsy/m/n
-/9 A[]$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) such that $[]\LMS/ntxsy/m/n/9 π[]∫$
-
- []
-
-
 Overfull \hbox (27.37257pt too wide) detected at line 579
  []$[]   []\LMS/ntxsy/m/n/9 π[][]∫ ^^@ []π[]∫| $ 
- []
-
-
-Overfull \hbox (33.88739pt too wide) in paragraph at lines 589--590
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) and $[][]$ in $[]$ an-nounced by $\LMS/ntxs
-y/m/n/9 A[]$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) such that $[]\LMS/ntxsy/m/n/9 
-π[]∫$
- []
-
-
-Overfull \hbox (33.88739pt too wide) in paragraph at lines 590--591
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) and $[][]$ in $[]$ an-nounced by $\LMS/ntxs
-y/m/n/9 A[]$ \T1/LinuxLibertineT-TLF/m/n/9 (-20) such that $[]\LMS/ntxsy/m/n/9 
-π[]∫$
  []
 
 [32.32]) (./addleaf.tex
@@ -2407,12 +2349,6 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 
 Overfull \hbox (10.39377pt too wide) in paragraph at lines 74--75
  [][] 
- []
-
-
-Overfull \hbox (24.14075pt too wide) in paragraph at lines 101--102
-\T1/LinuxLibertineT-TLF/m/n/9 (-20) These sub-trees are equal to $[][] \U/ntxmi
-a/m/it/9 = [][]$\T1/LinuxLibertineT-TLF/m/n/9 (-20) . 
  []
 
 ) [33.33] (./main.aux)
@@ -2430,11 +2366,11 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 9B0CDA8DA3CA047BD6101B2DFD4B3BF9;8644.
  ) 
 Here is how much of TeX's memory you used:
- 52906 strings out of 478268
- 1099040 string characters out of 5846348
- 1486859 words of memory out of 5000000
+ 52903 strings out of 478268
+ 1098971 string characters out of 5846348
+ 1487730 words of memory out of 5000000
  68352 multiletter control sequences out of 15000+600000
- 1002323 words of font info for 1039 fonts, out of 8000000 for 9000
+ 1002146 words of font info for 1037 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
  104i,19n,131p,1183b,1594s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </Users/mulmarta/Library/texlive/2022/texmf-var/fonts/pk/ljfour/public/bbm/b
@@ -2473,10 +2409,10 @@ exmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/local/texlive/2022/texmf-dis
 t/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2022/texmf-dist/fonts
 /type1/public/txfonts/txsya.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1
 /public/newtx/txsys.pfb>
-Output written on main.pdf (33 pages, 882846 bytes).
+Output written on main.pdf (33 pages, 883113 bytes).
 PDF statistics:
- 1057 PDF objects out of 1200 (max. 8388607)
- 933 compressed objects within 10 object streams
+ 1058 PDF objects out of 1200 (max. 8388607)
+ 934 compressed objects within 10 object streams
  264 named destinations out of 1000 (max. 500000)
  309782 words of extra memory for PDF output out of 319454 (max. 10000000)
 

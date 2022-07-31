@@ -55,8 +55,8 @@ ElGamal encryption of $m$ to public key $g^x$ requires sampling coins $r$ to
 obtain ciphertext $(g^r, \dem(k_m, m))$ where $k_m = H(g^{rx}, g^x)$. The
 mmPKE variant reuses coins $r$ from the first ElGamal ciphertext to encrypt
 all subsequent plaintexts. Thus, the final ciphertext has the form $(g^r,
-\dem(k_1, m_1), \dem(k_2, m_2),\ldots)$ where $k_i = H(g^{rx_i},
-g^{x_i})$. We call the construction $\dhmmpke[\Grp,\allowbreak g,\allowbreak p,\allowbreak \dem, H]$ and give a formal description in \cref{fig:mmpke_constr} in \cref{sec:app-mmpke}.
+\dem(k_1, m_1), \dem(k_2, m_2),$ $\ldots)$ where $k_i = H(g^{rx_i},
+g^{x_i})$ for all $i$. We call the construction $\dhmmpke[\Grp,\allowbreak g,\allowbreak p,\allowbreak \dem, H]$ and give a formal description in \cref{fig:mmpke_constr} in \cref{sec:app-mmpke}.
 
 \paragraph{Optimizing for Short Messages.}
 Normally, when messages $m$ can have arbitrary size, a sensible mmPKE would use a

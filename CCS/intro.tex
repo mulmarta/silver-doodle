@@ -1,3 +1,6 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
 % Continuous Group Key Agreement (CGKA), also called Group Ratcheting, lies at
 % the heart of a new generation of End-to-End (E2E) secure group messaging
 % (SGM) protocols supporting very large groups. The communication model,
@@ -38,17 +41,17 @@ is that their communication complexity grows linearly in the group size. This
 has imposed natural limits on real-world group sizes (generally at or below
 1000 members).
 
-Consequently, a new generation of E2E protocols are being developed both in
+Consequently, a new generation of E2E protocols is being developed both in
 academia (e.g.~%
 %\cite{IST-MLS-papers,ETHZ-MLS-papers,Continous-CGKA-papers}
-\cite{CCS:CCGMM18,EC:AlwCorDod19,TCC:ACJM20,EPRINT:AlwJosMul20,C:ACDT20,TCC:AABNKPPW21,SP:ACC+21})
+\cite{CCS:CCGMM18,EC:AlwCorDod19,TCC:ACJM20,EPRINT:AlwJosMul20,C:ACDT20,TCC:AABNKPPW21,SP:ACC+21,hashimoto2021cmpke})
 and industry~\cite{MLS}. Their primary design goal is to support extremely
 large groups (e.g. 10s of thousands of users) while still meeting, or
 exceeding, the security and functionality of today's state-of-the-art
 deployed E2E protocols. Technically, the new protocols do this by reducing
-their communication complexity down to \emph{logarithmic} in the group size;
+their communication complexity to \emph{logarithmic} in the group size;
 albeit, only under favorable conditions in the execution. This informal
-property is sometimes termed the \emph{fair-weather complexity} of a
+property is sometimes termed the \emph{fair-weather complexity}. % of a
 protocol.
 
 To date, the most important of these new E2E protocols is the IETF's upcoming
@@ -79,8 +82,8 @@ protocol ensures all group members in an epoch agree on the group's current
 properties. Members will only transition to the same next epoch if they agree
 on which properties were changed and by whom. Each epoch is equipped with its
 own symmetric \emph{epoch key} known to all epoch members but
-indistinguishable from random to anyone else. Higher-level protocols will
-typically then (deterministically) expand the epoch key into a complete key
+indistinguishable from random to anyone else. Higher-level protocols
+typically (deterministically) expand the epoch key into a complete key
 schedule which in turn can be used to, say, protect application data sent
 between members (e.g. messages or VoiP data).
 % \footnote{E.g. many CGKAs also ensure agreement about the sequence of changes
@@ -126,33 +129,24 @@ reducing communication complexity so as to support larger groups (without
 compromising on security or functionality).
 
 \paragraph{Server-Aided CGKA.}
-To do this, we begin by revisiting one of the most basic assumptions about
+We begin by revisiting one of the most basic assumptions about
 CGKA in prior work; namely that participants communicate via an insecure
 broadcast channel. Instead, we note that in almost all modern deployments of
 E2E protocols parties actually communicate via an untrusted mailboxing
 service implemented using an (often highly scalable) \emph{server}.
-%
-% Thus, we introduce a new (type) of CGKA that leverages the computational
-% capabilities of the server to \emph{greatly} reduce the bandwidth
-% requirements (especially for recipients) over state-of-the art CGKA
-% protocols, and in particular over \protITK.
 In light of this, we modify the standard communication model to make the
-server explicit. Correspondingly we define a generalization of CGKA which we
-call \emph{server-aided} CGKA (saCGKA). In contrast to CGKA, an saCGKA
-protocol includes arbitrary instructions for the server. CGKA corresponds to
-the special case where the server acts as an insecure broadcast channel.
+server explicit. Correspondingly we define a generalization of CGKA 
+called \emph{server-aided} CGKA (saCGKA).An saCGKA
+protocol includes an \emph{Extract} procedure run by the server to convert a
+``full packet'' uploaded by a sender into an individualized ``sub-packet'' for a particular recipient.
+ CGKA corresponds to
+the special case where the full and individual packets are the same.
 Intuitively, the server remains untrusted and security should hold no matter
-what it does. However, should it choose to follow the instructions, the
+what it does. However, should it choose to follow the Extract procedure, the
 saCGKA protocol ensures correctness and availability.
-%Intuitively, the untrusted server is
-%\emph{not} a group member; e.g. it does not learn epoch keys. However, should
-%the untrusted server choose to follow these instructions (and the network
-%delivers packets faithfully) a sound saCGKA protocol ensures correctness and
-%availability. Nevertheless, security is guaranteed regardless of the server's
-%(and more generally, the adversary's) behaviour.
 
 
-\paragraph{Semantic Security for CGKA.}
+\paragraph{Security for CGKA.}
 We define a new security notion for saCGKA capturing the same intuitive
 guarantees as those shown for \protITK~\cite{EPRINT:AlwJosMul20} for example.
 Like other notions based on the history graph paradigm of~\cite{CCS:ACDT21},
@@ -190,14 +184,12 @@ can easily be extended to a ``full-fledged'' (sa)CGKA using standard
 techniques.
 
 \paragraph{The \saik Protocol.}
-Next, based on \protITK, we introduce a new saCGKA protocol called
+Next, we introduce a new saCGKA protocol called
 \emph{Server-Aided \protITK} (\saik), designed for real-world use.
 For example, it relies exclusively on standard cryptographic primitives and
 can be implemented using the API of various off-the-shelf cryptographic
-libraries. Taking advantage of the added flexibility of a saCGKA, \saik
-includes a special \emph{Extract} procedure run by the server to convert a
-``full packet'' uploaded by a sender into an individualized ``sub-packet'' for a particular recipient. To obtain \saik, we make the following
-modifications to \protITK (and its security proof).
+libraries. To obtain \saik, we start with \protITK and make the following
+modifications.
 
 \paragraph{Multi-message multi-recipient PKE.} First, we
 replace \protITK's use of standard (CCA secure) PKE with multi-message
