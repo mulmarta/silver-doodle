@@ -1,0 +1,157 @@
+\section{Preliminaries}
+Additionally, we need a property called \emph{Key Committing}, i.e. it should be hard to find two different keys
+for which a tag authenticates a message. This is again a symmetric analogue to \emph{Exclusive Ownership} with the same
+reasoning for the different name, i.e. ownership of a symmetric key isn't a reasonable concept. We define it formally in \cref{def:mac_eo}
+
+\dnote{Same here...}
+\begin{definition}[Key Commiting]\label{def:mac_eo}
+  Let $\mac = (\mactag, \macvrf)$ be a MAC with keyspace \mackeyspace. We define the advantage of an adversary \Adv
+  in the \emph{Key Committing} game for \mac as
+  \[
+    \adv{\kc}{\mac}(\Adv) = \text{Pr}\left[
+      \begin{array}{c} \macvrf(k^*_1,m^*,\mtag^*) = 1 \land \\
+        \macvrf(k^*_2,m^*,\mtag^*) = 1 \land \\
+        k^*_1 \neq k^*_2
+      \end{array}
+      \middle\vert
+      \begin{array}{c}
+        (k_1^*,k_2^*,m^*,\mtag^*) \getsr \Adv
+      \end{array}
+    \right].
+  \]
+\end{definition}
+
+\begin{remark}
+  In general, \ufcma security does not imply \kc security. This can easily be seen by considering a MAC which is
+  \ufcma secure but ignores the last bit of its key. However, popular constructions like HMAC are naturally \kc
+  secure (as long as the hash function is collision resistant).
+
+  Additionally, any \ufcma secure MAC is \kc secure in the random oracle model by tagging $(H(k)||m)$ instead of only
+  $m$.
+\end{remark}
+
+
+\subsection{Huffman Trees}\label{sec:huffman}
+The Huffman Code\cite{huffman52} is an optimal prefix-free code, i.e. no codeword is a prefix of another code word and
+the weighted sum of all codewords is minimal. It is defined over a list of words $X$, their (relative)
+weights $w$ and an alphabet $C$ of size $m$. The Huffman code is represented by an $m$-ary tree,
+where each node is labelled by a symbol from the alphabet $C$ and encoding a word is done by following the path from the
+root to the leaf corresponding to the word. Huffman codes are optimal, if the frequencies of the encoded symbols are
+powers of the tree arity. We will limit the definition to binary huffman trees. The construction algorithm is described
+in \cref{fig:huffman}.
+
+\begin{figure}[ht]
+  \center
+  \begin{algobox}{Huffman}
+  \scalebox{.8}{
+    \begin{minipage}[h]{1\textwidth}
+      \algoHead{Huffman($\vec{X}, \vec{w}$)}
+      \begin{algorithmic}
+        \State Let $T$ be an empty binary tree
+        \For{$x_i\in \vec{X}$}
+        \State $T.\term{nodes}\setadd x_i$
+        \State $x_i.\term{weight} = w_i$
+        \EndFor
+        \State $L = sort(T.\term{nodes})$ \hspace{2em}\Comment{ascending by weight and depth in $T$}
+        \While{$\abs{L} \neq 1$}
+        \State $[x_1, x_2] = L[1:2]$ \hspace{2em}\Comment{first $2$ elements in $L$}
+        \State $V \setadd l_{new}$
+        \State $l_{new}.\term{weight} =  \sum_{i=1}^q w_{i}$
+        \For{$i \in[2]$}
+        \State $x_i.\term{parent} := l_{new}$
+        \State $x_i.\term{label} = i$
+        \EndFor
+        \State $L = L\setminus\{x_1, x_2\}$
+        \State $L\setadd l_{new}$
+        \State $L = sort(L)$ \hspace{2em}\Comment{ascending by weight and depth in $T$}
+        \EndWhile
+        \State\Return $T$
+      \end{algorithmic}
+    \end{minipage}
+  }
+  \end{algobox}
+  \caption{Construction of a binary Huffman tree on word vector $\vec{X}$ with weights $\vec{w}$.}
+  \label{fig:huffman}
+\end{figure}
+
+\subsection{Key Committing Signatures} \label{sec:rkc}
+We define the notion of \emph{Key Committing} for \acl{hrs}. Intuitively, it should not be possible for an adversary to find different symmetric keys, such that a signature is valid under both keys.\footnote{Looking
+ ahead, this property prevents the following attack: A is in an epoch $E$ where the symmetric HRS key is leaked (during corruption of B) and sends a message authenticated with her secure asymmetric key. Then, the adversary can deliver A's message to D in an epoch $E'$, hence making C jump around the history graph. This attack is prevented because messages sent from $E$ and delivered to $E'$ are authenticated under different symmetric keys
+ from the key schedules of $E$ and $E'$.} The notion is similar in nature to notions of \emph{exclusive  ownership}
+\cite{EPRINT:BCJZ20}, however the notion of ownership does not reasonably apply to symmetric keys.
+
+\begin{definition}[Reducible Key Committing]\label{def:rkc}
+ Let \ers be a hedged \acl{hrs} scheme. We define the advantage of an adversary \Adv in the \emph{Reducible Key Commiting(\rkc)} experiment as
+ \begin{equation*}\small
+   \adv{\rkc}{\ers}(\Adv) = \Pr
+   \left[
+     \begin{array}{c}
+       (\vec m,\sigma,k_1, \rdclass) = Q[i]\ \land \\
+       \sigma' = \ersred(\ersvk, \sigma, \vec m, \rd)\ \land \\
+       \ersvrfy(\ersvk, k_2, \rd(\vec m), \rd, \sigma') = 1\ \land \\
+       k_1 \neq k_2
+     \end{array}
+     \middle\vert
+     \begin{array}{c}
+       (\ersvk, \erssk) \getsr \erskeygen\\
+       (k_2, \rd, i) \getsr\Adv^{\oracle{Sign}(\erssk,\cdot)}(\ersvk)
+     \end{array}
+   \right],
+ \end{equation*}
+ where the \oracle{Sign} oracle, on input a tuple containing a message vector $\vec m$, a symmetric key $k$ and a reduction class $\rdclass$, generates a signature $\sigma$ using $\erssk$, adds $(\vec m, \sigma, k, \rdclass)$ to  the list $Q$ and outputs $\sigma$.
+\end{definition}
+
+\section{Security Proof}
+\subsection{\ers is RKC secure}\label{sec:app-hrs-eo}
+\begin{theorem}\label{thm:eo}
+  Let $\mac$ be a \kc secure mac. Then the \acl{hrs} scheme described in \cref{fig:red_sig} is \rkc secure.
+  Specifically for any adversary $\Adv$, there exists an adversary $\Bdv$ with roughly the same runtime as $\Adv$, s.t.
+  \begin{equation*}
+    \adv{\rkc}{\ers}({\Adv}) \leq \adv{\kc}{\mac}({\Bdv})
+  \end{equation*}
+\end{theorem}
+
+\begin{proof}
+  First, note that since the adversary outputs one message and signature, which has to be valid for two keys, the
+  security of the accumulator isn't relevant for exclusive ownership security.
+
+  Let \Adv be an adversary against the \ssceo security of \ers.  We construct adversary \Bdv as follows: \Bdv samples a
+  keypair $(\ersvk,\erssk)$ and runs $\Adv$ on input $\ersvk$. Signing queries are answered using $\erssk$ and the
+  provided secret key. Eventually, \Adv outputs its solution $(k_1^*,k_2, m^*, \sigma^*)$ with
+  $\sigma^* = (\sigma', \mtag^*, \accValue,\accProof, h)$. \Bdv then computes $h^*$ (the root hash that is tagged by
+  $\mtag^*$) and outputs $(k_1^*,k_2^*,m^* := h^*,\mtag^*)$ as its solution.  It is easy to see that \Bdv is successful,
+  if \Adv is successful.
+\end{proof}
+
+\section{Other Accumulators}\label{sec:tdacc}
+\dnote{Renamed to move all acc discussion here}
+We only define so-called \emph{strong} accumulators, i.e. accumulators where generation and proving membership don't require a
+secret trapdoor. This is necessary for \emph{server-aided} CGKA, as the mailboxing server is modelled as untrusted and
+therefore can't know the accumulator trapdoor. We note however,
+that \saik can also be instantiated with \emph{weak} accumulators at the cost of increased sender communication. Instead
+of letting the server compute the proofs, the sender has to pick a fresh trapdoor (and therefore also public parameters)
+each time it sends a message, precompute \emph{all} required proofs and include the proofs as well as the public
+parameters in its message to the mailboxing server, which then distributes them to the receivers. The result is not a
+server-aided CGKA.
+
+Choosing a new trapdoor for every message is needed to preserve post-compromise security as unforgebility of
+accumulators doesn't necessarily hold if the adversary knows the trapdoor.
+
+The pairing-based accumulator of \cite{RSA:LNguyen05} is a special case we want to elaborate further on. It can be used
+as a weak accumulator, allowing for fast and compact proof generation. However at the cost of limiting the number of
+accumulated elements and increasing the size of the public parameters linearly in that bound, it can be transformed into
+a strong accumulator. We plot the latter variant in \cref{fig:plots}.
+
+RSA-based accumulators yield constant size accumulator values and proofs, however the modulus has to be chosen at
+$\sim15360$bits to achieve 256bits of security. For this size, it would require groups of over $2^{30}$ participants in
+order for our hash-based accumulator to become worse.
+
+Lattice-based accumulators \cite{EC:LLNW16, ACISP:YAYLX18} follow the same hash-tree approach as we do but replace the
+regular hash function by a lattice-based hash function. The advantage of choosing these (less efficient) hash functions
+lies in their compatibility with non-interactive zero-knowledge proofs, which makes it possible to proof membership in
+the accumulator in a zero-knowledge fashion. Since we explicitly \emph{don't} want to hide what was accumulated, the
+increased size of lattice-based hash functions makes them considerably worse for our application.
+
+Lastly, apart from communication, our hash-based accumulator also saves on computation, as all other variants require
+a linear amount of public key operations in the number of accumulated elements. Our accumulator only requires a
+linear amount of hashes, which are substantially more efficient than public key operations.

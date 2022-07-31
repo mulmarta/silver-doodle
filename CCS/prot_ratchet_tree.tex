@@ -1,0 +1,14 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+A ratchet tree is a left-balanced $q$-ary tree, formally defined in \cref{sec:addleafprf}. This generalizes \protITK' binary trees. Using $q\neq2$ can be beneficial in certain situations.
+A ratchet tree, as well as its nodes, have a number of labels listed in \cref{tab:node_helpers}.
+We also define a number of helper methods in \cref{tab:node_helpers}.
+%
+Importantly, the \emph{direct path} of a leaf $u$ consists of (the ordered list of) all nodes on the path from $u$ to the root, without $u$.
+The \emph{resolution} of a node $v$ is the minimal set of descendant non-blank nodes that covers the whole sub-tree rooted at $v$. % i.e., such that for every descendant $u$ of $v$ there exists node $w$ in the resolution such that $w$ is non-blank and $w$ an ancestor of $u$.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

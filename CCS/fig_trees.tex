@@ -1,0 +1,168 @@
+\begin{figure}[!tb]
+  \centering
+  \begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 6cm/#1,
+      level distance = 1.5cm},scale=0.6, transform shape,
+    treenode/.style = {circle, draw=black, align=center, minimum size=.9cm}]
+    
+    \node[treenode](root){$\mmpkepk_{\text{root}}$}
+    child{
+      node[treenode]{$\mmpkepk_{0}$}
+      child{
+        node[treenode]{$\mmpkepk_{00}$}
+        child{
+          node[treenode]{$\mmpkepk'_{1}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{2}$}
+        }       
+      }
+      child{
+        node[treenode]{$\mmpkepk_{01}$}
+        child{
+          node[treenode]{$\mmpkepk'_{3}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{4}$}
+        }
+      }
+    }
+    child{
+      node[treenode]{$\mmpkepk_{1}$}
+      child{
+        node[treenode]{$\mmpkepk_{10}$}
+        child{
+          node[treenode]{$\mmpkepk'_{5}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{6}$}
+        }       
+      }
+      child{
+        node[treenode]{$\mmpkepk_{11}$}
+        child{
+          node[treenode]{$\mmpkepk'_{7}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{8}$}
+        }
+      }
+    };
+  \end{tikzpicture}
+  \caption{A ratchet tree for \saik or \protITK without blanks or unmerged leaves.}
+  \label{fig:tree-full}
+\end{figure}
+
+
+\begin{figure}[!tb]
+  \centering
+    \begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 6cm/#1,
+      level distance = 1.5cm},scale=0.6, transform shape,
+    treenode/.style = {circle, draw=black, align=center, minimum size=.9cm}]
+
+    \node[treenode](root){$\mmpkepk_{\text{root}}$}
+    child{
+      node[treenode]{$\bot$}
+      child{
+        node[treenode]{$\bot$}
+        child{
+          node[treenode]{$\mmpkepk_{1}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk_{2}$}
+        }       
+      }
+      child{
+        node[treenode]{$\bot$}
+        child{
+          node[treenode]{$\mmpkepk_{3}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk_{4}$}
+        }
+      }
+    }
+    child{
+      node[treenode]{$\bot$}
+      child{
+        node[treenode]{$\bot$}
+        child{
+          node[treenode]{$\mmpkepk_{5}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk_{6}$}
+        }       
+      }
+      child{
+        node[treenode]{$\bot$}
+        child{
+          node[treenode]{$\mmpkepk_{7}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk_{8}$}
+        }
+      }
+    };
+  \end{tikzpicture}
+  \caption{A ratchet tree for \saik or \protITK with all nodes blank.}
+  \label{fig:tree-blank}
+\end{figure}
+
+
+\begin{figure}[!tb]
+  \begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 6cm/#1,
+      level distance = 1.5cm},scale=0.6, transform shape,
+    treenode/.style = {circle, draw=black, align=center, minimum size=.9cm}]
+    
+    \node[treenode](root){$\mmpkepk_{\text{root}}$}
+    child{
+      node[treenode]{$\bot$}
+      child{
+        node[treenode]{$\bot$}
+        child{
+          node[treenode]{$\mmpkepk'_{1}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{2}$}
+        }       
+      }
+      child{
+        node[treenode]{$\mmpkepk_{01}$}
+        child{
+          node[treenode]{$\mmpkepk'_{3}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{4}$}
+        }
+      }
+    }
+    child{
+      node[treenode]{$\mmpkepk_{1}$}
+      child{
+        node[treenode]{$\bot$}
+        child{
+          node[treenode]{$\mmpkepk'_{5}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{6}$}
+        }       
+      }
+      child{
+        node[treenode]{$\mmpkepk_{11}$}
+        child{
+          node[treenode]{$\mmpkepk'_{7}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk'_{8}$}
+        }
+      }
+    };
+  \end{tikzpicture}
+  \caption{A tree with some blank and non-blank nodes. Here, sender bandwidth depends on the position in the
+    tree. For example, a packet by the leftmost leaf would contain 5 ciphertexts, while the rightmost leaf would require 6.}
+  \label{fig:tree-mixed}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

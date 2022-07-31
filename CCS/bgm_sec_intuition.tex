@@ -1,0 +1,101 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
+\section{Security of \saik}\label{sec:saik-sec-int}
+To define the security we prove for \saik we fix the two safety
+predicates \KwConf{} and \KwAuth{} used by $\funcCGKA$. We next give the intuition; see \cref{fig:safe} in \cref{sec:bgm_prot_proof} for the pseudocode. We define two versions of the
+predicates: a stronger and a weaker one. For better exposition, the
+stronger version is not achieved by \saik as presented in this work. But at the cost of added complexity
+\saik can easily be extended to achieve it, as
+described \cref{sec:ext-sec-predicates}.
+
+We begin with the simpler stronger version. First, both predicates give no
+guarantees for epochs in detached trees until they are attached and so we
+ignore them in this section. Then, the definition is built around the notion of
+secrets which make up the protocol state. There are two types of secrets:
+group secrets, stored in the state of all parties, and individual secrets,
+stored in the states of some parties. Each corruption exposes a number of
+secrets and each epoch change replaces a number of secrets by (possibly)
+secure ones. The helper predicate $\safeGrpSecsSecure{}(E)$ decides
+if the group secrets in $E$ are secure, i.e., not exposed, and the
+predicate $\safeIndSecsSecure(E, \id)$ decides if $\id$'s individual
+secrets in $E$ are secure.
+%
+Then $\KwConf{}(E)$ equals to
+$\safeGrpSecsSecure{}(E)$, since the epoch key is itself a group
+secret. Further, $\KwAuth{}(E, \id)$ is true if either
+$\safeGrpSecsSecure{}(E)$ or
+$\safeIndSecsSecure(E,\id)$ is true, because both group and $\id$'s secrets
+are necessary to impersonate $\id$ in $E$.
+
+It remains to determine when group and individual secrets are exposed. For
+group secrets, $\safeGrpSecsSecure(E)$ is defined recursively. The
+base case states that the group secrets in first epoch (when the group was
+created) are secure if and only if no party is corrupted while in that epoch.
+Intuitively, we assume the group was created by an honest party using good
+randomness. Moreover, capturing perfect forward secrecy, corruptions in the
+descendant epochs do not affect the confidentiality of earlier group secrets.
+
+The induction step states that the group secrets in a non-root epoch $E$
+are secure if no party is corrupted in $E$, the epoch is not created
+by an injected packet from the adversary and either the group secrets in
+$E$'s parent $E_p$ are secure or all individual secrets in
+$E$ are secure. Intuitively, this formalizes the requirement that the
+adversary can learn the group secrets in only three ways: A) by corrupting a
+party currently in epoch $E$. B) by injecting the secrets (though
+most injections are disallowed by the authenticity predicate). C) by
+computing them the same way an honest \emph{receiver} transitioning to
+$E$ would. The latter requires knowing the group secrets of
+$E_p$ and the individual secrets of at least one receiver. Note that
+the possible receivers are those parties that are group members in
+$E$ and that are not $E$'s creator (who transitions on
+sending). Note also that the fact that even knowing an epoch creator's individual
+secrets in $E_p$ we can treat them as secure in $E$ captures
+so called \emph{post compromise security} (aka. \emph{healing} or
+\emph{backwards security}). Indeed, in \saik, part of creating a new epoch
+requires refreshing all ones individual secrets.
+
+Finally, individual secrets of $\id$ in $E$ are exposed whenever
+there is some other epoch $E'$ where $\id$'s secrets are the same as
+in $E$ and where $\id$ was corrupted or its secrets were injected on
+its behalf. The secrets of $\id$ are the same in two epochs if no epoch between them replaces the secrets, i.e., is created by $\id$, removes
+it or adds it.
+
+\paragraph{Weaker guarantees.}
+In the weaker version of the security predicates, individual secrets of $\id$
+in $E$ are not secure in an additional scenario, formalized by
+\safeWeakAdd. In this scenario, an $\id_s$ first honestly adds $\id$ and the
+adversary $\Adv$ injects a message adding $\id$ to some other epoch. Finally,
+$\id$ joins $\Adv$'s epoch and is corrupted before sending any message. We explain why \saik is insecure in this case and how it can be modified to be secure in
+\cref{sec:ext-sec-predicates}.
+
+\paragraph{Security.} 
+For the \mmPKE scheme we assume a security property called \mmowrcca, defined in \cref{sec:mmowrcca}. The notion is strictly weaker than \mmindcca; in \cref{sec:mmowrcca} we prove the implication.
+
+We note that formally, the AKS is modeled as the functionality $\funcPKI$ defined in \cref{sec:pki}. \saik
+works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real world and emulated by the simulator in the ideal world.
+
+\newcommand{\ucideal}{\textnormal{\textsc{ideal}}}
+\newcommand{\ucreal}{\textnormal{\textsc{real}}}
+\begin{restatable}{theorem}{itkSec}
+	Let $\funcCGKA$ be the CGKA functionality with predicates \KwConf{} and \KwAuth{} defined in \cref{fig:safe}. Let $\saik$ be instantiated with an mmPKE \mmPKE, a signature scheme \sigscheme and \mac, and with the \hkdf functions modelled as a random oracle \hash.
+	Let $\Adv$ be any environment. Denote the output of $\Adv$ from the real execution with \saik and the hybrid functionality $\funcPKI$ from \cref{fig:aks} as $\ucreal_{\saik, \funcPKI}(\Adv)$ and the output of $\Adv$ from the ideal execution with $\funcCGKA$ and a simulator $\ucsim$ as $\ucideal_{\funcCGKA, \ucsim}(\Adv)$.
+	%
+	There exists a simulator $\ucsim$ and adversaries $\Bdv[1]$ to $\Bdv[4]$ such that
+	\begin{align*}
+		\Pr[\ucideal&_{\funcCGKA, \ucsim}(\Adv) = 1] - \Pr\left[\ucreal_{\saik, \funcPKI}(\Adv) = 1\right] \leq \\
+		&\textnormal{Adv}^{\gamefont{CR}}_{\hash}(\Bdv[1]) \\
+		% confidentiality
+		+\ & q_e^2(q_e+1) \log(q_n) \cdot\textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[2]) \\
+		% authenticity asym
+		+\ & 2q_e\cdot \textnormal{Adv}^{\ufcma}_\sigscheme(\Bdv[3]) \\
+		+\ & q_e \cdot \textnormal{Adv}^{\ufcma}_\mac(\Bdv[4]) + 3q_hq_e^2(q_e+1)/2^\kappa,
+	\end{align*}
+	where $q_e$, $q_n$ and $q_h$ denote bounds on the number of epochs, the group size and the number of $\Adv$'s queries to the random oracle modelling the $\hash$, respectively.
+	%  In the reductions, the $\hkdf$ functions are modelled as a random oracle.
+\end{restatable}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

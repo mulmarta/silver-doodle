@@ -1,0 +1,119 @@
+\begin{table*}[!t]
+  \begin{minipage}[t]{.48\textwidth}
+  	\begin{tabularx}{\textwidth}{| l | X |}
+      \hline
+    	$\tree.\rt$ & The root.\\
+%    	\hline
+%    	$\tree.\nodes$ & The set of all nodes in $\tree$.\\
+    	\hline
+    	$v.\isroot$ & True iff $v = \tree.\rt$.\\
+    	\hline
+    	$v.\isleaf$ & True iff $v$ has no children.\\
+    	\hline
+    	$v.\parent$ & The parent node of $v$ (or $\bot$ if $v.\isroot$).\\
+    	\hline
+    	$v.\children$ & If $\neg v.\isleaf$: ordered list of $v$'s children.\\
+    	\hline
+    	$v.\nodeIndex$ & The node index of $v$.\\
+      \hline
+      $v.\depth$ & The length of the path from $v$ to $\tree.\rt$. \\
+  		\hline
+  		$v.\mmpkepk$ & An mmPKE encryption key.\\
+  		\hline
+  		$v.\mmpkesk$ & The corresponding decryption key.\\
+  		\hline
+      $v.\rsvk$ & If $v.\isleaf$: a signature verification key.\\
+  		\hline
+      $v.\rssk$ & If $v.\isleaf$: the corresponding signing key.\\
+  		\hline
+  		$v.\unmergedLeaves$ & The set of indices of the leaves below $v$ whose owner $\id$ does not know $v.\pkesk$.\\
+  		\hline
+  		$v.\id$ & If $v.\isleaf$: the $\id$ associated with that leaf.\\
+  		\hline
+  	\end{tabularx}
+
+	\caption{Labels of a ratchet-tree $\tree$ and its nodes.}
+	\label{tab:node_labels}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.48\textwidth}
+  	\begin{tabularx}{\textwidth}{| l | X |}
+  		\hline
+  		$\itkSt.\groupId$ & The identifier of the group.\\
+  		\hline
+  		$\itkSt.\tree$ & The ratchet tree.\\
+  		\hline
+  		$\itkSt.\leaf$ & The party's leaf in $\tree$.\\
+  		\hline
+  		$\itkSt.\treeHash$ & A hash of the public part of $\tree$.\\
+  		\hline
+      $\itkSt.\lastAct$ & The last modification of the group state and the user who initiated it.\\
+  		\hline
+  		$\itkSt.\applicationSecret$ & The current epoch's CGKA key.\\
+  		\hline
+  		$\itkSt.\initSecret$ & The next epoch's init secret.\\
+  		\hline
+      $\itkSt.\membershipKey$ & The next epoch's membership secret for authenticating messages.\\
+  		\hline
+  		$\itkSt.\groupContext()$ & Returns $(\itkSt.\groupId, \itkSt.\treeHash, \itkSt.\lastAct)$.\\
+  		\hline
+  	\end{tabularx}
+    \caption{The protocol state of a party $\id$ and the helper method for computing the context.}
+    \label{tab:prot-state}
+  \end{minipage}
+
+%  \end{table*}
+%\begin{table*}[!t]
+  \begin{minipage}{\textwidth}
+  	\begin{tabularx}{.48\textwidth}{| l | X |}
+  		\hline
+  		$\tree.\clone()$ & Returns a copy of $\tree$.\\
+  		\hline
+  		$\tree.\public()$ & Returns a copy of $\tree$ with all labels $v.\rssk$ and $v.\pkesk$ set to $\bot$.\\
+  		\hline
+  		$\tree.\roster()$ & Returns $\id$'s of all parties in $\tree$.\\
+  		\hline
+  		$\tree.\leaves()$ & Returns the list of all leaves in the tree, sorted from left to right.\\
+  		\hline
+  		$\tree.\leafof(\id)$ & Returns the leaf $v$ with $v.\id = \id$.\\
+  		\hline
+  		$\tree.\getleaf()$ & Returns leftmost $v$ s.t. $\neg v.\inuse()$. If no such $v$ exists, adds a new leaf using $\addleaf(\tree)$ and returns it.\\
+      \hline
+      $\tree.\blankpath(v)$ & For all $u\in\tree.\directpath(v)$ calls $u.\blank()$. \\
+      \hline
+  		$\tree.\inSubtree(u,v)$ & Returns true if $u$ is in $v$'s subtree.\\
+  		\hline
+  		$v.\inuse()$ & Returns $\false$ iff all labels are $\bot$.\\
+  		\hline
+  		$v.\blank()$ & Sets all labels of $v$ to $\bot$.\\
+  		\hline
+  	\end{tabularx}
+    \hfill
+    \begin{tabularx}{.48\textwidth}{| l | X |}
+  		\hline
+  		$\tree.\lca(u, v)$ & Returns the lowest common ancestor of the two leafs.\\
+  		\hline
+  		$\tree.\directpath(v)$ & Returns the path from $v$'s parent to the root.\\
+  		\hline
+  		$\tree.\mergeleaves(v)$ & Sets $u.\unmergedLeaves \gets \emptyset$ for all $u \in
+                                    \tree.\directpath(v)$\\
+  		\hline
+  		$\tree.\unmergeleaf(v)$ & Sets $u.\unmergedLeaves \setadd v$ for all $u$ returned by $\tree.\directpath(v)$\\
+  		\hline
+      $v.\resolution()$ &
+      If $v.\inuse$, return $(v) \append v.\unmergedLeaves$. Else if $v.\isleaf$, return $()$. Else, return $v.\children[1].\resolution() $ $\append \dots \append v.\children[n].\resolution()$\\
+%  		Return
+%  		$\begin{cases}
+%  			(v) \append v.\unmergedLeaves & \text{if } v.\inuse() \\
+%        \term{concatChildResolution}(v) & \text{else if } \neg v.\isleaf \\
+%  			\emptylist & \text{else},
+%  		\end{cases}$\\
+%      &where $\term{concatChildResolution}(v) = v.\children[1].\resolution() \append \dots \append v.\children[n].\resolution()$.\\
+  		\hline
+  		$v.\resolvent(u)$ & Returns the ancestor of $u$ in $v.\resolution() \setminus (v)$ (or $\bot$ if $u$ is not a descendant of $v$).\\
+  		\hline
+  	\end{tabularx}
+	  \caption{Helper methods for a ratchet tree $\tree$ and its nodes.\vspace{-1em}}
+	  \label{tab:node_helpers}
+  \end{minipage}
+\end{table*}

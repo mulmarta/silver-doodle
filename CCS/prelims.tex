@@ -1,0 +1,17 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
+\section{Notation}\label{sec:prelims}
+For $n \in\Z$, we define $[n] := \{1, 2, \ldots, n\}$. We write $x \getsr X$ for sampling an element $x$ uniformly at random from a (finite) set $X$ as well as for
+the output of a randomized algorithm, i.e. $x\getsr A(y)$ denotes the output of the probabilistic algorithm $A$ on input
+$y$ using fresh random coins. For a deterministic algorithm $A$, we write $x = A(y)$. Adding an element $y$ to a set $Y$
+is denoted by $Y \setadd y$ and appending an entry $z$ to a list $L$ is written as $Z\listapp z$. Appending a whole list
+$L_2$ to a list $L_1$ is denoted by $L_1 \append L_2$. For a vector
+$\vec{x}$, we denote its length as $\abs{\vec{x}}$ and $\vec{x}[i]$ denotes the $i$-th element of $\vec{x}$ for
+$i\in[|\vec{x}|]$. Note that we use vectors as in programming, i.e. we don't require any algebraic structure on
+them. For clarity, we use $\len$ to denote the length of collections.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

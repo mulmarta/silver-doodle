@@ -1,0 +1,129 @@
+\documentclass[letterpaper,10pt]{article}
+\usepackage{hyperref}
+% \usepackage{usenix}
+% \usepackage[a4paper,margin=1.2in,rmargin=1.2in]{geometry}  %This should be removed before submission
+\pagestyle{plain}
+
+\newif\ifWorkInProgress
+%\WorkInProgresstrue
+\WorkInProgressfalse
+
+%-------------------------------------------------------------------------------
+\input{sty/packages}  %<-------------- Add new packages here
+\input{sty/macros}
+\input{sty/notation}
+\input{sty/treekem-macros}
+\crefname{appendix}{App.}{Apps.}%
+\crefname{section}{Sec.}{Secs.}%
+%-------------------------------------------------------------------------------
+\title{Major Revision Changelog for ``Server-Aided Continuous Group Key Agreement''}
+
+%for single author (just remove % characters)
+\author{
+% {\rm Joël Alwen}\\
+% AWS Wickr
+% \and
+% {\rm Dominik Hartmann}\\
+% Ruhr-University Bochum
+% \and
+% {\rm Eike Kiltz}\\
+% Ruhr-University Bochum
+% \and
+% {\rm Marta Mularczyk}\\
+% Department of Computer Science,	ETH Zurich
+% copy the following lines to add more authors
+% \and
+% {\rm Name}\\
+%Name Institution
+} % end author
+
+% hyperref doesn't like the LNCS author definition with pdfusetitle, do it manually
+% \makeatletter
+\hypersetup{
+	pdftitle={\@title},
+	pdfauthor={}
+}
+% \makeatother
+
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+
+\begin{document}
+%\maketitle
+{
+	\def\addcontentsline#1#2#3{}
+	\maketitle }
+
+The paper has undergone one major revision. This was done after it was
+submitted (and rejected) from Eurocrypt 2022. The major changes are as
+follows:
+\begin{itemize}
+\item Removed ``reducible signatures'' from the paper entirely. Instead we
+    found a better way to authenticate packets (namely by signing the
+    confirmation tag). Not only does that reduce bandwidth for all parties,
+    it also makes the protocol (and proof) quite a bit simpler.  We adapted
+    the protocol and proof accordingly.
+\item We restructured the paper as this was the main concern of the initial
+    reviews from Eurocrypt. We did not receive the final (post-rebuttal)
+    reviews from Eurocrypt by the time we submitted this version (although
+    we did receive the rejection notification).
+\item Repositioning of paper. (New abstract, intro.) New version more
+    clearly describes changes to novel parts of our CGKA definition (e.g.
+    introducing semantic security) and the reasons and consequences
+    thereof. It also compares to the concurrent work
+    of~\cite{hashimoto2021cmpke}.
+\item One change we did \emph{not} make despite request from one reviewer
+    is to include correctness in our formal definition. Since the beginning
+    formal work on CGKA has consistently struggled to balance complexity
+    with precision. Most past works have opted to capture as many
+    intuitively desirable guarantees as possible. While this was achieved
+    (e.g. in~\cite{EPRINT:AlwJosMul20}) it has also lead to consistent
+    criticism of the resulting complexity and presented a significant
+    barrier to entry in the field.
+
+    To address this, in this work we have adhered to the principle of
+    focusing the formalism as much as possible on the novel and non-trivial
+    aspects of our work. Thus we intentionally omit correctness guarantees
+    (from our formal notion only), as it is a property that is well
+    understood, straightforward (if tedious) to define. Moreover,
+    correctness is intuitively clear and easy to verify by inspection for
+    our main construction. Based on this, we felt that satisfying this
+    request would detract from the quality of this write-up.
+\end{itemize}
+% \renewenvironment{abstract}{%
+% 	\list{}{\advance\topsep by0.75cm\relax\small
+% 		\leftmargin=20mm
+% 		\labelwidth=5mm
+% 		\listparindent=5mm
+% 		\itemindent\listparindent
+% 		\rightmargin\leftmargin}\item[\hskip\labelsep
+% 	\bfseries\abstractname]}
+% {\endlist}
+
+%\newpage
+%\tableofcontents
+%\newpage
+
+%\listoftodos
+
+
+%--- Bibliography --------------------------------------------------------------
+\bibliographystyle{plain} %if need be use {plain}
+%\bibliographystyle{splncs04}
+\bibliography{project,../cryptobib/abbrev3,../cryptobib/crypto}
+
+
+%--- Appendix ------------------------------------------------------------------
+\clearpage
+\newpage
+\appendix
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

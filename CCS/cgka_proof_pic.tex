@@ -1,0 +1,113 @@
+\begin{tikzpicture}[level distance=5mm,
+		vertex/.style={fill,circle,minimum size=.15cm,inner sep=0pt},
+    rekeyed/.style={fill=red,circle,minimum size=.15cm,inner sep=0pt}]
+		\tikzstyle{every label}=[font=\scriptsize,draw=none]
+		\tikzstyle{level 1}=[sibling distance=14mm]
+		\tikzstyle{level 2}=[sibling distance=7mm]
+		\tikzstyle{level 3}=[sibling distance=3mm]
+		
+		\node[rekeyed] (root) {}
+		child {node[rekeyed,label=170:{$v$}] {}
+			child {node[vertex] {}
+				child {node[vertex] (left) {}}
+				child {node[vertex] {}}
+			}
+			child {node[rekeyed] {}
+				child {node[rekeyed,label=below:{}] {}}
+				child {node[vertex] {}}
+			}
+		}
+		child {node[vertex] {}
+			child {node[vertex] {}
+				child {node[vertex] {}}
+				child {node[vertex] {}}
+			}
+			child[fill=none] {edge from parent[draw=none]}
+		};
+    \node[text=black!60,fill=none,draw=none,right=5em of left] (right) {\scriptsize$\hgnodeid_0$};
+
+    \begin{scope}[on background layer]
+      \node[
+        rectangle,draw=black!15,fill=black!5,rounded corners=1ex,inner sep=4pt,fit=(root)(left)(right)] (e0) {};
+   \end{scope}
+
+    \node[rekeyed] (root1) at (11em,2.5em) {}
+		child {node[vertex,label=170:{$v$}] {}
+			child {node[vertex] {}
+				child {node[vertex] (left1) {}}
+				child {node[vertex] {}}
+			}
+			child {node[vertex] {}
+				child {node[vertex,label=below:{}] {}}
+				child {node[vertex] {}}
+			}
+		}
+		child {node[rekeyed] {}
+			child {node[rekeyed] {}
+				child {node[rekeyed] {}}
+				child {node[vertex] {}}
+			}
+			child[fill=none] {edge from parent[draw=none]}
+		};
+    \node[text=black!60,fill=none,draw=none,right=5em of left1] (right1) {\scriptsize$\hgnodeid_1$};
+
+    \begin{scope}[on background layer]
+      \node[rectangle,draw=black!15,fill=black!5,rounded corners=1ex,inner sep=4pt,fit=(root1)(left1)(right1)] (e1) {};
+    \end{scope}
+
+    \node[rekeyed] (root2) at (11em,-5em) {}
+		child {node[vertex,label=170:{$v$}] {}
+			child {node[vertex] {}
+				child {node[vertex] (left2) {}}
+				child {node[vertex] {}}
+			}
+			child {node[vertex] {}
+				child {node[vertex,label=below:{}] {}}
+				child {node[vertex] {}}
+			}
+		}
+		child {node[rekeyed] {}
+			child {node[rekeyed] {}
+				child {node[vertex] {}}
+				child {node[rekeyed] {}}
+			}
+			child[fill=none] {edge from parent[draw=none]}
+		};
+    \node[text=black!60,fill=none,draw=none,right=5em of left2] (right2) {\scriptsize$\hgnodeid_2$};
+
+    \begin{scope}[on background layer]
+      \node[rectangle,draw=black!15,fill=black!5,rounded corners=1ex,inner sep=4pt,fit=(root2)(left2)(right2)] (e2) {};
+    \end{scope}
+
+    \node[rekeyed] (root3) at (26em,-5em) {}
+		child {node[vertex,label=170:{$v$}] {}
+			child {node[vertex] {}
+				child {node[vertex] (left3) {}}
+				child {node[vertex] {}}
+			}
+			child {node[vertex] {}
+				child {node[vertex,label=below:{}] {}}
+				child {node[vertex] {}}
+			}
+		}
+		child {node[rekeyed] {}
+			child {node[rekeyed] {}
+				child {node[vertex] {}}
+				child {node[rekeyed] {}}
+			}
+			child[fill=none] {edge from parent[draw=none]}
+		};
+    \node[text=black!60,fill=none,draw=none,right=5em of left3] (right3) {\scriptsize$\hgnodeid$};
+
+    \begin{scope}[on background layer]
+      \node[rectangle,draw=black!15,fill=black!5,rounded corners=1ex,inner sep=4pt,fit=(root3)(left3)(right3)] (e3) {};
+    \end{scope}
+
+    \node[draw=none] (dots) at (20em,-7.5em) {\Large$\dots$};
+
+    \draw[-{Latex[length=1.5mm]},draw=black!60] (e0) -- (e1);
+    \draw[-{Latex[length=1.5mm]},draw=black!60] (-7em,-2.5em) -- (e0);
+    \draw[-{Latex[length=1.5mm]},draw=black!60] (e0) -- (e2);
+    \draw[-{Latex[length=1.5mm]},draw=black!60] (e2) -- (dots);
+    \draw[-{Latex[length=1.5mm]},draw=black!60] (dots) -- (e3);
+	\end{tikzpicture}

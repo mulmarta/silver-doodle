@@ -1,0 +1,77 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+\section{Details of The \saik Protocol}\label{sec:saik-details}
+In this section, we formally describe the \saik protocol. \saik inherits most of its mechanisms from \protITK, the CGKA
+of \mls. The major difference between \saik and \protITK is the use of \mmPKE and signing only the tag. There are also
+some smaller differences, such as the use of $q$-ary\dnote{Do we still do this?} trees. Another small difference is that \protITK ensures agreement on the ``transcript hash'', binding all past messages, while \saik ensures agreement only on all past group modifications. Indeed, a transcript hash does not make sense for saCGKA, since parties see different messages.
+
+\subsection{Authenticated Key Service (AKS)}
+\saik relies on an Authenticated Key Service (AKS) which authentically distributes so-called key packages (also called key bundles or pre-keys) used to add new members to the group without interacting with them. A key package should only be used once. For simplicity, we use an idealized AKS which guarantees that a fresh, authentic and honestly generated key package of any party is always available to any other party.
+
+Formally, the AKS is modelled as the functionality $\funcPKI$ defined in \cref{fig:aks}. \saik works in the $\funcPK$-hybrids model. This means that $\funcPKI$ is available in the real world and emulated by the simulator in the ideal world.
+$\funcPKI$ works as follows. When a party $\id$ wants to fetch a key package of another party $\id'$, $\funcPKI$ generates a new key package for $\id'$ using \saik's key-package generation algorithm (formally, the algorithm is a parameter of $\funcPKI$). It sends (the public part of) the package to $\id$ and to the adversary. Note that since $\funcPKI$ exists in the real world, the adversary should be thought of as the environment. The secrets for the key package can be fetched by $\id_t$ later, when it decides to join the group. Once fetched, secrets are deleted, which means that $\funcPKI$ cannot be used as secure storage.
+
+\input{fig_pki}
+
+To conclude, we mention the most important aspects in which $\funcPKI$ differs from a more realistic AKS. First, in a typical implementation of an AKS, parties generate key packages themselves and upload them to an untrusted server, authenticated with long-term so-called identity keys. This means that a realistic attacker model is one where parties can be corrupted before they join, in which case the secrets for their key packages and long-term keys leak. This allows an active adversary to inject arbitrary key packages on their behalf. Such abilities are not considered in our model. However, we stress that we do consider attacks where the adversary injects on behalf of current group members messages that add parties with arbitrary key packages.
+
+Further, $\funcPKI$ identifies key packages by public keys. Looking ahead, this means that a party adding $\id'$ has to send the whole public part of the package so that $\id'$ can identify it when it joins. In reality, this would be implemented by hashes.
+
+\subsection{Ratchet Trees}
+\input{prot_ratchet_tree}
+
+\subsection{Protocol State}
+\input{prot_state}
+
+\subsection{Protocol Algorithms}
+The protocol algorithms are defined in \cref{fig:prot1,fig:prot-helpers2}.
+\input{fig_prot}
+
+\subsection{Extraction Procedure for the Mailboxing Service}
+{\color{red}\bf TODO}
+In this section, we describe how in practice the mailboxing service can compute \saik messages delivered to parties. Recall that this is not formally part of our model, because we do not consider correctness guarantees.
+
+We will use a method $\method{get-index}(\tree, \id_s, \id_t) \to (i, j)$. It takes as input a ratchet tree $\tree$ and two parties within $\tree$ and outputs two indices interpreted as follows. Say $\id_s$ creates an epoch with the new tree $\tree$ and sends a multi-recipient ciphertext $Ctxt$ and a vector of public keys $\updatedPks$. First, $i$ is the receiver index of $\id_t$'s public key in $Ctxt$. Second, $j$ is such that $\id_t$ expects to receive the first $j$ elements in $\updatedPks$. Observe that $i$ and $j$ can be computed by
+
+Say a party $\id_s$ performing an operation $\hgact$ sends a message $C$ to the service. A receiver $\id_r$ expects a message in one of three formats, depending on $\hgact$:
+\begin{description}
+  \item[] {\it Case $\id_r$ is removed: } The service sends to $\id_r$ the values $\id_s$, $\sig_t$ and $\macsig_t$ contained in $C$.
+  \item[] {\it Case $\id_r$ is in the group: } The service sends $\id_s$ and $\hgact$ to $\id_r$. Then, $\id_r$ computes its index $i$ in the multi-recipient ciphertext $Ctxt$ included in
+
+$\id_r$ executes the receive algorithm until calling \decSecrets
+  \item[] {\it Case $\id_r$ joins: } The service sends $\variable{welcomeData}$ to $\id_r$. Recall that $\id_r$ acts as two receivers of $\pathSecCtxt$: the $i$-th one for its path secret and the last, $n$-th one for its joiner secret. The service first retrieves the ratchet tree $\tree$ from $\variable{welcomeData}$ included in $C$. Then, it computes $i$ and $n$ based on $\tree$, $\id_s$ and $\id_r$ (formally, it computes $i$ and $n$ by executing the \method{encrypt} method from \cref{fig:prot1} with all secrets set to $0$). Then, it sends to $\id_r$ the ciphertexts $\pathSecCtxtInd_1=\mmpkeExtL(\textit{Ctxt},i)$ and $\mathit{ctxt}_2 = \mmpkeExtL(\mathit{Ctxt},n)$, as well as $\id_s$, $\hgact$ and $\variable{welcomeData}$, all included in $C$.
+
+\end{description}
+
+%\begin{description}
+%  \item[] {\it Case $\id_r$ is removed: } The service sends to $\id_r$ the values $\id_s$, $\sig_t$ and $\macsig_t$ contained in $C$.
+%%
+%%First, $\id_r$ sends to the service the reduction pattern $\rd=(\ell,0,1)$ it expects, $\id_s$'s verification key $\ersvk$ and $\groupId$ (to compute them, it executes the first 4 lines of Receive). The service computes the message $\vec{\variable{tbs}} = (\mathit{ctxt}_1,\dots,\mathit{ctxt}_\ell) \concat ((\id_s,\hgact,\groupId)) \concat \updatedPks$ signed by $\id_s$ (see \cref{fig:prot1}), where $\mathit{ctxt}_i = \mmpkeExtL(\textit{Ctxt},i)$ for all $i$.\footnote{In typical constructions, including ours, this is very efficient} Then, it sends to $\id_r$ its signature $\sig' = \ersred(\ersvk, \sig, \vec{\variable{tbv}},\rd)$.
+%  \item[] {\it Case $\id_r$ joins: } The service sends $\variable{welcomeData}$ to $\id_r$. Recall that $\id_r$ acts as two receivers of $\pathSecCtxt$: the $i$-th one for its path secret and the last, $n$-th one for its joiner secret. The service first retrieves the ratchet tree $\tree$ from $\variable{welcomeData}$ included in $C$. Then, it computes $i$ and $n$ based on $\tree$, $\id_s$ and $\id_r$ (formally, it computes $i$ and $n$ by executing the \method{encrypt} method from \cref{fig:prot1} with all secrets set to $0$). Then, it sends to $\id_r$ the ciphertexts $\pathSecCtxtInd_1=\mmpkeExtL(\textit{Ctxt},i)$ and $\mathit{ctxt}_2 = \mmpkeExtL(\mathit{Ctxt},n)$, as well as $\id_s$, $\hgact$ and $\variable{welcomeData}$, all included in $C$.
+%%  Therefore, $\id_r$ sends to the service $i$ and $n$ computed based on the ratchet tree $\tree$ in $\variable{welcomeData}$ and $\id_s$. (In detail, $\id_r$ executes the helper method $\myReduction(\tree, \id_s)$ from \cref{fig:prot} which outputs $(n,i,\wc)$.) The service sends back $\pathSecCtxtInd_1=\mmpkeExtL(\textit{Ctxt},i)$ and $\mathit{ctxt}_2 = \mmpkeExtL(\mathit{Ctxt},n)$.
+%  \item[] {\it Else: } The service sends $\id_s$ and $\hgact$ to $\id_r$. Then, $\id_r$ executes the receive algorithm until calling \decSecrets
+%%  $\id_r$ sends to the service the reduction pattern $\rd=(\ell,i,j)$ it expects, $\id_s$'s verification key $\ersvk$ and $\groupId$ (to compute them, it executes the first 4 lines of Receive). The service computes $\vec{\variable{tbs}}$ as in the case where $\id_r$ is removed and sends to $\id_r$ its individual ciphertext $\mathit{ctxt} =  \mmpkeExtL(\textit{Ctxt},i)$, its public keys $\updatedPks[1], \dots, \updatedPks[j]$ and signature $\sig'  = \ersred(\ersvk, \sig, \vec{\variable{tbs}},\rd)$.
+%\end{description}
+
+
+The service delivers a message in one of
+
+Recall that according \saik, a party $\id_s$ performing operation $\hgact$ sends to the mailboxing service $\id_s$ and $\hgact$ as well as a multi-recipient ciphertext $\pathSecCtxt$, a list of updated keys  $\updatedPks$ and a signature $\sig$, where $\pathSecCtxt$ is a multi-recipient ciphertext encrypting path secrets and $\updatedPks$ is a list of new keys for $\id_s$'s path. In case of an add, $\id_s$ also sends $\variable{welcomeData}$ for the joiner.
+
+When a receiver $\id_r$ wants to download its message, the service first sends $\id_s$ and $\hgact$ to $\id_r$. Then, we have three cases:
+\begin{description}
+  \item[] {\it $\id_r$ is removed: } First, $\id_r$ sends to the service the reduction pattern $\rd=(\ell,0,1)$ it expects, $\id_s$'s verification key $\ersvk$ and $\groupId$ (to compute them, it executes the first 4 lines of Receive). The service computes the message $\vec{\variable{tbs}} = (\mathit{ctxt}_1,\dots,\mathit{ctxt}_\ell) \concat ((\id_s,\hgact,\groupId)) \concat \updatedPks$ signed by $\id_s$ (see \cref{fig:prot1}), where $\mathit{ctxt}_i = \mmpkeExtL(\textit{Ctxt},i)$ for all $i$.\footnote{In typical constructions, including ours, this is very efficient} Then, it sends to $\id_r$ its signature $\sig' = \ersred(\ersvk, \sig, \vec{\variable{tbv}},\rd)$.
+  \item[] {\it $\id_r$ joins: } The service sends $\variable{welcomeData}$ to $\id_r$. Recall that $\id_r$ acts as two receivers of $\pathSecCtxt$: the $i$-th one for its path secret and the last, $n$-th one for its joiner secret. Therefore, $\id_r$ sends to the service $i$ and $n$ computed based on the ratchet tree $\tree$ in $\variable{welcomeData}$ and $\id_s$. (In detail, $\id_r$ executes the helper method $\myReduction(\tree, \id_s)$ from \cref{fig:prot} which outputs $(n,i,\wc)$.) The service sends back $\pathSecCtxtInd_1=\mmpkeExtL(\textit{Ctxt},i)$ and $\mathit{ctxt}_2 = \mmpkeExtL(\mathit{Ctxt},n)$.
+  \item[] {\it else: } $\id_r$ sends to the service the reduction pattern $\rd=(\ell,i,j)$ it expects, $\id_s$'s verification key $\ersvk$ and $\groupId$ (to compute them, it executes the first 4 lines of Receive). The service computes $\vec{\variable{tbs}}$ as in the case where $\id_r$ is removed and sends to $\id_r$ its individual ciphertext $\mathit{ctxt} =  \mmpkeExtL(\textit{Ctxt},i)$, its public keys $\updatedPks[1], \dots, \updatedPks[j]$ and signature $\sig'  = \ersred(\ersvk, \sig, \vec{\variable{tbs}},\rd)$.
+\end{description}
+\paragraph{An alternative solution.}
+In the solution described above, receiving a message requires interaction between the delivery service and $\id_r$. This
+is not a problem in typical scenarios, because they are both online at that moment. However, we note that there is an
+alternative solution which does not require interaction. Specifically, the messages sent by \saik contain enough
+information for the service to compute the public part of the ratchet tree in any epoch. The tree, in turn, is sufficient to compute the message delivered to any party.
+The downside of this solution is that it requires the mailboxing service to store many ratchet trees (or many messages to re-compute them) for parties in different epochs.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
