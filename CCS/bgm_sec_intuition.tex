@@ -50,7 +50,7 @@ $E_p$ and the individual secrets of at least one receiver. Note that
 the possible receivers are those parties that are group members in
 $E$ and that are not $E$'s creator (who transitions on
 sending). Note also that the fact that even knowing an epoch creator's individual
-secrets in $E_p$ we can treat them as secure in $E$ captures
+secrets in $E_p$ we can treat them as secure in $E$ which captures
 so called \emph{post compromise security} (aka. \emph{healing} or
 \emph{backwards security}). Indeed, in \saik, part of creating a new epoch
 requires refreshing all ones individual secrets.
@@ -77,7 +77,7 @@ works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real
 
 \newcommand{\ucideal}{\textnormal{\textsc{ideal}}}
 \newcommand{\ucreal}{\textnormal{\textsc{real}}}
-\begin{restatable}{theorem}{itkSec}
+\begin{restatable}{theorem}{itkSec}\label{thm:saik-security}
 	Let $\funcCGKA$ be the CGKA functionality with predicates \KwConf{} and \KwAuth{} defined in \cref{fig:safe}. Let $\saik$ be instantiated with an mmPKE \mmPKE, a signature scheme \sigscheme and \mac, and with the \hkdf functions modelled as a random oracle \hash.
 	Let $\Adv$ be any environment. Denote the output of $\Adv$ from the real execution with \saik and the hybrid functionality $\funcPKI$ from \cref{fig:aks} as $\ucreal_{\saik, \funcPKI}(\Adv)$ and the output of $\Adv$ from the ideal execution with $\funcCGKA$ and a simulator $\ucsim$ as $\ucideal_{\funcCGKA, \ucsim}(\Adv)$.
 	%
@@ -93,7 +93,9 @@ works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real
 	\end{align*}
 	where $q_e$, $q_n$ and $q_h$ denote bounds on the number of epochs, the group size and the number of $\Adv$'s queries to the random oracle modelling the $\hash$, respectively.
 	%  In the reductions, the $\hkdf$ functions are modelled as a random oracle.
-\end{restatable}
+  \end{restatable}
+
+  The formal proof of \cref{thm:saik-security} can be found in \cref{sec:bgm_prot_proof}.
 
 %%% Local Variables:
 %%% mode: latex
