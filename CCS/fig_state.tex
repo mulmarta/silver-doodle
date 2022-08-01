@@ -49,7 +49,7 @@
   		\hline
       $\itkSt.\lastAct$ & The last modification of the group state and the user who initiated it.\\
   		\hline
-  		$\itkSt.\applicationSecret$ & The current epoch's CGKA key.\\
+  		$\itkSt.\applicationSecret$ & The current epoch's CGKA key. Exposed to the application layer.\\
   		\hline
   		$\itkSt.\initSecret$ & The next epoch's init secret.\\
   		\hline
@@ -57,11 +57,22 @@
   		\hline
   		$\itkSt.\groupContext()$ & Returns $(\itkSt.\groupId, \itkSt.\treeHash, \itkSt.\lastAct)$.\\
   		\hline
+        $\itkSt.\confTag$ & The confirmation tag, which is signed to ensure authenticity.\\
+  		\hline
+        $\pathSecret$ & The path secrets $s_2,\ldots,s_n$ used to derive the keypairs in each node. Sent via the \mmPKE
+        encryption to keep tree invariant intact.\\
+  		\hline
+  		$\commitSecret$ & The path secret in the root node. Used as seed for the key schedule together with \initSecret
+        from the previous epoch\\
+        \hline
+        $\joinerSecret$ & Secret sent to new group members. Enables computation of the $\epochSecret$ together
+        with the group context.\\
+        \hline
   	\end{tabularx}
     \caption{The protocol state of a party $\id$ and the helper method for computing the context.}
     \label{tab:prot-state}
   \end{minipage}
-
+  
 %  \end{table*}
 %\begin{table*}[!t]
   \begin{minipage}{\textwidth}
@@ -117,3 +128,8 @@
 	  \label{tab:node_helpers}
   \end{minipage}
 \end{table*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

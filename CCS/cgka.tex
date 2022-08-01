@@ -29,7 +29,7 @@ epochs, the adversary's actions, etc.
 In a perfect execution, the history graph would be a chain. However, even for
 benign reasons, this may not be the case. For example, if two parties
 simultaneously create epochs, then a fork in the graph is created\footnote{Looking ahead, this is only a problem when
-  using immediate transition and can be easily avoided, see \cref{sec:simplification}.}. Moreover,
+  using immediate transition and can be easily avoided, see \cref{sec:simplifications}.}. Moreover,
 an active adversary can deliver different messages to different parties,
 causing them to follow different branches. Further, it can trick parties into
 joining fake groups it created by injecting invitation messages. Epochs in
@@ -180,7 +180,7 @@ In order to make the security notion tractable, we made the following simplifica
 	To improve efficiency, \protITK and \protCMPKE of \cite{hashimoto2021cmpke} use the so-called propose-commit syntax, originally proposed by MLS. This means that parties first send messages that \emph{propose} adding or removing other members, or updating their own keys. This does not affect the group state immediately. Rather, a party can collect a list of proposals and send a \emph{commit} message which applies the proposed changes and creates a new epoch.
 	The advantage of this is avoiding the expensive operation of epoch creation after every group modification (modifications typically come in batches; for instance, lots of members are added immediately after group creation).
 	
-	Unfortunately, using this syntax requires lots of additional bookkeeping from $\funcCGKA$, such as keeping track of two types of history-graph nodes, one for proposals and one for commits (see  \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke}). Most protocols based on \protITK, such as \saik, can be easily adapted to the propose-commit syntax and benefit from the efficiency gain. The change is minimal and security proofs are clearly not affected. We elaborate in \cref{?}.
+	Unfortunately, using this syntax requires lots of additional bookkeeping from $\funcCGKA$, such as keeping track of two types of history-graph nodes, one for proposals and one for commits (see  \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke}). Most protocols based on \protITK, such as \saik, can be easily adapted to the propose-commit syntax and benefit from the efficiency gain. The change is minimal and security proofs are clearly not affected. %We elaborate in \cref{?}.
 	
 
 %	 First, our syntax does not include a command for group creation. Instead, the creator starts as a single group member and adds other parties one by one. In reality, one would implement a more efficient solution where many parties can be added at once.

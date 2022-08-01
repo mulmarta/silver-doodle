@@ -58,7 +58,7 @@ CDH is hard given access to a DDH-oracle for both CDH inputs.
   algorithm $\Adv$ in solving the \emph{Double-Sided Strong Diffie-Hellman problem(\sdh)} with respect to $\Group$ as
   \[
     \adv{\sdh}{\Group}(\Adv) =
-    \left[
+    \Pr\left[
       Z = g^{xy}
       \middle\vert
       \begin{array}{c}
@@ -128,7 +128,7 @@ The notion of \mmindrcca security for \mmPKE is described by the experiment in \
   \label{fig:mmpke_rcca}
 \end{figure}
 
-We define the security of an \mmPKE in a left-right style in the following \cref{def:mmindrcca}.
+We define the security of an \mmPKE in a left-right style in the following Definition~\ref{def:mmindrcca}.
 
 \begin{definition}[\mmindrcca]\label{def:mmindrcca}
 Let $N\in\N$. For a scheme \mmPKE, we define the advantage of an adversary \Adv against \emph{Indistinguishability Against Replayable Chosen Ciphertext Attacks (\mmindrcca)} security of \mmPKE as
@@ -141,7 +141,7 @@ where $\textnormal{Exp}^{\mmindrcca}_{\mmPKE,N,b}$ is described in \cref{fig:mmp
 
 
 \subsection{Data Encapsulation Meachanism(DEM)}
-A DEM is the symmetric equivalent of a PKE scheme. We recall it in \cref{def:dem}.
+A DEM is the symmetric equivalent of a PKE scheme. We recall it in Definition \ref{def:dem}.
 
 \begin{definition}[DEM]\label{def:dem}
   A data encapsulation mechanism (DEM) \dem is described by a (efficiently samplable) keyspace $\demKeyset$ and the two
@@ -157,7 +157,7 @@ A DEM is the symmetric equivalent of a PKE scheme. We recall it in \cref{def:dem
     \]
   \end{definition}
 
-  Analogue to mmPKE, we consider \indrcca security for DEMs. It is described in \cref{def:dem_rcca}.
+  Analogue to mmPKE, we consider \indrcca security for DEMs. It is described in Definition~\ref{def:dem_rcca}.
 
   \begin{definition}\label{def:dem_rcca}
     The advantage of an adversary \Adv against the \indrcca security of a DEM \dem is defined as
@@ -202,7 +202,7 @@ A DEM is the symmetric equivalent of a PKE scheme. We recall it in \cref{def:dem
   \end{figure}
 
 \subsection{Message Authentication Codes (MAC)}
-Message authentication codes are defined in \cref{def:mac}.
+Message authentication codes are defined in Definition~\ref{def:mac}.
 
 \begin{definition}\label{def:mac}
   A message authentication code $\mac = (\mactag,$ $ \macvrf)$ consist of a keyspace $\mackeyspace$ and the following two

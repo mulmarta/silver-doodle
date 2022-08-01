@@ -6,10 +6,12 @@ In this section, we formally define $\funcCGKA$. The code of $\funcCGKA$ is in \
 \input{fig_cgka_secdef}
 %
 \paragraph{Notation.}
-We use the keyword \KwAss{} \textit{cond} to restrict the simulator's actions. Formally, if the condition \textit{cond} is false, then the functionality permanently halts, making the real and ideal worlds easily distinguishable. Further, we use {\bf only allowed if} \textit{cond} to restrict the environment. That is, our statements quantify only over environments who, when interacting with $\funcCGKA$ and any simulator, never make \textit{cond} false.
-%\footnote{We
-%  note that if a simulator $\ucsim$ could make \textit{cond} false, then we would quantify over an empty set of environments, making the statement void. In our case, $\ucsim$ cannot do this.}
-  \footnote{A relaxed restriction would require that $\Adv$ makes \textit{cond} false with a small probability $\epsilon$. In our case $\Adv$ knows if it violates \textit{cond}, so fixing $\epsilon=0$ is without loss of generality.}
+We use the keyword \KwAss{} \textit{cond} to restrict the simulator's actions. Formally, if the condition \textit{cond}
+is false, then the functionality permanently halts, making the real and ideal worlds easily distinguishable. Further, we
+use {\bf only allowed if} \textit{cond} to restrict the environment. That is, our statements quantify only over
+environments who, when interacting with $\funcCGKA$ and any simulator, never make \textit{cond} false\footnote{A relaxed
+  restriction would require that $\Adv$ makes \textit{cond} false with a small probability $\epsilon$. In our case
+  $\Adv$ knows if it violates \textit{cond}, so fixing $\epsilon=0$ is without loss of generality.}.
 Finally, we write \emph{receive from the simulator} to denote that the functionality sends a dummy value to it, waits until it sends a value back and asserts via \KwAss{} that the received value is of the correct format.
 
 \paragraph{State.}
