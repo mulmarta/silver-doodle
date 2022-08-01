@@ -28,7 +28,8 @@ epochs, the adversary's actions, etc.
 
 In a perfect execution, the history graph would be a chain. However, even for
 benign reasons, this may not be the case. For example, if two parties
-simultaneously create epochs, then a fork in the graph is created. Moreover,
+simultaneously create epochs, then a fork in the graph is created\footnote{Looking ahead, this is only a problem when
+  using immediate transition and can be easily avoided, see \cref{sec:simplification}.}. Moreover,
 an active adversary can deliver different messages to different parties,
 causing them to follow different branches. Further, it can trick parties into
 joining fake groups it created by injecting invitation messages. Epochs in
@@ -108,7 +109,11 @@ insignificant bits modified can lead the receiver to an honest epoch.
 \paragraph{Adaptive corruptions.}
 Our model allows $\Adv$ to adaptively decide which parties to corrupt, as long as this does not allow it to trivially distinguish the worlds. Specifically, $\Adv$ can trivially distinguish if a corruption allows it to compute the real group key in an epoch where $\funcCGKA$ already outputted to $\Adv$ a random key. Our statement quantifies over $\Adv$'s that do not trivially win.
 
-We note that, in general, there can exist protocols that achieve the following stronger guarantee: Upon a trivial-win corruption, $\funcCGKA$ gives to the simulator the random key it chose and the simulator comes up with a fake state that matches it. However, this requires techniques which typically are expensive and/or require additional assumptions, such as a random oracle programmable by the simulator or a common-reference string. We note that the disadvantage of this is restricted composition in the sense that any composed protocol can only be secure against the class of environments restricted in the same way.
+We note that, in general, there can exist protocols that achieve the following stronger guarantee: Upon a trivial-win
+corruption, $\funcCGKA$ gives to the simulator the random key it chose and the simulator comes up with a fake state that
+matches it. However, this requires techniques which typically are expensive and/or require additional assumptions, such
+as a random oracle programmable by the simulator or a common-reference string. We note that the disadvantage of the
+simpler weaker is restricted composition in the sense that any composed protocol can only be secure against the class of environments restricted in the same way.
 
 \paragraph{Relation to game-based security.}
 It may be helpful to think about distinguishing between the real and ideal world as a typical security game for saCGKA. The adversary in the game corresponds to the environment $\Adv$. The adversary's challenge queries correspond to $\Adv$'s GetKey inputs on behalf of parties in confidential epochs and its reveal-session key queries correspond to $\Adv$'s GetKey inputs in non-confidential epochs. To disable trivial wins, we require that if the adversary queries a challenge for some epoch, then it cannot corrupt in a way that makes it non-confidential.
@@ -143,7 +148,7 @@ In order to make the security notion tractable, we made the following simplifica
 	\item[Immediate transition]
 	In our model, a party performing a group operation immediately transitions to the created epoch. In reality, a party would only send the message creating the epoch and wait for an ACK from the mailboxing service before transitioning. If it receives a different message before the ACK, it transitions to that epoch instead. This mitigates the problem that if many parties send at once then they end up in parallel epochs and cannot communicate.
 	
-	A protocol {\it Prot} implementing immediate transition can be transformed in a black-box manner into a protocol {\it Prot'} that waits for ACK as follows: To perform a group operation, {\it Prot'} creates a copy of the current state of {\it Prot} and runs {\it Prot} to obtain the provisional updated state and the message. The message is sent and all provisional states are kept in a list. If some message is ACK'ed, the corresponding provisional state becomes the current one, and if another message is receiver, it is processed using the current state. In any case, all provisional states are cleared upon transition.
+	A protocol {\it Prot} implementing immediate transition can be transformed in a black-box manner into a protocol {\it Prot'} that waits for ACK as follows: To perform a group operation, {\it Prot'} creates a copy of the current state of {\it Prot} and runs {\it Prot} to obtain the provisional updated state and the message. The message is sent and all provisional states are kept in a list. If some message is ACK'ed, the corresponding provisional state becomes the current one, and if another message is received, it is processed using the current state. In any case, all provisional states are cleared upon transition.
 	
 	\item[Simplified PKI]
 	The models of \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke} consider a realistic implementation of the AKS where parties generate key packages themselves and upload them to an untrusted server, authenticated with long-term so-called identity keys. These long-term keys are authenticated via a PKI which allows the adversary to leak registered keys and even to register their own arbitrary keys on behalf of any participant. The works \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke} define fine-grained security in this setting, i.e., their security predicates take into account which PKI keys delivered to parties were corrupted.
@@ -167,7 +172,7 @@ In order to make the security notion tractable, we made the following simplifica
 	Our model does not capture attacks where the adversary exposes or modifies the randomness used by the protocol.
 	Capturing such attacks for (sa)CGKA causes a significant headache when defining the formal security notion. For instance, the model needs to special-case scenarios where the adversary leaks the state of a party $A$, uses it with randomness $r$ to compute and inject a message to a party $B$, and then makes $A$ use $r$ to re-compute the injected message.
 	
-	One can easily adapt the special-casing of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} to our model. We chose not to do this for simplicity and because well-designed protocols, including \protITK and \saik, naturally have protections against bad randomness.()Looking ahead, these protocols mix a fresh ``commit'' secret for the new epoch with the ``init'' secret from the old epoch, which mitigates sampling the fresh secret with bad randomness.) Therefore, capturing the additional attack vector typically does not fundamentally improve the analysis.
+	One can easily adapt the special-casing of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} to our model. We chose not to do this for simplicity and because well-designed protocols, including \protITK and \saik, naturally have protections against bad randomness.(Looking ahead, these protocols mix a fresh ``commit'' secret for the new epoch with the ``init'' secret from the old epoch, which mitigates sampling the fresh secret with bad randomness.) Therefore, capturing the additional attack vector typically does not fundamentally improve the analysis.
 	
 %	 Considering this would make the model quite complicated. For example, it would require dealing with scenarios where the adversary computes a message in its head, injects it, and then makes a party re-compute it.
 	

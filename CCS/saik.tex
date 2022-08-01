@@ -18,7 +18,11 @@ The operation of \protITK relies on a data structure called ratchet trees. A rat
 %  \item[]
   {\it Each member knows the secret keys of the nodes on the path from their leaf to the root, and only those, as well as all public keys in $\tree$.}
 %\end{enumerate}
-This allows to efficiently encrypt messages to subgroups: If a node $v$ is not blank, then a message $m$ can be encrypted to all members in the subtree of a node $v$ by encrypting it under $v$'s public key. If $v$ is blank, then the same can be achieved by encrypting $m$ under each key in $v$'s \emph{resolution}, i.e., the minimal set of non-blank nodes covering all leaves in $v$'s subtree.
+This allows to efficiently encrypt messages to subgroups: If a node $v$ is not blank, then a message $m$ can be
+encrypted to all members in the subtree of a node $v$ by encrypting it under $v$'s public key. If $v$ is blank, then the
+same can be achieved by encrypting $m$ under each key in $v$'s \emph{resolution}, i.e., the minimal set of non-blank
+nodes covering all leaves in $v$'s subtree (Note that leaves are never blank, so there is always a resolution covering
+all leaves).
 
 %\saik uses generalized $q$-ary ratchet trees, generalizing binary trees used by \protITK (and all its variants). While in most applications $q=2$ is optimal, choosing $q>2$ is more efficient if \saik is instantiated with (an mmPKE built from) a post-quantum secure mKEM \cite{AC:KKPP20}.
 
@@ -40,13 +44,16 @@ Adding a member $\id_t$ corresponds to inserting a new leaf into $\tree$. The le
 \paragraph{Key schedule.}
 Apart from the ratchet tree, all group members store a number of shared symmetric keys, unique to the current epoch. These are: the \emph{application secret} --- the group key exported to the E2E application, the \emph{membership key} used to authenticate sent messages and the \emph{init key} --- mixed in the next epoch's secrets for FS.
 
-The secrets are derived when an epoch is created, i.e. after the implicit update following each modification. The update generates the last path secret $s_n$, which we now call the commit secret. Then, the following secrets are derived. First, the commit and the old epoch's init secrets are hashed together to obtain the \emph{joiner secret}. Then, the \emph{epoch secret} is obtained by hashing the joiner with the new epoch's \emph{context}, which we explain next. (The context is not mixed directly with init and commit secrets, because the joiner secret is needed by new members; see below.) Finally, the new epoch's application, membership and init secrets are obtained by hashing the epoch secret with different labels.
+The secrets are derived when an epoch is created, i.e. after the implicit update following each modification. The update
+generates the last path secret $s_n$, which we now call the \emph{commit secret}. Then, the following secrets are
+derived. First, the commit sercert and the old epoch's init secrets are hashed together to obtain the \emph{joiner
+  secret}. Then, the \emph{epoch secret} is obtained by hashing the joiner secret with the new epoch's \emph{context}, which we explain next. (The context is not mixed directly with init and commit secrets, because the joiner secret is needed by new members; see below.) Finally, the new epoch's application, membership and init secrets are obtained by hashing the epoch secret with different labels.
 
 The context includes all relevant information about the epoch, e.g. (the hash of) the ratchet tree (which includes the member set). The purpose of mixing it into the key schedule is ensuring that parties in different epochs derive independent epoch secrets.
 
 \paragraph{Joining.}
 When an $\id_t$ joins a group, the party inviting them encrypts to them two secrets under a key fetched from the AKS. First, this is $\id_t$'s path secret from the implicit update following the add. Second, this is the new joiner secret, from which $\id_t$ derives other epoch secrets.
-Importantly, the new member hashes the joiner with the context, which means that it agrees on the epoch's state with all current members transitioning to it.
+Importantly, the new member hashes the joiner secret with the context, which means that it agrees on the epoch's state with all current members transitioning to it.
 %\input{fig_state}
 \subsection{Intuition for the \saik Protocol}\label{sec:intuition2}
 \paragraph{mmPKE.}
