@@ -280,7 +280,7 @@
     1 respectively made by $\Adv$.
   \end{lemma}
   \begin{remark}
-    Since the changes from $G_{i,2}$ to $G_{i,3}$ are the same as from $G_{i,0}$ to $G_{i,1}$, \cref{lem:mmpke_hop1} applies there as
+    Since the changes from $G_{i,2}$ to $G_{i,3}$ are the same as from $G_{i,0}$ to $G_{i,1}$, Lemma~\ref{lem:mmpke_hop1} applies there as
     well.
   \end{remark}
 
@@ -303,11 +303,11 @@
         +\ 2(e^2q_C\cdot\adv{\sdh}{\Group}({\Bdv[1]}) + \frac{q_{D_1}}{p} + \frac{q_H}{p}) \\
       \end{array}
     \end{multline*}
-    with $q_{D_1}, q_C$ and $q_H$ from \cref{lem:mmpke_hop1}.
+    with $q_{D_1}, q_C$ and $q_H$ from Lemma~\ref{lem:mmpke_hop1}.
   \end{corollary}
 
   So all that is left is proving the lemmas.
-  We will start by proving \cref{lem:mmpke_hop1}. Consider the formal definition of $G_{i,1}$ in \cref{fig:mmpke_hybrids_1}.
+  We will start by proving Lemma~\ref{lem:mmpke_hop1}. Consider the formal definition of $G_{i,1}$ in \cref{fig:mmpke_hybrids_1}.
   
 
   Next, we describe adversary $\Bdv[1]$ against the \sdh assumption in \cref{fig:mmpkeBdv1}
@@ -346,7 +346,7 @@
   $q_C > 1$.
   Combining the probabilities yields the lemma.
 
-  The proof of \cref{lem:mmpke_hop2} is a straight forward application of the \indrcca security of the \dem. Since the
+  The proof of Lemma~\ref{lem:mmpke_hop2} is a straight forward application of the \indrcca security of the \dem. Since the
   key at position $i$ is random, an \indrcca adversary can simulate encryptions for this position with its encryption
   oracle and embeds its own challenge at the $i$-th challenge ciphertext for the adversary \Adv. If \Adv can distinguish
   between $G_{i,1}$ and $G_{i,2}$ then \Bdv[2] distinguishes its challenges as well.
