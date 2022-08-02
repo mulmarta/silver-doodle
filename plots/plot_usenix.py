@@ -100,16 +100,12 @@ def BGMRecSizeSum(n):
 def calcBGMRecSum(rng, case, accType = "Hash"):
     data = applyConversion([BGMRecSizeSum(x) for x in rng], CF_MB)
     data2 = applyConversion(calcBGMSenderSizes(rng, case), 1024)
-    print("BGM:")
-    print(data2)
     erg = [x + y for (x,y) in zip(data, data2)]
     return erg
 
 def calcCMPKERecSizesSum(rng, case):
     data = applyConversion([x * (MLSHEADER + SIGSIZE + DHCONST + MLSCTI + MLSPK) for x in rng], CF_MB)
     data2 = applyConversion(calcCMPKESenderSizes(rng, case), 1024)
-    print("CMPKE:")
-    print(data2)
     erg = [x + y for (x,y) in zip(data, data2)]
     return erg
 
@@ -139,10 +135,6 @@ if __name__ == "__main__":
     bgmSenderWorst = calcBGMSenderSizes(rng, 1)
 
     cmpkeSender = calcCMPKESenderSizes(rng, 0)
-
-    print("======= SENDER =====")
-    print(bgmSenderBest)
-    print(cmpkeSender)
     
     ax1.plot(rng, mlsSenderDataBest, "--", label = "ITK", color="red")    
     ax1.plot(rng, bgmSenderBest, "--", label = "SAIK Huffman", color = "green")
@@ -201,43 +193,7 @@ if __name__ == "__main__":
 
     # recPercSaikCmPKE = [x / y * 100 for (x,y) in zip(bgmRecBest, cmpkeRecBest)]
     # print("Receiver cmpke Percentage Best")
-    # print(recPercSaikCmPKE)
-    
-    
-    # print("Range")
-    # print(rng)
-    
-    #print("Sender Best BGM")
-    #print(bgmSenderBest)
-
-    # print("Sender Worst BGM")
-    # print(bgmSenderWorst)
-    
-    # print("Sender Best MLS")
-    # print(mlsSenderDataBest)
-
-    # print("Sender Worst MLS")
-    # print(mlsSenderDataWorst)
-
-    #print("Sender CMPKE")
-    #print(cmpkeSender)
-    
-    # print("Receiver Best BGM")
-    # print(bgmRecBest)
-
-    # print("Receiver Best MLS")
-    # print(mlsRecBest)
-
-    # print("Receiver Worst BGM")
-    # print(bgmRecWorst)
-
-    # print("Receiver CMPKE")
-    # print(cmpkeRecBest)
-    
-    # print("Receiver Worst MLS")
-    # print(mlsRecWorst)
-
-    
+    # print(recPercSaikCmPKE)    
     
     ax2.plot(rng, mlsRecBest, "--", label = "ITK", color="red")
     ax2.plot(rng, mlsRecWorst, "--", color="red")
@@ -256,7 +212,6 @@ if __name__ == "__main__":
     ax2.set_xlabel("#Users")
     ax2.set_ylabel("size in KB")
     ax2.title.set_text("b) Receiver Bandwidth")
-    # ax2.legend(loc="lower right")
 
     mlsRecSumBest = calcMLSRecSum(rng, 0)
     mlsRecSumWorst = calcMLSRecSum(rng, 1)
@@ -274,11 +229,6 @@ if __name__ == "__main__":
     bgmRecAvgWorst = calcBGMRecAvg(rng, 1)
 
     cmpkeRecAvg = calcCMPKERecAvg(rng, 0)
-    #print("BGMSumBest:")
-    #print(bgmRecSumBest)
-
-    #print("CmPKESum")
-    #print(cmpkeRecSum)
     
     # ax3.plot(rng, mlsRecSumBest, "--", label = "ITK", color="red")
     # ax3.plot(rng, mlsRecSumWorst, "--", color="red")
@@ -301,18 +251,10 @@ if __name__ == "__main__":
     green_patch = mpatches.Patch(label='SAIK',fc = "#ffffff00", ec="#00ff007f", hatch = "//")
     red_patch = mpatches.Patch(label='ITK [5]',fc = "#ffffff00", ec="#ff00007f", hatch = "\\\\")
     grey_patch = mpatches.Patch(label='CmCGKA [31]', fc = "#ffffff00", ec = "#0000ff7f", hatch = "||")
-    # olive_patch = mpatches.Patch(label='SAIK PAcc[49]', fc = "#ffffff00", ec = "#808080", hatch = "..")
     
     
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles = [green_patch, red_patch, grey_patch],loc='upper center',
-               ncol=4, bbox_to_anchor=(.5, .975), fontsize=12)
-
-    
-    # handles[0] = mpatches.Patch(label = "SAIK Huffman", hatch = "//", fc = "#ffffff00", ec="#00ff007f")
-    # handles[2] = mpatches.Patch(label = "SAIK PAcc", hatch = "\\\\", fc = "#ffffff00", ec="#8080007f")
-    # fig.legend(handles, labels, bbox_to_anchor=(1.01, .33), loc='lower right')
-    # fig.legend(handles, labels, loc='lower right')
-    
+               ncol=4, bbox_to_anchor=(.5, .975), fontsize=12)    
     
     plt.savefig("Final_Figures_Avg")
