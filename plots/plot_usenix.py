@@ -21,7 +21,7 @@ MLSCT0 = 0
 MLSCTI = 640
 MLSPK = 512
 MLSCTX = 512
-HEADER = 1700*8
+HEADER = 2184
 
 
 CONVERSION_FACTOR = 8 * 1024
@@ -166,7 +166,7 @@ if __name__ == "__main__":
     ax2.fill_between(rng, mlsRecBest, mlsRecWorst, fc = "#ffffff00", ec="#ff00007f", hatch = "\\\\")
     ax2.fill_between(rng, bgmRecBest, bgmRecWorst, fc = "#ffffff00", ec="#00ff007f", hatch = "//")
     
-    ax2.set_ylim([1.75, mlsRecBest[-1] * 1.01])
+    ax2.set_ylim([0.5, mlsRecBest[-1] * 1.01])
     ax2.tick_params("both", reset = True)
     ax2.set_xlabel("#Users")
     ax2.set_ylabel("size in KB")
@@ -199,3 +199,36 @@ if __name__ == "__main__":
                ncol=4, bbox_to_anchor=(.5, .975), fontsize=12)    
     
     plt.savefig("Final_Figures_Avg")
+
+
+    senderPercBest = [x / y * 100 for (x,y) in zip(bgmSenderBest, mlsSenderDataBest)]
+    print("Sender Best Percentage")
+    print(senderPercBest)
+
+    senderPercWorst = [x / y * 100 for (x,y) in zip(bgmSenderWorst, mlsSenderDataWorst)]
+    print("Sender Worst Percentage")
+    print(senderPercWorst)
+
+    senderPercSaikCmPKE = [x / y * 100 for (x,y) in zip(bgmSenderBest, cmpkeSender)]
+    print("Sender cmpke Percentage Best")
+    print(senderPercSaikCmPKE)
+    print()
+
+    print(bgmSenderBest)
+    print(cmpkeSender)
+    
+    print()
+    
+    percRecBest = [(x / y) * 100 for (x,y) in zip(bgmRecBest[2:], mlsRecBest[2:])]
+    print("Receiver Best Percentage")
+    print(percRecBest)
+
+    percRecWorst = [(x / y) * 100 for (x,y) in zip(bgmRecWorst[2:], mlsRecWorst[2:])]
+    print("Receiver Worst Percentage")
+    print(percRecWorst)
+
+    print(bgmRecBest)
+    print(cmpkeRecBest)
+    recPercSaikCmPKE = [x / y * 100 for (x,y) in zip(bgmRecBest[2:], cmpkeRecBest[2:])]
+    print("Receiver cmpke Percentage Best")
+    print(recPercSaikCmPKE)    

@@ -138,14 +138,15 @@ realistic deployments. Therefore, we compare the minimum and maximum bandwidth o
       \hline
       Signature & 1024B \\
       \hline
-      Header & 1.66KB \\
+      Header & 2184B \\
       \hline
       \pkSize & 512B \\
       \hline
       \ctxSize & 512B \\
       \hline
     \end{tabulary}
-    \caption{Bitsizes used to generate \cref{fig:plots}.}
+    \caption{Bitsizes used to generate \cref{fig:plots}. The header consists of the sender's id, the epoch id and some
+      authenticated data required by the protocol.}
     \label{tab:bitsizes}
   \end{minipage}
 \end{table*}
@@ -157,9 +158,9 @@ as indicated in \cref{tab:bitsizes}. This is further visualized in \cref{fig:plo
 %
 We highlight some interesting observations. % features of the plots. %For concreteness, we fix $N = 10K$ users.
 
-For senders, \saik is always at least as good as the other protocols. First, it requires between $83\%$ and only $55\%$ of the bandwidth of \protITK (due to the use of mmPKE). Second, the bandwidth of \protCMPKE is the same as the worst-case (depending on the execution history) bandwidth of \saik. In the best case, however, \saik needs as little as $0.45\%$ of the bandwidth, e.g. in a
-group of $10K$ members it can save as much as $\sim 780$KB out of total
-$783$KB.
+For senders, \saik is always at least as good as the other protocols. First, it requires between $75\%$ and only $55\%$ of the bandwidth of \protITK (due to the use of mmPKE). Second, the bandwidth of \protCMPKE is the same as the worst-case (depending on the execution history) bandwidth of \saik. In the best case, however, \saik needs as little as $0.29\%$ of the bandwidth, e.g. in a
+group of $10K$ members it can save as much as $\sim 779$KB out of total
+$781$KB.
 
 
 % Even for senders,
@@ -178,8 +179,8 @@ $783$KB.
 % Huffman vs Merkel, cumulative server : % improve is 0% -> 5% (though proof sizes improve by up to %50)
 
 For receivers, \protITK is \emph{overwhelmingly} worse than \saik and \protCMPKE. For
-example, \saik receivers (on average) need between $60\%$ (best-case execution) to about $.05\%$ (worst-case execution) of \protITK's. On the other hand, \protCMPKE is (unsurprisingly) the best for receivers.  \saik requires up to $137\%$ of \protCMPKE's bandwidth, i.e. an
-increase of $\sim 0.75$KB from $\sim 2$KB for a group of $10K$ members.
+example, \saik receivers (on average) need between $40\%$ (best-case execution) to about $.08\%$ (worst-case execution) of \protITK's. On the other hand, \protCMPKE is (unsurprisingly) the best for receivers.  \saik requires up to $200\%$ of \protCMPKE's bandwidth, i.e. an
+increase of $\sim 0.6$KB from $\sim 1.2$KB for a group of $10K$ members.
 
 %On the receiver side, \protITK is \emph{overwhelmingly} worse than \saik. For
 %example, \saik receivers (on average) need between $60\%$(full tree) to about $.05\%$(blank tree) of \protITK's
