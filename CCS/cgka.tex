@@ -127,7 +127,7 @@ example, in our model the epochs into which parties transition are arbitrary,
 as long as security holds. This means that in the ideal world we do not need
 a protocol function that outputs some unique epoch identifiers. Our ideal world is agnostic to the protocol, which is conceptually simple.
 
-\subsection{Semantic Agreement}
+\subsection{Semantic Agreement}\label{sec:semantic}
 An important difference between our model and those of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} is that in \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} epochs are (uniquely) identified by messages creating them. This is problematic for saCGKA, because different receivers transition to a given epoch using different messages. Crucially, this means an injected message cannot be used to identify the injected epoch into which its receiver transitions.
 We deal with this in a clean way by allowing the simulator to identify epochs. That is, epoch identifiers are arbitrary as long as consistency, authenticity and confidentiality hold.
 
