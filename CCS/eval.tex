@@ -109,6 +109,7 @@ realistic deployments. Therefore, we compare the minimum and maximum bandwidth o
 \end{table*}
 
 \begin{table*}[ht]
+  \begin{minipage}[t]{.48\textwidth}
 	\begin{tabulary}{\linewidth}{|l|l|l|l|l|}
 		\hline
 		\multicolumn{2}{|c|}{}& \protITK & \saik & \protCMPKE \\
@@ -123,10 +124,34 @@ realistic deployments. Therefore, we compare the minimum and maximum bandwidth o
 	\end{tabulary}
 	\caption{Sender and receiver bandwidth for a group of size $N$ expressed as the (approximate) number of group elements.}
 	\label{tab:bandwidth2}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.48\textwidth}
+    \centering
+    \begin{tabulary}{\linewidth}{|l|r|}
+      \hline
+      & Bitsize \\
+      \hline
+      Group element & 512B \\
+      \hline
+      Hash & 512B \\
+      \hline
+      Signature & 1024B \\
+      \hline
+      Header & 1.66KB \\
+      \hline
+      \pkSize & 512B \\
+      \hline
+      \ctxSize & 512B \\
+      \hline
+    \end{tabulary}
+    \caption{Bitsizes used to generate \cref{fig:plots}.}
+    \label{tab:bitsizes}
+  \end{minipage}
 \end{table*}
 \paragraph{Results.}
-We estimated the bandwidth for all protocols using the formulas in \cref{tab:bandwidth1,tab:bandwidth2}. This is further
-visualized in \cref{fig:plots} for growing group sizes $N$.
+We estimated the bandwidth for all protocols using the formulas in \cref{tab:bandwidth1,tab:bandwidth2} with bit lengths
+as indicated in \cref{tab:bitsizes}. This is further visualized in \cref{fig:plots} for growing group sizes $N$.
 %
 % Further, \cref{fig:plots} shows how the concrete bandwidth, for the group {\color{red} help :) } ) of the three protocols scales as the group size $N$ grows.
 %

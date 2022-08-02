@@ -10,14 +10,7 @@ import math
 
 HASHSIZE = 512
 G1 = 512
-G2 = 1024
-GT = 15360
-AEADSIZE = 512 + 256
 SIGSIZE = HASHSIZE + G1
-TAGSIZE = 64 * 8
-
-RSAMOD = 15360
-
 
 DHCT0 = 0
 DHCTI = 0
@@ -28,8 +21,7 @@ MLSCT0 = 0
 MLSCTI = 640
 MLSPK = 512
 MLSCTX = 512
-KEYPACKAGE = 1700*8
-MLSHEADER = KEYPACKAGE # 273 * 8 - SIGSIZE + KEYPACKAGE
+HEADER = 1700*8
 
 
 CONVERSION_FACTOR = 8 * 1024
@@ -40,33 +32,33 @@ def log(x):
 
 def calcMLSSenderSizes(rng, case):
     if case == 0: #Best
-        data = [MLSHEADER + SIGSIZE + log(x)* (MLSCTI + MLSPK + MLSCTX) for x in rng]
+        data = [HEADER + SIGSIZE + log(x)* (MLSCTI + MLSPK + MLSCTX) for x in rng]
     elif case == 1: #Worst
-        data = [MLSHEADER +  SIGSIZE + x * (MLSCTI + MLSCTX) + log(x) * MLSPK for x in rng]
+        data = [HEADER +  SIGSIZE + x * (MLSCTI + MLSCTX) + log(x) * MLSPK for x in rng]
     else:
         raise Error
     return applyConversion(data)
 
 def calcBGMSenderSizes(rng, case):
     if case == 0: #Best
-        data = [MLSHEADER + SIGSIZE + DHCONST + log(x)* (MLSCTI + MLSPK) for x in rng]
+        data = [HEADER + SIGSIZE + DHCONST + log(x)* (MLSCTI + MLSPK) for x in rng]
     elif case == 1: #Worst
-        data = [MLSHEADER +  SIGSIZE + DHCONST + x * (MLSCTI) + log(x) * MLSPK for x in rng]
+        data = [HEADER +  SIGSIZE + DHCONST + x * (MLSCTI) + log(x) * MLSPK for x in rng]
     else:
         raise Error
     return applyConversion(data)
 
 def calcMLSIndivSenderSizes(rng, case):
     if case == 0: #Best
-        data = [MLSHEADER + log(x)* (SIGSIZE + MLSCTI + MLSPK + MLSCTX) for x in rng]
+        data = [HEADER + log(x)* (SIGSIZE + MLSCTI + MLSPK + MLSCTX) for x in rng]
     elif case == 1: #Worst
-        data = [MLSHEADER + x * (SIGSIZE + MLSCTI + MLSCTX) + log(x) * MLSPK for x in rng]
+        data = [HEADER + x * (SIGSIZE + MLSCTI + MLSCTX) + log(x) * MLSPK for x in rng]
     else:
         raise Error
     return applyConversion(data)
 
 def calcCMPKESenderSizes(rng, case):
-    data = [MLSHEADER + DHCONST + SIGSIZE + MLSPK + x * (MLSCTI) for x in rng]
+    data = [HEADER + DHCONST + SIGSIZE + MLSPK + x * (MLSCTI) for x in rng]
     return applyConversion(data)
 
 
@@ -74,15 +66,15 @@ def calcMLSRecSizes(rng, case):
     return calcMLSSenderSizes(rng, case)
 
 def calcBGMRecSizes(rng, case):
-    data = [(MLSHEADER + SIGSIZE + DHCONST + MLSCTI + log(x) * MLSPK) for x in rng]
+    data = [(HEADER + SIGSIZE + DHCONST + MLSCTI + log(x) * MLSPK) for x in rng]
     return applyConversion(data)
 
 def calcMLSIndivRecSizes(rng, case):
-    data = [MLSHEADER + SIGSIZE + DHCONST + MLSCTI + log(x) * MLSPK for x in rng]
+    data = [HEADER + SIGSIZE + DHCONST + MLSCTI + log(x) * MLSPK for x in rng]
     return applyConversion(data)
 
 def calcCMPKERecSizes(rng, case):
-    data = [MLSHEADER + SIGSIZE + DHCONST + MLSCTI + MLSPK for x in rng]
+    data = [HEADER + SIGSIZE + DHCONST + MLSCTI + MLSPK for x in rng]
     return applyConversion(data)
 
 def calcMLSRecSum(rng, case):
@@ -94,7 +86,7 @@ def calcMLSRecSum(rng, case):
 def BGMRecSizeSum(n):
     sum = 0
     for depth in range(1, log(n)-1):
-        sum += int(n / math.pow(2, depth)) * (MLSHEADER + SIGSIZE + DHCONST + MLSCTI + (log(n) - depth) * MLSPK)
+        sum += int(n / math.pow(2, depth)) * (HEADER + SIGSIZE + DHCONST + MLSCTI + (log(n) - depth) * MLSPK)
     return sum
 
 def calcBGMRecSum(rng, case, accType = "Hash"):
@@ -104,7 +96,7 @@ def calcBGMRecSum(rng, case, accType = "Hash"):
     return erg
 
 def calcCMPKERecSizesSum(rng, case):
-    data = applyConversion([x * (MLSHEADER + SIGSIZE + DHCONST + MLSCTI + MLSPK) for x in rng], CF_MB)
+    data = applyConversion([x * (HEADER + SIGSIZE + DHCONST + MLSCTI + MLSPK) for x in rng], CF_MB)
     data2 = applyConversion(calcCMPKESenderSizes(rng, case), 1024)
     erg = [x + y for (x,y) in zip(data, data2)]
     return erg
@@ -152,27 +144,6 @@ if __name__ == "__main__":
     ax1.set_ylabel("size in KB")
     ax1.set_yscale("log")
     ax1.title.set_text("a) Sender Bandwith")
-    # ax1.legend(loc="upper left")
-
-    # senderPercBest = [x / y * 100 for (x,y) in zip(bgmSenderBest, mlsSenderDataBest)]
-    # print("Sender Best Percentage")
-    # print(senderPercBest)
-
-    # senderPercWorst = [x / y * 100 for (x,y) in zip(bgmSenderWorst, mlsSenderDataWorst)]
-    # print("Sender Worst Percentage")
-    # print(senderPercWorst)
-
-    # senderPercIndivBest = [x / y * 100 for (x,y) in zip(mlsSenderIndivBest, mlsSenderDataBest)]
-    # print("Sender Indiv Percentage Best")
-    # print(senderPercIndivBest)
-
-    # senderPercIndivWorst = [x / y * 100 for (x,y) in zip(mlsSenderIndivWorst, mlsSenderDataWorst)]
-    # print("Sender Indiv Percentage Worst")
-    # print(senderPercIndivWorst)
-
-    # senderPercSaikCmPKE = [x / y * 100 for (x,y) in zip(bgmSenderBest, cmpkeSender)]
-    # print("Sender cmpke Percentage Best")
-    # print(senderPercSaikCmPKE)
     
     mlsRecBest = calcMLSRecAvg(rng, 0)
     mlsRecWorst = calcMLSRecAvg(rng, 1)
@@ -183,17 +154,6 @@ if __name__ == "__main__":
     cmpkeRecBest = calcCMPKERecAvg(rng, 0)
     cmpkeRecWorst = calcCMPKERecAvg(rng, 1)
 
-    # percRecBest = [(x / y) * 100 for (x,y) in zip(mlsRecBest, bgmRecBest)]
-    # print("Receiver Best Percentage")
-    # print(percRecBest)
-
-    # percRecWorst = [(x / y) * 100 for (x,y) in zip(mlsRecWorst, bgmRecWorst)]
-    # print("Receiver Worst Percentage")
-    # print(percRecWorst)
-
-    # recPercSaikCmPKE = [x / y * 100 for (x,y) in zip(bgmRecBest, cmpkeRecBest)]
-    # print("Receiver cmpke Percentage Best")
-    # print(recPercSaikCmPKE)    
     
     ax2.plot(rng, mlsRecBest, "--", label = "ITK", color="red")
     ax2.plot(rng, mlsRecWorst, "--", color="red")
@@ -207,7 +167,6 @@ if __name__ == "__main__":
     ax2.fill_between(rng, bgmRecBest, bgmRecWorst, fc = "#ffffff00", ec="#00ff007f", hatch = "//")
     
     ax2.set_ylim([1.75, mlsRecBest[-1] * 1.01])
-    # ax2.set_yscale("log")
     ax2.tick_params("both", reset = True)
     ax2.set_xlabel("#Users")
     ax2.set_ylabel("size in KB")
@@ -229,24 +188,6 @@ if __name__ == "__main__":
     bgmRecAvgWorst = calcBGMRecAvg(rng, 1)
 
     cmpkeRecAvg = calcCMPKERecAvg(rng, 0)
-    
-    # ax3.plot(rng, mlsRecSumBest, "--", label = "ITK", color="red")
-    # ax3.plot(rng, mlsRecSumWorst, "--", color="red")
-
-    # ax3.plot(rng, bgmRecSumBest, "--", label = "SAIK", color = "green")
-    # ax3.plot(rng, bgmRecSumWorst, "--", color = "green")
-
-    # ax3.plot(rng, cmpkeRecSum, "--", label = "CmCGKA", color = "blue")
-    
-    # ax3.fill_between(rng, mlsRecSumBest, mlsRecSumWorst, fc = "#ffffff00", ec = "#ff00007f", hatch = "\\\\")
-    # ax3.fill_between(rng, bgmRecSumBest, bgmRecSumWorst, fc = "#ffffff00", ec = "#00ff007f", hatch = "//")
-
-    # ax3.set_ylim([1.1, bgmRecSumWorst[-1] * 1.1])
-    # ax3.set_xlabel("#Users")
-    # ax3.set_ylabel("size in KB")
-    # ax3.title.set_text("c) Bandwidth Sum Server + All Receiver")
-    # ax3.legend(loc="lower right")
-
 
     green_patch = mpatches.Patch(label='SAIK',fc = "#ffffff00", ec="#00ff007f", hatch = "//")
     red_patch = mpatches.Patch(label='ITK [5]',fc = "#ffffff00", ec="#ff00007f", hatch = "\\\\")
