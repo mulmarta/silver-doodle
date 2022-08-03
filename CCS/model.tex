@@ -12,7 +12,9 @@ use {\bf only allowed if} \textit{cond} to restrict the environment. That is, ou
 environments who, when interacting with $\funcCGKA$ and any simulator, never make \textit{cond} false\footnote{A relaxed
   restriction would require that $\Adv$ makes \textit{cond} false with a small probability $\epsilon$. In our case
   $\Adv$ knows if it violates \textit{cond}, so fixing $\epsilon=0$ is without loss of generality.}.
-Finally, we write \emph{receive from the simulator} to denote that the functionality sends a dummy value to it, waits until it sends a value back and asserts via \KwAss{} that the received value is of the correct format.
+We write \emph{receive from the simulator} to denote that the functionality sends a dummy value to it, waits
+until it sends a value back and asserts via \KwAss{} that the received value is of the correct format. Lastly, all
+functions prefixed with a $\method{}$ are \emph{helper functions} and not exposed outside the protocol.
 
 \paragraph{State.}
 $\funcCGKA$ maintains a history graph represented as an array $\setvert$, where $\setvert[\hgnodeid]$ denotes the epoch identified by an integer $\hgnodeid$. We use the standard object-oriented notation for epochs. In particular, each epoch $\ep$ has a number of attributes listed in \cref{tab:state} ($\ep.\hginj$, $\ep.\hgexp$ and $\ep.\hgc$ are related to corruptions).

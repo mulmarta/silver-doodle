@@ -59,18 +59,28 @@
   		\hline
         $\itkSt.\confTag$ & The confirmation tag, which is signed to ensure authenticity.\\
   		\hline
-        $\pathSecret$ & The path secrets $s_2,\ldots,s_n$ used to derive the keypairs in each node. Sent via the \mmPKE
-        encryption to keep tree invariant intact.\\
-  		\hline
-  		$\commitSecret$ & The path secret in the root node. Used as seed for the key schedule together with \initSecret
-        from the previous epoch\\
-        \hline
-        $\joinerSecret$ & Secret sent to new group members. Enables computation of the $\epochSecret$ together
-        with the group context.\\
-        \hline
   	\end{tabularx}
     \caption{The protocol state of a party $\id$ and the helper method for computing the context.}
     \label{tab:prot-state}
+  \end{minipage}
+  \begin{minipage}{.48\textwidth}
+    \begin{tabularx}{\textwidth}{| l | X |}
+      \hline
+      $\pathSecret$ & The path secrets $s_2,\ldots,s_n$ used to derive the keypairs in each node. Sent via the \mmPKE
+                      encryption to keep tree invariant intact.\\
+      \hline
+      $\commitSecret$ & The path secret in the root node. Used as seed for the key schedule together with \initSecret
+                        from the previous epoch\\
+      \hline
+      $\joinerSecret$ & Secret sent to new group members. Together
+                        with the group context, enables computation of the $\epochSecret$.\\
+      \hline
+      $\epochSecret$ & Base secret used to derive all other secrets, i.e. \applicationSecret,
+                       \membershipKey,\initSecret, \confTag \\
+      \hline
+    \end{tabularx}
+    \caption{Intermediate values computed by the protocol that are not part of the state.}
+    \label{tab:prot-intermediate-state}
   \end{minipage}
   
 %  \end{table*}
