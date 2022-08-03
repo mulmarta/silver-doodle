@@ -132,21 +132,24 @@ realistic deployments. Therefore, we compare the minimum and maximum bandwidth o
       \hline
       & Bitsize \\
       \hline
-      Group element & 512B \\
+      Group element & 512 \\
       \hline
-      Hash & 512B \\
+      Hash & 512 \\
       \hline
-      Signature & 1024B \\
+      Signature & 1024 \\
       \hline
-      Header & 2184B \\
+      Header & 1160 \\
       \hline
-      \pkSize & 512B \\
+      \pkSize & 512 \\
       \hline
-      \ctxSize & 512B \\
+      \ctxSize & 1152 \\
+      \hline
+      $\mCtxSize(N)$ & $512 + N*640$ \\
       \hline
     \end{tabulary}
     \caption{Bitsizes used to generate \cref{fig:plots}. The header consists of the sender's id, the epoch id and some
-      authenticated data required by the protocol.}
+      authenticated data required by the protocol. The individual ciphertexts consist of a group element and an AEAD
+      encryption, while the \mPKE ciphertext all share the same group element.}
     \label{tab:bitsizes}
   \end{minipage}
 \end{table*}
