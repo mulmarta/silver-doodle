@@ -28,8 +28,7 @@ epochs, the adversary's actions, etc.
 
 In a perfect execution, the history graph would be a chain. However, even for
 benign reasons, this may not be the case. For example, if two parties
-simultaneously create epochs, then a fork in the graph is created\footnote{Looking ahead, this is only a problem when
-  using immediate transition and can be easily avoided, see \cref{sec:simplifications}.}. Moreover,
+simultaneously create epochs, then a fork in the graph is created. Moreover,
 an active adversary can deliver different messages to different parties,
 causing them to follow different branches. Further, it can trick parties into
 joining fake groups it created by injecting invitation messages. Epochs in
@@ -38,7 +37,7 @@ the graph is a directed forest.
 %
 Using history graphs we can list intuitive security properties of saCGKA.
 \begin{description}[itemsep=2pt,topsep=2pt,parsep=2pt]
-  \item[Consistency] Any two parties in the same epoch agree on the group state, i.e., the set of current members, the group key, the last group modification and the previous epoch. One consequence of consistency is agreement on the transcript: any two parties in one epoch reached it by executing the same sequence of group modifications since the latter one joined.
+  \item[Consistency] Any two parties in the same epoch $E$ agree on the group state, i.e., the set of current members, the group key, the last group modification and the previous epoch. One consequence of consistency is agreement on the history: the parties reached $E$ by executing the same sequence of group modifications since the latter one joined.
   \item[Confidentiality] An epoch is confidential if the adversary has no information about its group key. Corruptions may destroy confidentiality in certain epochs. saCGKA security is parameterized by a \emph{confidentiality predicate} which identifies confidential epochs in an execution.
   %The predicate formalizes the confidentiality guarantees achieved by a protocol.
   \item[Authenticity] Authenticity for a party $A$ in an epoch $E$ is preserved if the following holds: If a party in $E$ transitions to a child epoch $E'$ and identifies $A$ as the sender creating $E'$, then $A$ indeed created $E'$. An active adversary may destroy authenticity in certain cases. saCGKA security is parameterized by an \emph{authenticity predicate} which decides if authenticity of a party $A$ in epoch $E$ is preserved.

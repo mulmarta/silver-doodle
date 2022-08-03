@@ -2,6 +2,21 @@
 % !TeX spellcheck = en_US
 \section{Nominal Groups}\label{app:nominal_groups}
 We recall the definition and parameters for nominal groups from~\cite{EC:ABHKLR21_2}.
+\begin{table*}[!tb]
+	\center
+	\begin{tabulary}{.5\textwidth}{cccccc}
+		Name & \textbf{P-256  } & \textbf{P-384  } & \textbf{P-512  } & \textbf{\textsc{Curve}25519  } & \textbf{\textsc{Curve}448} \\
+		\hline
+		Security Level & 128 & 192 & 256 & 128 & 224 \\
+		$P_\ngroup$ & $2^{-255}$& $2^{-383}$& $2^{-520}$& $2^{-250}$& $2^{-444}$\\
+		$\Delta_\ngroup$ & 0 & 0 & 0 & $2^{-125}$ & $2^{-220}$ \\
+		Size in bits & $256$ & $384$ & $512$ & $256$ & $512$ \\
+		\hline
+	\end{tabulary}
+	\medskip
+	\caption{Statistical parameters of NIST curves and nominal group curves.}
+	\label{tab:nom_groups_params}
+\end{table*}
 
 \begin{definition}[Nominal Group]
   A nominal group $\ngroup = (\nG, g, p, $ $\nGE, \nGU, \nGexp)$ consists of a finite set of elements $\nG$, a base element $g
@@ -33,24 +48,9 @@ We recall the definition and parameters for nominal groups from~\cite{EC:ABHKLR2
   \]
 \end{definition}
 
-Any cyclic group, such as NIST curves, can be seen as a rerandomisable nominal group with the special properties that $\Delta_\ngroup =
-0$ and $P_\ngroup = p-1$. Other popular examples of rerandomisable nominal groups are $\textsc{Curve}25519$ and
+Any cyclic group, such as NIST curves, can be seen as a rerandomizable nominal group with the special properties that $\Delta_\ngroup =
+0$ and $P_\ngroup = p-1$. Other popular examples of rerandomizable nominal groups are $\textsc{Curve}25519$ and
 $\textsc{Curve}448$. \cref{tab:nom_groups_params} lists the parameters for these nominal groups.
-\begin{table*}[ht!]
-  \center
-  \begin{tabulary}{.5\textwidth}{cccccc}
-    Name & \textbf{P-256  } & \textbf{P-384  } & \textbf{P-512  } & \textbf{\textsc{Curve}25519  } & \textbf{\textsc{Curve}448} \\
-    \hline
-    Security Level & 128 & 192 & 256 & 128 & 224 \\
-    $P_\ngroup$ & $2^{-255}$& $2^{-383}$& $2^{-520}$& $2^{-250}$& $2^{-444}$\\
-    $\Delta_\ngroup$ & 0 & 0 & 0 & $2^{-125}$ & $2^{-220}$ \\
-    Size in bits & $256$ & $384$ & $512$ & $256$ & $512$ \\
-    \hline
-  \end{tabulary}
-  \medskip
-  \caption{Statistical parameters of NIST curves and nominal group curves.}
-  \label{tab:nom_groups_params}
-\end{table*}
 
 For a more detailed explanation of these values, see \cite{EC:ABHKLR21_2}. Nominal groups and prime-order
 groups behave indistinguishably except when group elements are sampled with exponents outside of $\nGE$ or a collision

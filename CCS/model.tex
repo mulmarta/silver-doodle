@@ -18,7 +18,7 @@ Finally, we write \emph{receive from the simulator} to denote that the functiona
 $\funcCGKA$ maintains a history graph represented as an array $\setvert$, where $\setvert[\hgnodeid]$ denotes the epoch identified by an integer $\hgnodeid$. We use the standard object-oriented notation for epochs. In particular, each epoch $\ep$ has a number of attributes listed in \cref{tab:state} ($\ep.\hginj$, $\ep.\hgexp$ and $\ep.\hgc$ are related to corruptions).
  Apart from $\setvert$, $\funcCGKA$ stores an array $\ptr$, where $\ptr[\id]$ denotes the current epoch of the party $\id$.
 
-\begin{table}
+\begin{table}[!tb]
 \noindent	\begin{center}\scalebox{.9}{\begin{tabularx}{.5\textwidth}{| l | X |}
 		\hline
 		$\ep.\hgpar$ & The integer identifier of the parent epoch.\\
