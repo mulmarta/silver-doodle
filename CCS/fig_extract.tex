@@ -1,6 +1,6 @@
 \begin{figure}[ht]
   \begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 5cm/#1,
-      level distance = 1.5cm},scale=0.6, transform shape,
+      level distance = 1.3cm},scale=0.6, transform shape,
     treenode/.style = {circle, draw=black, align=center, minimum size=1cm},
     ctnode/.style = {rectangle, draw=black, align=center, minimum size=1cm},
     packnode/.style = {rectangle, draw=black, align=center, minimum size=.75cm}]
@@ -12,7 +12,7 @@
     \node[packnode, right = 0cm of pack4](pack5){$ct_1,\ldots, {\color{orange}ct_4}, \ldots$};
     \node[packnode, right = 0cm of pack5](pack6){${\color{blue}\mmpkepk_1,\mmpkepk_2,\mmpkepk_3},\mmpkepk_4, \ldots, \mmpkepk_{\text{root}}$};
     
-    \node[below = 2.5cm of pack4, treenode](root){$\mmpkepk_4$}
+    \node[below = 2.1cm of pack4, treenode](root){$\mmpkepk_4$}
     child[draw=blue]{
       node[treenode,draw=blue]{$\mmpkepk_3$}
       child[draw=black]{
@@ -45,9 +45,9 @@
     };
     \node[above right = .2cm of root](dots){\huge$\iddots$};
     \node[right = 1cm of dots]{\huge$\ddots$};
-    \node[above right = 1.5cm of root, treenode]{$\mmpkepk_{\text{root}}$};
-    \node at ($(root) + (0,-6)$)(arrow){\huge$\Downarrow$};
-    \node[packnode, below = .5cm of arrow] {$id_R, act, sig, ct_0, \color{orange}{ct_4}, \color{blue}{\mmpkepk_1,\mmpkepk_2,\mmpkepk_3}$};
+    \node[above right = 1.2cm of root, treenode]{$\mmpkepk_{\text{root}}$};
+    \node at ($(root) + (0,-5)$)(arrow){\huge$\Downarrow$};
+    \node[packnode, below = .2cm of arrow] {$id_R, act, sig, ct_0, \color{orange}{ct_4}, \color{blue}{\mmpkepk_1,\mmpkepk_2,\mmpkepk_3}$};
   \end{tikzpicture}  
   \caption{Server extraction algorithm. Lowest common ancestor (LCA) pof $id_R$ and $id_S$ is $\mmpkepk_4$, so all blue
     public keys are included in $id_R$'s packet. Since the sibling of $\mmpkepk_3$ is empty, there corresponding path
