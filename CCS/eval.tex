@@ -2,8 +2,7 @@
 % !TeX spellcheck = en_US
 
 \section{Evaluation}\label{sec:eval}
-We compare the communication complexity (informally, the ``bandwidth'') of \saik, \protITK and the \protCMPKE
-protocol from \cite{hashimoto2021cmpke}. For the sake of this comparison (and to simplify the description), one
+We compare the communication complexity or, informally, the ``bandwidth'' of \saik, \protITK and \protCMPKE from \cite{hashimoto2021cmpke}. For the sake of this comparison (and to simplify the description), one
 can think of \protCMPKE as a protocol similar to \saik but where the ratchet tree is an $N$-ary tree of height $1$, where $N$ is the number of group members.
 This means that \protCMPKE only needs single-message multi-recipient PKE, \mPKE (which is a special case of mmPKE).
 To make a fair comparison, we instantiate \protCMPKE with the same DH-based \mPKE as \saik
@@ -14,13 +13,14 @@ given in \cite{hashimoto2021cmpke}.
 %formulas in \cref{tab:bandwidth}.
 
 \paragraph{Methodology.}
-More precisely, we break down the communication complexity into the \emph{sender bandwidth}, i.e., the size of a packet uploaded to the server, and the \emph{receiver bandwidth}, i.e., the size of a (personalized) packet downloaded by a single receiver.
+We break down the communication complexity into the \emph{sender bandwidth}, i.e., the size of a packet uploaded to the server, and the \emph{receiver bandwidth}, i.e., the size of a (personalized) packet downloaded by a single receiver.
+We remark that \cite{hashimoto2021cmpke} uses a more coarse-grained metric, namely, the total sender and receiver bandwidth for all receivers (which corresponds to the server load). Their metric can clearly be recovered from ours.
 
-We note that for \saik, the receiver bandwidth (i.e. the number of fields in the packet) differs depending on \emph{the position of the receiver in the ratchet tree}, relative to the sender. (The reason is that only public keys on the path from the sender to the lowest common ancestor in the ratchet tree need to be downloaded.) Therefore, for all protocols we compare the average receiver bandwidth over all members of the group. (For \protITK and \protCMPKE it makes no difference.)
+We first note that for \saik, the receiver bandwidth (i.e. the number of fields in the packet) differs depending on \emph{the position of the receiver in the ratchet tree}, relative to the sender. (The reason is that only public keys on the path from the sender to the lowest common ancestor in the ratchet tree need to be downloaded.) Therefore, for all protocols we compare the average receiver bandwidth over all members of the group. (For \protITK and \protCMPKE it makes no difference.)
 
 Another difficulty in making a meaningful comparison is that for \saik and \protITK the bandwidth can vary quite
 significantly depending on \emph{the execution history}. The reason is that add and remove operations may destroy the
-good properties of the ratchet tree, increasing the number of recipients to which some message must be encrypted. In the
+good properties of the ratchet tree (by ``blanking'' nodes), increasing the number of recipients to which some message must be encrypted. In the
 best case, there are only $\log(N)$ recipients. Roughly, this happens when the ratchet has no blank nodes or unmerged
 leaves, as depicted in \cref{fig:tree-full}. However, in the worst case there can be $N$ recipients. This happens e.g. when all
 non-leaf nodes are blank; see \cref{fig:tree-blank}. In general, the number of recipients can be anything in between;
@@ -28,47 +28,14 @@ see \cref{fig:tree-mixed}.
 
 \input{fig_trees}
 
-Comparing the average over all execution histories would not be meaningful, since the probability of a given execution depends on the setting such as user and administrator behavior and general
-governing policies, which is outside the
-scope of this work. Indeed, it is an important topic of future research to
+Therefore, we compare the minimum and maximum bandwidth over all possible execution histories.
+We remark that comparing the average over all histories would not be meaningful, since the probability of a given execution depends on user and administrator behavior, general application policies and runtime conditions, etc.
+It is an important topic of future research to
 better understand which kinds of policies governing when and which parties
 initiate CGKA operations lead to more bandwidth efficient executions for
-realistic deployments. Therefore, we compare the minimum and maximum bandwidth over all possible execution histories.
-
-
-%The packet size of \protCMPKE depends only the current group size. However,
-%for both binary tree-based protocols (i.e. \saik and \protITK), the size of a
-%packet sent (i.e. the number of fields it contains) can vary quite
-%significantly depending on the session history and sender. This is due to the fact some operations will blank nodes in
-%the ratchet tree, which increases the number of encryptions. Consequently, the
-%plots consist of regions rather than lines, where the upper bound is for a completely blank tree and the lower bound for
-%a tree without any blanks. We refer to these two cases as best-case and worst-case respectively. Still, the protocols have
-%identical behavior in this regard, i.e. for a given group size $N$, history of
-%past CGKA operations and a next operation the number and position of blanks in the tree is identical and therefore the
-%number of fields in the resulting (full) packet is the same for both protocols. What does change are
-%the size of some of the fields and, of course, which ones are downloaded by
-%the receiver.
-%(So for example, if the next packet sent for \saik is at the bottom of
-%\saik's indicated size range then same holds for \protITK; namely its next
-%packet size will also be at the bottom of its size range.)
+realistic deployments. However, it is outside the scope of this work.
 %
-%Additionally, in \saik, the size of the downloaded package differs depending on the position of the receiver in the tree
-%relative to the sender, as only public keys on the path from the sender to the lowest common ancestor in the ratchet
-%tree need to be downloaded. Therefore, we consider the \emph{average} receiver bandwidth for \saik (in \protITK and
-%\protCMPKE, all receiver packages have the same size, so this doesn't matter).
-
-%We remark that determining ``average'' or ``expected'' numbers and positions of blanks in the ratchet tree would require
-%first fixing many setting-dependent aspects of an execution such as user and administrator behavior and general
-%governing policies, which is outside the
-%scope of this work. Indeed, it is an important topic of future research to
-%better understand which kinds of policies governing when and which parties
-%initiate CGKA operations lead to more bandwidth efficient executions for
-%realistic deployments.
-%Note that these considerations do not apply to \protCMPKE, as it doesn't arrange its group members as a tree, so it
-%doesn't have to deal with blank nodes.
-%\mnote{we never said in this section that O(N) complexity is a result of
-%blank nodes so it may be confusing for people who jump here from the intro. I
-%would just say this but no strong opinions.}
+We note that SAIK is \emph{very} flexible as to kinds of policies that are possible and the types of data that can be leveraged to guide executions towards efficient behavior. Thus, we conjecture that in practice a well designed implementation (of both server and client) will be able to ensure that under relatively mild real-time conditions the vast majority of executions will spend the overwhelming majority of their time tending towards the best-case scenario in bandwidth.
 
 
 \newcommand{\ctxSize}{\variable{Ctx}}
@@ -146,55 +113,30 @@ realistic deployments. Therefore, we compare the minimum and maximum bandwidth o
       $\mCtxSize(N)$ & $512 + N \cdot 640$ \\
       \hline
     \end{tabulary}
-    \caption{Bitsizes used to generate \cref{fig:plots}. The header consists of the sender's id, the epoch id and some
+    \caption{Bitsizes used to generate \cref{tab:plots}. The header consists of the sender's id, the epoch id and some
       authenticated data required by the protocol. The individual ciphertexts consist of a group element and an AEAD
       encryption, while the \mPKE ciphertext all share the same group element. The header contains signatures, tags,
       epoch and sender identifier as well as a key package. The latter makes up the bulk of the header, as it contains
       credentials, more public keys and some application data. Our estimation is based on MLS.}
-    \label{tab:bitsizes}
+    \label{tab:bits}
   \end{minipage}
   \end{minipage}
 \end{figure*}
 \paragraph{Results.}
-We estimated the bandwidth for all protocols using the formulas in \cref{tab:bandwidth1,tab:bandwidth2} with bit lengths
-as indicated in \cref{tab:bitsizes}. This is further visualized in \cref{fig:plots} for growing group sizes $N$.
-%
-% Further, \cref{fig:plots} shows how the concrete bandwidth, for the group {\color{red} help :) } ) of the three protocols scales as the group size $N$ grows.
-%
+We estimated the bandwidth for all protocols using the formulas in \cref{tab:bandwidth1,fig:bandwidth2} with bit lengths
+indicated in \cref{tab:bits}. This is further visualized in \cref{tab:plots} for growing group sizes $N$.
 We highlight some interesting observations. % features of the plots. %For concreteness, we fix $N = 10K$ users.
 
-For senders, \saik is always at least as good as the other protocols. First, it requires between $84\%$ and only $55\%$
-of the bandwidth of \protITK (due to the use of mmPKE). Second, the bandwidth of \protCMPKE is the same as the
-worst-case (depending on the execution history) bandwidth of \saik. In the best case, however, \saik needs as little as
-$0.52\%$ of the bandwidth, e.g. in a group of $10K$ members it can save as much as $\sim 779$KB out of total
-$783$KB.
+For senders, \saik is always at least as good as the other protocols. 
+For example, in a group of 10K parties, \saik sender's require between $83\%$ and $55\%$ of the bandwidth of \protITK (due to the smaller mmPKE ciphertexts compared to PKE). \textsf{SAIK}'s worst-case sender bandwidth is the same as \protCMPKE but its best-case bandwidth can be as small as $0.52\%$ by using only $4$KB in stead of \textsf{CmPKE}'s $783$KB. (Recall that, unlike in \protCMPKE, in \saik sender bandwidth varies depending on the history of preceding operations.)
 
-
-% Even for senders,
-%\saik requires between $83\%$ to just $55\%$ of the bandwidth of \protITK due to
-%\saik's use of \mmPKE. While receiver bandwidth is constant for \protCMPKE,
-%its sender bandwidth is always as bad as the worst case for \saik. 
-% In the
-%best case, \saik needs as little as $0.45\%$ of the bandwidth, e.g. in a
-%group of $10K$ members it can save as much as $\sim 780$KB out of total
-%$783$KB.
-
-
-% ITK vs SAIK, sender : 122% -> 179%
-% ITK vs ITKI, sender : 72% -> 52%
-% SAIK-Huffman vs ITK, 1-receiver : % improvement grows with group size. Best case from 165% -> 200K%.
-% Huffman vs Merkel, cumulative server : % improve is 0% -> 5% (though proof sizes improve by up to %50)
 
 For receivers, \protITK is \emph{overwhelmingly} worse than \saik and \protCMPKE. For
 example, \saik receivers (on average) need between $62\%$ (best-case execution) to about $.2\%$ (worst-case execution)
 of \protITK's. On the other hand, \protCMPKE is (unsurprisingly) the best for receivers.  \saik requires up to $126\%$
-of \protCMPKE's bandwidth, i.e. an increase of $\sim 0.62$KB from $\sim 2.4$KB for a group of $10K$ members.
+of \protCMPKE's bandwidth, i.e. an increase from $\sim 2.4$KB to $\sim 3.02$KB for 10K parties.
 
-%On the receiver side, \protITK is \emph{overwhelmingly} worse than \saik. For
-%example, \saik receivers (on average) need between $60\%$(full tree) to about $.05\%$(blank tree) of \protITK's
-%bandwidth. On the other hand, the receiver side has constant bandwidth for
-%\protCMPKE. \saik requires up to $137\%$ of \protCMPKE's bandwidth, i.e. an
-%increase of $\sim 0.75$KB from $\sim 2$KB.
+In summary, the results show that \saik achieves the lowest bandwidth required from a single client, while \protCMPKE has the lowest total server bandwidth. (Hence, both protocols meet their design goals.) For instance, for 10K parties, \protCMPKE requires a client to upload $783$KB of data, while in scenarios close to the best-case (which we believe to occur most of the time), the sender or receiver bandwidth of \saik is roughly $5$KB. On the other hand, the server bandwidth is roughly $25$MB for \protCMPKE and $30$MB for \saik.
 
 \paragraph{Server computation.}
 Lastly, we consider the server-side computation for \saik and \protCMPKE. In \protCMPKE, the server only picks the
@@ -206,48 +148,6 @@ group (however, no expensive public-key operations are required). Alternatively,
 tree and send them to the server, reducing the server computation to effectively the same as in \protCMPKE at the cost
 of an additional round of communication.
 
-% {\color{red} remove this?}
-% \dnote{Yes, especially if one of the reviewers really is an author of 31.}
-% We note that a CGKA with a similar efficiency profile to \protCMPKE can be
-% constructed directly using 2-party secure messaging channels between each
-% pair of group members (implemented e.g. by the double ratchet).
-% %from a pairwise secure channels, e.g. via the
-% %Signal double ratchet.
-% To create a new epoch, a sender samples a fresh commit secret and sends it
-% (along with fields identifying the group, epoch and the desired group
-% operation) to all group members. The commit secret is then used analogous to
-% \protITK: it is hashed together with the previous init secret (as well as
-% context information) to derive a new epochs key schedule. \protCMPKE doesn't
-% use pairwise secure channels but instead redraws abstraction boundaries to
-% enable the use of multi-recipient PKE (\mPKE). This allows them to be roughly
-% twice as efficient as the outlined protocol.
-
-
-%\begin{table*}[ht]
-%	\begin{tabulary}{\linewidth}{C|ccc}
-%		Abstract & \protITK & \saik & \protCMPKE \\
-%		\hline
-%		Sender Full Tree & $\log(N)*(\mmpkepk + \pathSecCtxt)$ & $\log(N) * \mmpkepk + \mmpkeCtxt(\log(N))$ & $\mmpkeCtxt(N)
-%		+ \mmpkepk$ \\
-%		Sender Empty Tree & $\log(N)*\mmpkepk + N* \pathSecCtxt$ & $\log(N) * \mmpkepk + \mmpkeCtxt(N)$ & $\mmpkeCtxt(N) +
-%		\mmpkepk$ \\
-%		Receiver Avg. Full Tree & $\log(N)*(\mmpkepk + \pathSecCtxt)$ & \multirow{2}*{$\log(N) * \mmpkepk + \pathSecCtxt$}  & \multirow{2}*{$\mmpkepk + \pathSecCtxt$}  \\
-%		Receiver Avg. Empty Tree & $\log(N)*\mmpkepk + N* \pathSecCtxt$ &   &  \\
-%		\hline
-%		\hline
-%		Concrete & & & \\ 
-%		\hline
-%		Sender Full Tree & $\sim 3\log(N)*\Grp$ & $\sim 2\log(N)*\Grp$ & $\sim N*\Grp$ \\
-%		Sender Empty Tree & $\sim2N*\Grp$ & $\sim N*\Grp$ & $\sim N*\Grp$ \\
-%		Receiver Avg. Full Tree & $\sim 3\log(N)*\Grp$ & \multirow{2}*{$\sim \log(N)*\Grp$}  & \multirow{2}*{$3*\Grp$} \\
-%		Receiver Avg. Empty Tree & $\sim 2N*\Grp$ &  &  \\
-%	\end{tabulary}
-%	\caption{Formula for server and (average) receiver bandwidth for full and empty trees. The first half of the table
-%		denotes the abstract bandwidth relative to the used primitives, while the latter half assumes that everything is
-%		instantiated over a common prime-order group $\grp$ with the size of a group element denoted by $\Grp$. We assume
-%		\saik and \protCMPKE both use the $\mmPKE$ described in \cref{sec:mmpke} and ignore common constants such as signatures and headers.}
-%	\label{tab:bandwidth}
-%\end{table*}
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"

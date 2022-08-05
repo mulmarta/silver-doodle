@@ -74,6 +74,7 @@ For the \mmPKE scheme we assume a security property called \mmowrcca, defined in
 %
 Formally, the AKS is modeled as the functionality $\funcPKI$ defined in \cref{sec:pki}. \saik
 works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real world and emulated by the simulator in the ideal world.
+The formal proof of \cref{thm:saik-security} can be found in \cref{sec:bgm_prot_proof}.
 
 \newcommand{\ucideal}{\textnormal{\textsc{ideal}}}
 \newcommand{\ucreal}{\textnormal{\textsc{real}}}
@@ -83,19 +84,20 @@ works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real
 	%
 	There exists a simulator $\ucsim$ and adversaries $\Bdv[1]$ to $\Bdv[4]$ such that
 	\begin{align*}
-		\Pr[\ucideal&_{\funcCGKA, \ucsim}(\Adv) = 1] - \Pr\left[\ucreal_{\saik, \funcPKI}(\Adv) = 1\right] \leq \\
-		&\textnormal{Adv}^{\gamefont{CR}}_{\hash}(\Bdv[1]) \\
-		% confidentiality
-		+\ & q_e^2(q_e+1) \log(q_n) \cdot\textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[2]) \\
-		% authenticity asym
-		+\ & 2q_e\cdot \textnormal{Adv}^{\ufcma}_\sigscheme(\Bdv[3]) \\
-		+\ & q_e \cdot \textnormal{Adv}^{\ufcma}_\mac(\Bdv[4]) + 3q_hq_e^2(q_e+1)/2^\kappa,
+		\Pr[\ucideal&_{\funcCGKA, \ucsim}(\Adv) = 1] - \Pr\left[\ucreal_{\saik, \funcPKI}(\Adv) = 1\right] \leq
 	\end{align*}
-	where $q_e$, $q_n$ and $q_h$ denote bounds on the number of epochs, the group size and the number of $\Adv$'s queries to the random oracle modelling the $\hash$, respectively.
+
+	\begin{align*}
+		&\textnormal{Adv}^{\gamefont{CR}}_{\hash}(\Bdv[1]) \\
+	% confidentiality
+	+\ & q_e^2(q_e+1) \log(q_n) \cdot\textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[2]) \\
+	% authenticity asym
+	+\ & 2q_e\cdot \textnormal{Adv}^{\ufcma}_\sigscheme(\Bdv[3]) \\
+	+\ & q_e \cdot \textnormal{Adv}^{\ufcma}_\mac(\Bdv[4]) + 3q_hq_e^2(q_e+1)/2^\kappa,
+\end{align*}
+	where $q_e$, $q_n$ and $q_h$ denote bounds on the number of epochs, the group size and the number of $\Adv$'s queries to the random oracle modeling the $\hash$, respectively.
 	%  In the reductions, the $\hkdf$ functions are modelled as a random oracle.
   \end{restatable}
-
-  The formal proof of \cref{thm:saik-security} can be found in \cref{sec:bgm_prot_proof}.
 
 %%% Local Variables:
 %%% mode: latex

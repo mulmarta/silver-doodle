@@ -133,12 +133,12 @@ Alice for $i$ and the \lca given that the sender is Bob. We note that the latter
 \paragraph{Comparison with techniques of \cite{hashimoto2021cmpke}.}
 The work \cite{hashimoto2021cmpke} introduces a technique for efficient packet authentication which is quite similar to the technique used by \saik. In particular, their CGKA uses a committing mPKE, cmPKE. A cmPKE differs from mPKE in that encryption outputs a tag $T$ which is a cryptographic commitment to the plaintext and is delivered to each receiver. Since in \cite{hashimoto2021cmpke} every recipient of a commit gets the same message, authenticating $T$ is sufficient for CGKA authentication.
 %
-We would like to highlight a couple of differences between that technique and ours:
-First, it is not clear how to use cmPKE in a tree-based CGKA, where a commit executes multiple instances of cmPKE, and hence we end up with multiple tags $T$, each delivered to a different subset of the group.
+We highlight a couple of differences between that technique and ours:
+First, it is not clear how to use cmPKE in a tree-based CGKA, where a commit executes multiple instances of \protCMPKE, and hence we end up with multiple tags $T$, each delivered to a different subset of the group.
 %
-Second, observe that using the hash of the encrypted message as $T$ does not result in an IND-CCA secure cmPKE, since a hash allows to easily tell which of two messages is encrypted. Therefore, the cmPKE construction of \cite{hashimoto2021cmpke} uses key-committing encryption to both hide and bind the message. \saik’s solution is simpler and doesn’t require additional properties.
+Second, using the hash of the encrypted message as $T$ does not result in an IND-CCA secure \protCMPKE, since a hash allows to easily tell which of two messages is encrypted. Therefore, the construction of \cite{hashimoto2021cmpke} uses key-committing encryption to both hide and bind the message.
 
-To summarize, cmPKE introduced by \cite{hashimoto2021cmpke} is very useful for the CGKA type they consider and may well find more use-cases beyond CGKA. On the other hand, \saik’s solution is simpler and fits all types of CGKA. Albeit, it is very CGKA-specific.
+To summarize, \protCMPKE introduced by \cite{hashimoto2021cmpke} is very useful for the CGKA type they consider and may well find more use-cases beyond CGKA. On the other hand, \textsf{SAIK}’s solution fits all types o CGKA, does not require additional properties to prove CGKA security and is more direct. Albeit, it is very CGKA-specific.
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "main"

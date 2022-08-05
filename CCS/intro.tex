@@ -230,9 +230,9 @@ and X448 functions.
 Second, we modify the mechanisms used by \protITK to ensure members
 transitioning to a new epoch authenticate the sender announcing a new epoch.
 Rather than sign the full packet like in \protITK, the sender in \saik only
-signs a small tag which ``binds`` all properties of the new epoch's, i.e., its
+signs a small tag which ``binds`` all salient properties of the new epoch, i.e., its
 secrets, the set of group members, the history of applied operations, etc.
-In fact, we use a tag that already exist in \protITK (called the 
+In fact, we use a tag that already exists in \protITK (called the 
 ``confirmation tag'').
 
 %Second, we modify the mechanisms used by \protITK to ensure members
@@ -250,11 +250,13 @@ In fact, we use a tag that already exist in \protITK (called the
 
 
 \paragraph{Performance Evaluation.}
-Finally, we compare the communication complexity of \saik, \protITK and the CGKA of \cite{hashimoto2021cmpke} called \protCMPKE. More precisely, we break down the communication cost into sender and receiver bandwidth, i.e., the size of a packet uploaded, resp., downloaded (by one receiver) from the server.
-%
-Our estimates confirm that \saik is the best CGKA in terms of sender bandwidth. Specifically, for 10K parties, \saik decreases the bandwidth of \protITK from 4.8KB down to 4.0KB for the best-case history of group evolution (but independently from the receiver) and from 1.5MB to 0.8MB for the worst-case history. Meanwhile, \protCMPKE requires 0.8MB in all cases.
+Finally, we compare the communication complexity of \saik, \protITK and the CGKA of \cite{hashimoto2021cmpke} called \protCMPKE. We break down the communication cost into sender and receiver bandwidth, i.e., the size of a packet uploaded, resp., downloaded (by one receiver) from the server. We note that the sender bandwidth of \protCMPKE grows linearly in the group size, while for \saik and \protITK it varies depending on both the group size and the history of preceding operations. Meanwhile, the receiver bandwidth is independent of both the size and the history for \protCMPKE, grows logarithmically in the group size for \saik and varies with both the size and history for \protITK.
 
-For receivers, \protCMPKE achieves the smallest bandwidth that is independent of the group size. \saik is slightly worse with the receiver cost growing logarithmically in the group size. \protITK is overwhelmingly worse, as its receiver bandwidth scales between logarithmically and linearly in the group size, depending on group history. Specifically, this means that for 10K parties the receiver cost is 2.4KB for \protCMPKE, 3.0KB for \saik, and anywhere between 4.8KB and 1.5MB for \protITK. We note that the cost for \protITK is linear in natural scenarios, e.g., in a freshly created group.
+We find that compared to \protITK, \saik always requires less bandwidth (regardless of history and group size). However, compared to \protCMPKE, \saik requires slightly more receiver bandwidth but anywhere from the same to far less sender bandwidth. Concretely, in a group with 10K parties, \protCMPKE's sender bandwidth is 0.8MB while \saik and \protITK's bandwidths range between 3.6KB - 0.8MB and 4.4KB - 1.5MB, respectively (depending on the history). Meanwhile for receivers \protCMPKE and \saik require 0.8KB and 2KB respectively while \protITK requires between 3.3KB - 1.4\emph{MB}.
+
+%Our estimates confirm that \saik is the best CGKA in terms of sender bandwidth. Specifically, for 10K parties, \saik decreases the bandwidth of \protITK from 4.8KB down to 4.0KB for the best-case history of group evolution (but independently from the receiver) and from 1.5MB to 0.8MB for the worst-case history. Meanwhile, \protCMPKE requires 0.8MB in all cases.
+%
+%For receivers, \protCMPKE achieves the smallest bandwidth that is independent of the group size. \saik is slightly worse with the receiver cost growing logarithmically in the group size. \protITK is overwhelmingly worse, as its receiver bandwidth scales between logarithmically and linearly in the group size, depending on group history. Specifically, this means that for 10K parties the receiver cost is 2.4KB for \protCMPKE, 3.0KB for \saik, and anywhere between 4.8KB and 1.5MB for \protITK. We note that the cost for \protITK is linear in natural scenarios, e.g., in a freshly created group.
 
 
 %Finally, we provide empirical data comparing the communication complexity for
@@ -273,12 +275,9 @@ For receivers, \protCMPKE achieves the smallest bandwidth that is independent of
 The paper is structured as follows. \cref{sec:prelims}
 (and \cref{sec:addPrelim}) covers preliminaries. \cref{sec:mmpke}
 focuses on mmPKE. \cref{sec:cgka} describes the new security model for
-saCGKA. \cref{sec:saik} introduces the \saik protocol and \cref{sec:saik-sec-int} formally states its security. \cref{sec:eval} contains empirical
+saCGKA with details outsourced to \cref{sec:model}. \cref{sec:saik} describes the \saik protocol with details found in \cref{sec:saik-details}. \cref{sec:saik-sec-int} formally states \saik's security. \cref{sec:eval} contains empirical
 evaluation and comparison of \saik to previous constructions. Finally, \cref{sec:extensions} contains extensions
-to stronger security guarantees.
-The formal specification of the (sa)CGKA security
-model is in~\cref{sec:model}. \cref{sec:saik-details} contains a detailed description of the \saik protocol and the
-security proof is formalized in \cref{sec:bgm_prot_proof}.
+to stronger security guarantees. Finally, \saik's security proof is formalized in \cref{sec:bgm_prot_proof}.
 
 
 
@@ -354,15 +353,20 @@ able to convincingly tackle by using automated proofs.
 
 \paragraph{The CGKA of \cite{hashimoto2021cmpke}.}
 The work \cite{hashimoto2021cmpke} presents a variant of CGKA, called here \emph{filtered} CGKA (fCGKA), along with a protocol called \protCMPKE.
-
+%
 In fCGKA, like in saCGKA, receivers download personalized sub-packets. However, fCGKA achieves this differently --- an uploaded fCGKA packet has a particular form, namely, a header delivered to all receivers, followed by a number of ciphertexts, one for each receiver. Note that fCGKA is a special case of saCGKA where the Extract procedure outputs the header and the receiver's ciphertext.
 
 The fCGKA security notion in \cite{hashimoto2021cmpke} is essentially the model of \cite{EPRINT:AlwJosMul20}. The only difference is that \cite{EPRINT:AlwJosMul20} requires agreement on the history of the network packets leafing to a given epoch. To adapt this to the fCGKA syntax, \cite{hashimoto2021cmpke} requires instead agreement on the history of \emph{packet headers}. Compared to our saCGKA notion, this is still syntactic agreement and e.g., requires CCA security. See \cref{sec:semantic}.
 
-Regarding the communication cost, the goal of \cite{hashimoto2021cmpke} is to minimize the overall cost of an operation, i.e., the size of the sent packet and all downloaded packets together. According to this metric, \protCMPKE beats both \saik and \protITK.
-In contrast, in this work we look at a more fine-grained metric, namely, the cost for a single party, either the sender or a receiver. According to this metric, \protCMPKE and \saik are somewhat incomparable --- \protCMPKE is slightly better than \saik for a receiver but can be much worse for a sender. The choice of a better trade-off depends on the application.
+Regarding the communication cost, \protCMPKE is designed to reduce the server resources, i.e., for an operation, it minimizes the size of the sent packet and all downloaded packets together. According to this metric, \protCMPKE beats both \saik and \protITK. However, the result is that clients (especially senders) must use a lot of bandwidth.
 %
-We also note that, technically, the fCGKA syntax implies linear cost for the senders.
+In contrast, \saik is designed to support clients with poor bandwidth, i.e., it minimizes the size of a single uploaded or downloaded packet. Thus, while the server load is a bit higher, the network requirements for clients are usually much lower.
+
+%Regarding the communication cost, the goal of \cite{hashimoto2021cmpke} is to minimize the total cost of an operation, i.e., the size of the sent packet and all downloaded packets together.
+% According to this metric, \protCMPKE beats both \saik and \protITK.
+%In contrast, in this work we look at a more fine-grained metric, namely, the cost for a single party, either the sender or a receiver. According to this metric, \protCMPKE and \saik are somewhat incomparable --- \protCMPKE is slightly better than \saik for a receiver but can be much worse for a sender.The choice of a better trade-off depends on the application.
+
+%(We also note that, technically, the fCGKA syntax implies linear cost for the senders.)
 
 %Concurrently and independently to this work~\cite{hashimoto2021cmpke} present
 %an interesting saCGKA and corresponding adaptation of the insider security
