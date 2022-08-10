@@ -146,8 +146,9 @@ example, \saik receivers (on average) need between $62\%$ (tree-best-case execut
 of \protITK's. On the other hand, \protCMPKE is (unsurprisingly) the best for receivers.  \saik requires up to $126\%$
 of \protCMPKE's bandwidth, i.e. an increase from $\sim 2.4$KB to $\sim 3.02$KB for 10K parties.
 
-In summary, the results show that \saik achieves the lowest bandwidth required from a single client (i.e. has the
-smallest maximum package size), while \protCMPKE has the lowest total bandwidth. (Hence, both protocols meet their design goals.) For instance, for 10K parties, \protCMPKE requires a client to upload $783$KB of data, while in scenarios close to the tree-best-case (which we believe to occur most of the time), the sender or receiver bandwidth of \saik is roughly $4$KB. On the other hand, the total bandwidth is roughly $25$MB for \protCMPKE and $30$MB for \saik.
+In summary, the results show that \saik achieves the lowest bandwidth required from a single client (i.e. $\bigO(\log(N))$
+for \saik vs. $\bigO(N)$ for \protCMPKE), while \protCMPKE has the lowest total bandwidth (i.e. $\bigO(N\log(N))$ for \saik
+vs. $\bigO(N)$ for \protCMPKE). (Hence, both protocols meet their design goals.) For instance, for 10K parties, \protCMPKE requires a client to upload $783$KB of data, while in scenarios close to the tree-best-case (which we believe to occur most of the time), the sender or receiver bandwidth of \saik is roughly $4$KB. On the other hand, the total bandwidth is roughly $25$MB for \protCMPKE and $30$MB for \saik.
 
 \paragraph{Server computation.}
 Lastly, we consider the server-side computation for \saik and \protCMPKE. In \protCMPKE, the server only picks the
