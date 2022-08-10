@@ -121,7 +121,7 @@ def applyConversion(data, factor = CONVERSION_FACTOR):
     return [x / factor for x in data]
 
 if __name__ == "__main__":
-    fig, ((ax1),(ax2)) = plt.subplots(2, 1, sharex=True, figsize=(7.5, 7.5))
+    fig, ((ax1),(ax2),(ax3)) = plt.subplots(3, 1, sharex=True, figsize=(7.5, 10.5))
     fig.tight_layout(h_pad=6, pad=6.5)
     
     rng = [int(math.pow(2, x)) for x in range(1,17)]
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     ax2.tick_params("both", reset = True)
     ax2.set_xlabel("#Users")
     ax2.set_ylabel("size in KB")
-    ax2.title.set_text("b) Receiver Bandwidth")
+    ax2.title.set_text("b) Average Receiver Bandwidth")
 
     mlsRecSumBest = calcMLSRecSum(rng, 0)
     mlsRecSumWorst = calcMLSRecSum(rng, 1)
@@ -187,24 +187,34 @@ if __name__ == "__main__":
     cmpkeRecSum = calcCMPKERecSizesSum(rng, 0)
 
 
-    mlsRecAvgBest = calcMLSRecAvg(rng, 0)
-    mlsRecAvgWorst = calcMLSRecAvg(rng, 1)
+    ax3.plot(rng, mlsRecSumBest, "--", label = "ITK", color="red")
+    ax3.plot(rng, mlsRecSumWorst, "--", color="red")
 
-    bgmRecAvgBest = calcBGMRecAvg(rng, 0)
-    bgmRecAvgWorst = calcBGMRecAvg(rng, 1)
+    ax3.plot(rng, bgmRecSumBest, "--", label = "SAIK", color = "green")
+    ax3.plot(rng, bgmRecSumWorst, "--", color = "green")
 
-    cmpkeRecAvg = calcCMPKERecAvg(rng, 0)
+    ax3.plot(rng, cmpkeRecSum, "--", label = "CmCGKA", color = "blue")
+    
+    ax3.fill_between(rng, mlsRecSumBest, mlsRecSumWorst, fc = "#ffffff00", ec = "#ff00007f", hatch = "\\\\")
+    ax3.fill_between(rng, bgmRecSumBest, bgmRecSumWorst, fc = "#ffffff00", ec = "#00ff007f", hatch = "//")
 
+    ax3.set_ylim([1.1, bgmRecSumWorst[-1] * 1.1])
+    ax3.set_xlabel("#Users")
+    ax3.set_ylabel("size in MB")
+    ax3.title.set_text("c) Total Bandwidth (Sum Sender + All Receivers)")
+    # ax3.legend(loc="lower right")
+
+    
     green_patch = mpatches.Patch(label='SAIK',fc = "#ffffff00", ec="#00ff007f", hatch = "//")
     red_patch = mpatches.Patch(label='ITK [5]',fc = "#ffffff00", ec="#ff00007f", hatch = "\\\\")
-    grey_patch = mpatches.Patch(label='CmCGKA [31]', fc = "#ffffff00", ec = "#0000ff7f", hatch = "||")
+    grey_patch = mpatches.Patch(label='CmCGKA [30]', fc = "#ffffff00", ec = "#0000ff7f", hatch = "||")
     
     
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles = [green_patch, red_patch, grey_patch],loc='upper center',
                ncol=4, bbox_to_anchor=(.5, .975), fontsize=12)    
     
-    plt.savefig("Final_Figures_Avg")
+    plt.savefig("Final_Figures_Total")
 
 
     senderPercBest = [x / y * 100 for (x,y) in zip(bgmSenderBest, mlsSenderDataBest)]
