@@ -358,9 +358,9 @@ In fCGKA, like in saCGKA, receivers download personalized sub-packets. However, 
 
 The fCGKA security notion in \cite{hashimoto2021cmpke} is essentially the model of \cite{EPRINT:AlwJosMul20}. The only difference is that \cite{EPRINT:AlwJosMul20} requires agreement on the history of the network packets leafing to a given epoch. To adapt this to the fCGKA syntax, \cite{hashimoto2021cmpke} requires instead agreement on the history of \emph{packet headers}. Compared to our saCGKA notion, this is still syntactic agreement and e.g., requires CCA security. See \cref{sec:semantic}.
 
-Regarding the communication cost, \protCMPKE is designed to reduce the server resources, i.e., for an operation, it minimizes the size of the sent packet and all downloaded packets together. According to this metric, \protCMPKE beats both \saik and \protITK. However, the result is that clients (especially senders) must use a lot of bandwidth.
-%
-In contrast, \saik is designed to support clients with poor bandwidth, i.e., it minimizes the size of a single uploaded or downloaded packet. Thus, while the server load is a bit higher, the network requirements for clients are usually much lower.
+Regarding the communication cost, \protCMPKE is designed to reduce the \emph{total bandwidth}, i.e., for an operation, it minimizes the size of the sent packet and all downloaded packets together. In contrast, \saik is designed to reduce the \emph{maximum bandwidth}, i.e., it minimizes the size of each sent or downloaded packet.
+Accordingly, \protCMPKE has smaller total bandwidth than \saik. In fact, the maximum size of a downloaded packet is also smaller for \protCMPKE. However, the size of a sent packet is usually much bigger for \protCMPKE.
+In summary, \saik is designed to support clients with poor bandwidth, i.e., it minimizes the size of a single uploaded or downloaded packet. Thus, while the server load is a bit higher, the network requirements for clients are usually much lower.
 
 %Regarding the communication cost, the goal of \cite{hashimoto2021cmpke} is to minimize the total cost of an operation, i.e., the size of the sent packet and all downloaded packets together.
 % According to this metric, \protCMPKE beats both \saik and \protITK.
