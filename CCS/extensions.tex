@@ -40,7 +40,11 @@ The attack is prevented, because even after corrupting $\id$ in $E'$, $\Adv$ doe
 
 \subsection{Primitives with Imperfect Correctness}
 While the proofs of \saik security assume primitives with perfect correctness, they can be easily modified to work with
-imperfect correctness. This is achieved by adding one game hop where we
+imperfect correctness. While most classically secure primitives have perfect correctness, many post-quantum
+constructions (e.g. from lattices) only have statistical correctness. So this extension can be seen as a preparation for
+when \saik has to be adapted to post-quantum security.
+
+This is achieved by adding one game hop where we
 abort in the new game if a correctness error occurs. This loses an additive term in the security bound that depends on
 the correctness parameter and the number of possible occurrences. Additionally, the usage of primitives with imperfect
 correctness generally yields imperfect correctness guarantees for the application as well (potentially with

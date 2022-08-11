@@ -176,7 +176,7 @@ if __name__ == "__main__":
     ax2.tick_params("both", reset = True)
     ax2.set_xlabel("#Users")
     ax2.set_ylabel("size in KB")
-    ax2.title.set_text("b) Average Receiver Bandwidth")
+    ax2.title.set_text("b) Maximum Receiver Bandwidth")
 
     mlsRecSumBest = calcMLSRecSum(rng, 0)
     mlsRecSumWorst = calcMLSRecSum(rng, 1)
