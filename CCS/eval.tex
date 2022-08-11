@@ -22,11 +22,11 @@ We first note that for \saik, the receiver bandwidth (i.e. the number of fields 
 
 Another difficulty in making a meaningful comparison is that for \saik and \protITK the bandwidth can vary quite
 significantly depending on \emph{the execution history}. The reason is that add and remove operations may destroy the
-good properties of the ratchet tree (by ``blanking'' nodes), increasing the number of recipients to which some message must be encrypted. In the
-best case, there are only $\log(N)$ recipients. Roughly, this happens when the ratchet has no blank nodes or unmerged
+good properties of the ratchet tree (by ``blanking'' nodes), increasing the number of public keys to which some message must be encrypted. In the
+best case, there are only $\log(N)$ public keys. Roughly, this happens when the ratchet has no blank nodes or unmerged
 leaves, as depicted in \cref{fig:tree-full}. We call this ``tree-best-case''. However, in the worst case there can be
-$N$ recipients. This happens e.g. when all non-leaf nodes are blank; see \cref{fig:tree-blank}. We call this
-``tree-worst-case''. In general, the number of recipients can be anything in between; see \cref{fig:tree-mixed}.
+$N$ public kwya. This happens e.g. when all non-leaf nodes are blank; see \cref{fig:tree-blank}. We call this
+``tree-worst-case''. In general, the number of public keys can be anything in between; see \cref{fig:tree-mixed}.
 
 \input{fig_trees}
 
@@ -141,7 +141,7 @@ For senders, \saik is always at least as good as the other protocols.
 For example, in a group of 10K parties, \saik sender's require between $83\%$ and $55\%$ of the bandwidth of \protITK (due to the smaller mmPKE ciphertexts compared to PKE). \textsf{SAIK}'s tree-worst-case sender bandwidth is the same as \protCMPKE but its tree-best-case bandwidth can be as small as $0.52\%$ by using only $4$KB in stead of \textsf{CmPKE}'s $783$KB. (Recall that, unlike in \protCMPKE, in \saik sender bandwidth varies depending on the history of preceding operations.)
 
 
-For receivers, \protITK is \emph{overwhelmingly} worse than \saik and \protCMPKE. For
+For receivers, \protITK is much worse than \saik and \protCMPKE. For
 example, \saik receivers (on average) need between $62\%$ (tree-best-case execution) to about $.2\%$ (tree-worst-case execution)
 of \protITK's. On the other hand, \protCMPKE is (unsurprisingly) the best for receivers.  \saik requires up to $126\%$
 of \protCMPKE's bandwidth, i.e. an increase from $\sim 2.4$KB to $\sim 3.02$KB for 10K parties.

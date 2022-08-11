@@ -33,7 +33,7 @@ Each group modification corresponds to a modification of the ratchet tree $\tree
   $\id$ generates a sequence of \emph{path secrets} $s_2, \dots, s_n$: $s_2$ is a random bitstring, $s_{i+1} = \hash(s_i,\literal{path})$.
   \item $\id$ generates a fresh key pair for $v_1$. For each $i\in[2,n-1]$, the new key pair of $v_i$ is computed by
     running the key generation with randomness $\hash(s_i,\literal{rand})$. The last secret $s_n$ will be used in the key schedule, described soon.
-  \item $\id$ encrypts each $s_{i+1}$ to the sibling of $v_i$. This allows members in the subtree of $v_i$ (and only those) to derive $s_{i+1}, \dots, s_n$.
+  \item $\id$ encrypts each $s_{i+1}$ to the sibling of $v_i$. This allows parties in the subtree of $v_i$ (and only those) to derive $s_{i+1}, \dots, s_n$.
 \end{enumerate}
 
 Each add and remove is immediately followed by an implicit update.
