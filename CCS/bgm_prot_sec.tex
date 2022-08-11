@@ -19,8 +19,14 @@ The formal syntax of saCGKA protocols is defined as part of our security definit
 \input{fig_prot}
 
 \newcommand{\extract}{\method{extract}}
+\newcommand{\getExtractionIndices}{\method{getExtractionIndices}}
 \subsection{Extraction Procedure for the Server}
-Finally, we describe a procedure $\extract(C, \id) \to c$ used by the mailboxing service to take an uploaded message $C$ and compute the message $c$ delivered to user $\id$. Formally, this procedure is not part of our syntax or security definitions, since for simplicity our model does not consider correctness (see \cref{sec:simplifications}) and an untrusted service can anyway deliver arbitrary messages.
+Finally, we describe a procedure $\extract(C, \id) \to c$ used by the mailboxing service to take an uploaded message $C$
+and compute the message $c$ delivered to user $\id$. Formally, this procedure is not part of our syntax or security
+definitions, since for simplicity our model does not consider correctness (see \cref{sec:simplifications}) and an
+untrusted service can anyway deliver arbitrary messages. It is formally defined in \cref{fig:saik-extraction-alg}.
+
+\input{fig_extract_alg}
 
 Recall that $C$ contains the executed group operation $\hgact$ and the sender $\id_s$, a multi-recipient ciphertext $Ctxt$ and a vector of updated public keys $\updatedPks$. Roughly, $\extract$ only needs to compute $\id$'s individual mmPKE ciphertext $\mmpkeExtL(Ctxt, i)$ and the prefix of the first $j$ elements of $\updatedPks$. This requires that it knows the indices $i$ and $j$ for $\id$.
 %
