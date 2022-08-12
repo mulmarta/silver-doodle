@@ -51,8 +51,7 @@ exceeding, the security and functionality of today's state-of-the-art
 deployed E2E protocols. Technically, the new protocols do this by reducing
 their communication complexity to \emph{logarithmic} in the group size;
 albeit, only under favorable conditions in the execution. This informal
-property is sometimes termed the \emph{fair-weather complexity}. % of a
-protocol.
+property is sometimes termed the \emph{fair-weather complexity}. % of a protocol.
 
 To date, the most important of these new E2E protocols is the IETF's upcoming
 secure group messaging (SGM) standard called the \emph{Messaging Layer
@@ -252,7 +251,7 @@ In fact, we use a tag that already exists in \protITK (called the
 \paragraph{Performance Evaluation.}
 Finally, we compare the communication complexity of \saik, \protITK and the CGKA of \cite{hashimoto2021cmpke} called \protCMPKE. We break down the communication cost into sender and receiver bandwidth, i.e., the size of a packet uploaded, resp., downloaded (by one receiver) from the server. We note that the sender bandwidth of \protCMPKE grows linearly in the group size, while for \saik and \protITK it varies depending on both the group size and the history of preceding operations. Meanwhile, the receiver bandwidth is independent of both the size and the history for \protCMPKE, grows logarithmically in the group size for \saik and varies with both the size and history for \protITK.
 
-We find that compared to \protITK, \saik always requires less bandwidth (regardless of history and group size). However, compared to \protCMPKE, \saik requires slightly more receiver bandwidth but anywhere from the same to far less sender bandwidth. Concretely, in a group with 10K parties, \protCMPKE's sender bandwidth is 0.8MB while \saik and \protITK's bandwidths range between 3.6KB - 0.8MB and 4.4KB - 1.5MB, respectively (depending on the history). Meanwhile for receivers \protCMPKE and \saik require 0.8KB and 2KB respectively while \protITK requires between 3.3KB - 1.4\emph{MB}.
+We find that compared to \protITK, \saik always requires less bandwidth (regardless of history and group size). However, compared to \protCMPKE, \saik requires slightly more receiver bandwidth but anywhere from the same to far less sender bandwidth. Concretely, in a group with 10K parties, \protCMPKE's sender bandwidth is 0.8MB while \saik and \protITK's bandwidths range between 3.6KB - 0.8MB and 4.4KB - 1.5MB, respectively (depending on the history). Meanwhile for receivers \protCMPKE and \saik require 0.8KB and 2KB respectively while \protITK requires between 4.4KB - 1.5\emph{MB}.
 
 %Our estimates confirm that \saik is the best CGKA in terms of sender bandwidth. Specifically, for 10K parties, \saik decreases the bandwidth of \protITK from 4.8KB down to 4.0KB for the best-case history of group evolution (but independently from the receiver) and from 1.5MB to 0.8MB for the worst-case history. Meanwhile, \protCMPKE requires 0.8MB in all cases.
 %
@@ -356,7 +355,7 @@ The work \cite{hashimoto2021cmpke} presents a variant of CGKA, called here \emph
 %
 In fCGKA, like in saCGKA, receivers download personalized sub-packets. However, fCGKA achieves this differently --- an uploaded fCGKA packet has a particular form, namely, a header delivered to all receivers, followed by a number of ciphertexts, one for each receiver. Note that fCGKA is a special case of saCGKA where the Extract procedure outputs the header and the receiver's ciphertext.
 
-The fCGKA security notion in \cite{hashimoto2021cmpke} is essentially the model of \cite{EPRINT:AlwJosMul20}. The only difference is that \cite{EPRINT:AlwJosMul20} requires agreement on the history of the network packets leafing to a given epoch. To adapt this to the fCGKA syntax, \cite{hashimoto2021cmpke} requires instead agreement on the history of \emph{packet headers}. Compared to our saCGKA notion, this is still syntactic agreement and e.g., requires CCA security. See \cref{sec:semantic}.
+The fCGKA security notion in \cite{hashimoto2021cmpke} is essentially the model of \cite{EPRINT:AlwJosMul20}. The only difference is that \cite{EPRINT:AlwJosMul20} requires agreement on the history of the network packets leading to a given epoch. To adapt this to the fCGKA syntax, \cite{hashimoto2021cmpke} requires instead agreement on the history of \emph{packet headers}. Compared to our saCGKA notion, this is still syntactic agreement and e.g., requires CCA security. See \cref{sec:semantic}.
 
 Regarding the communication cost, \protCMPKE is designed to reduce the \emph{total bandwidth}, i.e., for an operation, it minimizes the size of the sent packet and all downloaded packets together. In contrast, \saik is designed to reduce the \emph{maximum bandwidth}, i.e., it minimizes the size of each sent or downloaded packet.
 Accordingly, \protCMPKE has smaller total bandwidth than \saik. In fact, the maximum size of a downloaded packet is also smaller for \protCMPKE. However, the size of a sent packet is usually much bigger for \protCMPKE.

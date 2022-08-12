@@ -4,7 +4,8 @@
     treenode/.style = {circle, draw=black, align=center, minimum size=1cm},
     ctnode/.style = {rectangle, draw=black, align=center, minimum size=1cm},
     packnode/.style = {rectangle, draw=black, align=center, minimum size=.75cm}]
-
+    \tikzstyle{level 1}=[level distance=1cm]
+    
     \node[packnode](pack){$id_R$};
     \node[packnode, right = 0cm of pack](pack2){act};
     \node[packnode, right = 0cm of pack2](pack3){$sig$};
@@ -43,9 +44,9 @@
         }
       }
     };
-    \node[above right = .2cm of root](dots){\huge$\iddots$};
-    \node[right = 1cm of dots]{\huge$\ddots$};
-    \node[above right = 1.2cm of root, treenode]{$\mmpkepk_{\text{root}}$};
+    \node[above right = .1cm of root](dots){\huge$\iddots$};
+    \node[right = .6cm of dots]{\huge$\ddots$};
+    \node[above right = 1cm of root, treenode]{$\mmpkepk_{\text{root}}$};
     \node at ($(root) + (0,-5)$)(arrow){\huge$\Downarrow$};
     \node[packnode, below = .2cm of arrow] {$id_R, act, sig, ct_0, \color{orange}{ct_4}, \color{blue}{\mmpkepk_1,\mmpkepk_2,\mmpkepk_3}$};
   \end{tikzpicture}  

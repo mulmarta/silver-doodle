@@ -21,7 +21,10 @@ server,
 receiver, and
 \item   \emph{total bandwidth} --  the sum of the sizes of the uploaded packet and all downloaded packets.
 \end{itemize}
-The sender and maximum-receiver bandwidths give an idea about the resources a single client needs to invest to perform the group modification. In contrast, the total bandwidth gives the idea about the resources used by the server (or, equivalently, all clients together). However, a single client may use much more resources than the total bandwidth (while others use much less). (We note that the total bandwidth was the (only) metric used in \cite{hashimoto2021cmpke}.)
+The sender and maximum-receiver bandwidths give an idea about the resources a single client needs to invest to perform
+the group modification. In contrast, the total bandwidth gives the idea about the resources used by the server (or,
+equivalently, all clients together). However, it makes no assertions about the distribution of this bandwidth, i.e. some
+clients might use a significantly larger portion of the total bandwidth than others. (We note that the total bandwidth was the (only) metric used in \cite{hashimoto2021cmpke}.)
 
 There is one caveat when calculating the bandwidth requirements for \saik (and \protITK) due to the underlying tree structure: The bandwidth can vary quite
 significantly depending on the ``tree topology'', which is in turn determined by the execution history. Roughly, the reason is that add and remove operations may destroy the
@@ -182,7 +185,9 @@ example, \saik receivers (at most) need between $62\%$ (tree-best-case execution
 execution) of \protITK's. On the other hand, \protCMPKE is the best for receivers.  \saik requires up
 to $126\%$ of \protCMPKE's bandwidth, i.e. an increase from $\sim 2.4$KB to $\sim 3.02$KB for 10K parties.
 
-Finally, the total bandwidth is by far the smallest for \protCMPKE and by far the largest for \protITK. For instance, for 10K parties, \saik requires $\sim13$ times more total bandwidth, while \protITK requires anywhere from $\sim13$ times (tree-best-case) to $\sim10$K more times (tree-worse-case).
+Finally, the total bandwidth is by far the smallest for \protCMPKE and by far the largest for \protITK. For instance,
+for 10K parties, \saik requires $\sim1.3$ times more total bandwidth, while \protITK requires anywhere from $\sim2$
+times (tree-best-case) to $\sim50$ times (tree-worse-case) more.
 
 In summary, the results show that \saik achieves the lowest bandwidth required from a single client
 (i.e. $\bigO(\log(N))$ for \saik vs. $\bigO(N)$ for \protCMPKE), while \protCMPKE has the lowest total bandwidth
