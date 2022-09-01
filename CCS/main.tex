@@ -1,18 +1,22 @@
-\documentclass[sigconf, anonymous]{acmart}
+\documentclass[sigconf]{acmart}
 
 \fancyhf{} % Remove fancy page headers
-\fancyhead[C]{Anonymous submission \#399 to ACM CCS 2022} % TODO: replace 9999 with your paper number
+%\fancyhead[C]{Anonymous submission \#399 to ACM CCS 2022} % TODO: replace 9999 with your paper number
 \fancyfoot[C]{\thepage}
 
-\setcopyright{none} % No copyright notice required for submissions
-\acmConference[Anonymous Submission to ACM CCS 2022]{ACM Conference on Computer and Communications Security}{Due 2 May 2022}{London, TBD}
-\acmYear{2022}
+% \setcopyright{none} % No copyright notice required for submissions
+\acmConference[ACM CCS 2022]{ACM Conference on Computer and Communications Security}{November 7-11, 2022}{Los Angeles, U.S.A.}
 
-\settopmatter{printacmref=false, printccs=true, printfolios=true} % We want page numbers on submissions
+%\settopmatter{printacmref=false, printccs=true, printfolios=true} % We want page numbers on submissions
 
 \newif\ifWorkInProgress
 %\WorkInProgresstrue
 \WorkInProgressfalse
+
+\setcopyright{acmcopyright}
+\copyrightyear{2022}
+\acmYear{2022}
+\acmDOI{XXXXXXX.XXXXXXX}
 
 %-------------------------------------------------------------------------------
 \input{sty/packages}  %<-------------- Add new packages here
@@ -27,6 +31,23 @@
 \begin{document}
 \title{Server-Aided Continuous Group Key Agreement}
 
+\author{Joël Alwen}
+\email{alwenjo@amazon.com}
+\author{Marta Mularczyk}
+\email{mulmarta@amazon.ch}
+\affiliation{%
+  \institution{AWS Wickr}
+}
+\author{Dominik Hartmann}
+\email{dominik.hartmann@rub.de}
+\orcid{0000-0002-0379-7903}
+\author{Eike Kiltz}
+\email{eike.kiltz@rub.de}
+\orcid{0000-0003-1178-048X}
+\affiliation{%
+  \institution{Ruhr-University Bochum}
+}
+\renewcommand{\shortauthors}{Alwen et al.}
 \begin{abstract}
 \input{abstract}
 \end{abstract}
