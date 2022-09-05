@@ -1,0 +1,248 @@
+\section{Additional Preliminaries} \label{sec:addPrelim}
+
+\subsection{Universal Composability}\label{sec:uc}
+We formalize security in the universal composability (UC) framework \cite{FOCS:Canetti01}. We moreover use the modification of responsive environments introduced by Camenisch et
+al.~\cite{AC:CEKKR16} to avoid artifacts arising from seemingly local operations (such as sampling randomness or
+producing a ciphertext) to involve the adversary.
+
+The UC framework requires a real-world execution of the protocol to be indistinguishable from an ideal world, to an an interactive environment.
+%
+The real-world experiment consists of the group members executing the protocol (and interacting with the PKI setup).
+In the ideal world, on the other hand, the protocol gets replaced by dummy instances that just forward all inputs and outputs to
+an \emph{ideal functionality} characterizing the appropriate guarantees.
+
+The functionality interacts with a so-called simulator, that translates the real-world adversary's actions into corresponding ones in the ideal world. Since the ideal functionality is secure by definition, this implies that the real-world execution cannot exhibit any attacks either.
+
+
+\paragraph{The Corruption Model.}
+We use the --- standard for CGKA/SGM but non-standard for UC --- corruption model of continuous state leakage (transient passive corruptions) \cite{TCC:ACJM20}.\footnote{Passive
+  corruptions together with full network control allow to emulate active corruptions.}
+%
+In a nutshell, this corruption model allows the adversary to
+repeatedly corrupt parties by sending corruption messages of the form $(\keyword{Expose}, \id)$, which causes the party $\id$ to send its current state to the adversary (once).
+
+\paragraph{Restricted Environments.}
+In order to avoid the so-called commitment problem, caused by adaptive corruptions in simulation-based frameworks, we restrict the environment not to corrupt parties at certain times. (This roughly corresponds to ruling out ``trivial attacks'' in game-based definitions. In simulation-based frameworks, such attacks are no longer trivial, but security against them requires strong cryptographic tools and is not achieved by most protocols.)
+%In order to avoid the so-called commitment problem\footnote{The commitment problem causes standard UC definitions to be extremely strong in the presence of adaptive corruptions, ruling out any practical protocols such as \mls.}
+%of simulation-based security notions such as UC, we restrict the environment not to corrupt parties at certain times. (This roughly corresponds to ruling out ``trivial wins'' in game-based definitions.)
+%
+To this end, we use the technique used in \cite{TCC:ACJM20} (based on prior work by Backes et al.~\cite{ESORICS:BDDK06} and Jost et al.~\cite{TCC:JosMauMul19}) and consider a weakened variant of UC security that only quantifies over a restricted set of so-called admissible environments that do not exhibit the commitment problem.
+%
+%Whether an environment is admissible or not is defined by the ideal functionality $\Func$ with statements of the form $\KwRestrEnv\ \mathit{cond}$ and an environment is called {admissible (for $\Func$)}, if it has negligible probability of violating any such $\mathit{cond}$ when interacting with $\Func$.
+Whether an environment is admissible or not is defined as part of the ideal functionality $\Func$: The functionality can specify certain boolean conditions, and an environment is then called {admissible (for $\Func$)}, if it has negligible probability of violating any such condition when interacting with $\Func$.
+
+% \subsection{Collision-Resistant Hashing}
+% We define collision resistance for hash functions in \cref{def:cr}.
+% \begin{definition}[Collision Resistance]\label{def:cr}
+%   Let $\hash:\bits^* \rightarrow \bits^\kappa$ be a hash function. We define the advantage of an adversary \Adv against
+%   the collision resistance of $\hash$ as
+%   \[
+%     \adv{\CR}{\hash}(\Adv) = \Pr\left[\hash(x_1) = \hash(x_2)\mid (x_1,x_2)\getsr\Adv\right].
+%   \]
+% \end{definition}
+
+% Note that for simplicity, we define \emph{unkeyed} hash functions. Generally, these hash functions aren't collision
+% resistant, since there always exists some algorithm that has a hard-coded collision. However since such algorithms are
+% \emph{unknown} for real-world hash functions and we give constructive reductions (i.e. fully black-box reductions where
+% access to an algorithm breaking our building blocks directly yields an algorithm finding a collision), we ignore these
+% existing but unknown algorithms. For a more in-depth discussion, see \cite{VIETCRYPT:Rogaway06}.
+
+\subsection{Assumptions}
+The security of our mmPKE construction, same as that of \cite{ASIACCS:PinPoeSch14}, is based on a variant of the Computational
+Diffie-Hellman(CDH) assumption called the \emph{Double-Sided Strong Diffie-Hellman Assumption} (or just \emph{Static
+  Diffie-Hellman Assumption} in \cite{ASIACCS:PinPoeSch14}). We recall it in Definition~\ref{def:SDH}. Intuitively, it states that
+CDH is hard given access to a DDH-oracle for both CDH inputs.
+
+\begin{definition}[Double-Sided Strong Diffie-Hellman Assumption]\label{def:SDH}
+  Let $\Group = (\Grp, p, g)$ be a cyclic group of prime order $p$ with generator $g$. We define the advantage of an
+  algorithm $\Adv$ in solving the \emph{Double-Sided Strong Diffie-Hellman problem(\sdh)} with respect to $\Group$ as
+  \[
+    \adv{\sdh}{\Group}(\Adv) =
+    \Pr\left[
+      Z = g^{xy}
+      \middle\vert
+      \begin{array}{c}
+        x, y \getsr \Z_p^2\\
+        Z \getsr \Adv^{\oracle{O}}(\Grp,p,g,g^x,g^y),
+      \end{array}
+    \right]
+  \]
+with $\oracle{O} = \{\oracle{O}_x(\cdot,\cdot),\oracle{O}_y(\cdot,\cdot)\}$, where $\oracle{O}_x,\oracle{O}_y$ are oracles which on input $U,V$ output $1$, iff $U^x = V$ or $U^y = V$ respectively.
+The probability is taken over the random coins of the group generator, the choice of $x$ and $y$ and the adversary's
+random coins.
+\end{definition}
+
+\subsection{Multi-Recipient Multi-Message PKE(mmPKE) Definitions}\label{app:mmpke}
+The notion of \mmindrcca security for \mmPKE is described by the experiment in \cref{fig:mmpke_rcca}.
+
+\begin{figure}[!tbp]
+  \begin{gamebox}{\mmindrcca}
+    \begin{minipage}[t]{\linewidth}
+      \algoHead{$\text{Exp}^{\mmindrcca}_{\mmPKE, \nUsers, b}(\Adv = (\Adv[1], \Adv[2]))$}
+      \begin{algorithmic}
+        \For{$\idxUser\in[\nUsers]$}
+           $(\mmpkepk_\idxUser, \mmpkesk_\idxUser)\gets \mmpkeKeyGen()$
+        \EndFor
+        \State $\term{Corr} \gets \emptyset$
+        \State \mbox{$(\vec\mmpkepk^*,\vec m_0^*,\vec m_1^*,\mathit{st}) \gets \Adv[1]^{\oracle{Dec}_1, \oracle{Cor}}((\mmpkepk_i)_{i\in[\nUsers]})$}
+
+        \State \KwReq{} $\abs{\vec m_0^*}=\abs{\vec m_1^*}=\abs{\vec\mmpkepk^*}$
+        \State $c^* \getsr \mmpkeEnc(\vec\mmpkepk^*,\vec{m}_b^*)$
+
+        \State $b' \gets \Adv[2]^{\oracle{Dec}_2, \oracle{Cor}}(c^*,\mathit{st})$
+        \State \KwReq{} $\leak(\vec{m_0}) = \leak(\vec{m_1})$
+        \State \KwReq{} $\forall j : \vec \mmpkepk^*[j] \in \{\mmpkepk_i : i\in[\nUsers]\} \setminus \term{Corr} \lor m_0^*[j]=m_1^*[j]$
+        \State \Return $b'$
+      \end{algorithmic}
+    \end{minipage}
+
+  \medskip
+    \begin{minipage}[t]{.4\linewidth}
+      \algoHead{Oracle $\oracle{Dec}_1(i,c)$}
+      \begin{algorithmic}
+        \State \KwReq{} $\idxUser\in[\nUsers]$
+        \State \Return $\mmpkeDec(\vec\mmpkesk[i],c)$
+      \end{algorithmic}
+
+      \medskip
+      \algoHead{Oracle $\oracle{Cor}(\idxUser)$}
+      \begin{algorithmic}
+        \State \KwReq{} $\idxUser\in[\nUsers]$
+        \State $\term{Corr} \setadd \idxUser$
+        \State \Return $\mmpkesk_\idxUser$
+      \end{algorithmic}
+    \end{minipage}\hfill\begin{minipage}[t]{.59\linewidth}
+      \algoHead{Oracle $\oracle{Dec}_2(i,c)$}
+      \begin{algorithmic}
+        \State \KwReq{} $\idxUser\in[\nUsers]$
+        \State $m \gets \mmpkeDec(\vec\mmpkesk[i],c)$
+        \If{$\exists j : \vec\mmpkepk^*[j] = \mmpkepk_i $ \\\strut\hfill $\land\ m \in \{\vec m_0^*[j], \vec m_1^*[j]\}$}
+        \State \Return $\literal{test}$
+        \Else\
+        \Return $m$
+        \EndIf
+      \end{algorithmic}
+    \end{minipage}
+  \end{gamebox}
+  \caption{\mmindrcca security game for \mmPKE with leakage function  $\leak(\vec m) = (\len(\vec m[1]), \dots, \len(\vec m[n]))$.}
+  \label{fig:mmpke_rcca}
+\end{figure}
+
+We define the security of an \mmPKE in a left-right style in the following Definition~\ref{def:mmindrcca}.
+
+\begin{definition}[\mmindrcca]\label{def:mmindrcca}
+Let $N\in\N$. For a scheme \mmPKE, we define the advantage of an adversary \Adv against \emph{Indistinguishability Against Replayable Chosen Ciphertext Attacks (\mmindrcca)} security of \mmPKE as
+\begin{multline*}
+  \adv{\mmindrcca}{\mmPKE, \nUsers}(\Adv) = \Pr\left[\Exp^{\mmindrcca}_{\mmPKE,\nUsers, 0}(\Adv) = 1\right] \\ -
+      \Pr\left[\Exp^{\mmindrcca}_{\mmPKE,\nUsers,1}(\Adv) = 1\right],
+\end{multline*}
+where $\textnormal{Exp}^{\mmindrcca}_{\mmPKE,N,b}$ is described in \cref{fig:mmpke_rcca}.
+\end{definition}
+
+
+\subsection{Data Encapsulation Meachanism(DEM)}
+A DEM is the symmetric equivalent of a PKE scheme. We recall it in Definition \ref{def:dem}.
+
+\begin{definition}[DEM]\label{def:dem}
+  A data encapsulation mechanism (DEM) \dem is described by a (efficiently samplable) keyspace $\demKeyset$ and the two
+  algorithms $\demEnc, \demDec$:
+  \begin{itemize}[align=left]
+    \item[$\demEnc(k, m)\getsl c$:] The encryption algorithm takes a key $k\in\demKeyset$ and a message $m$. It returns a ciphertext $c$.
+    \item[$\demDec(k, c) \getsl m'\lor\bot$:] The decryption algorithm takes a key $k\in\demKeyset$ and a
+      ciphertext $c$ and outputs either a decrypted message or $\bot$.
+    \end{itemize}
+    A DEM \dem is $\delta$-correct, if for all messages $m$ and all keys $k\in\demKeyset$
+    \[
+      \text{Pr}[\demDec(k, \demEnc(k,m)) = m] \geq \delta
+    \]
+  \end{definition}
+
+  Analogue to mmPKE, we consider \indrcca security for DEMs. It is described in Definition~\ref{def:dem_rcca}.
+
+  \begin{definition}\label{def:dem_rcca}
+    The advantage of an adversary \Adv against the \indrcca security of a DEM \dem is defined as
+    \begin{multline*}
+      \adv{\indrcca}{\dem}(\Adv) = \text{Pr}[\experiment{\indrcca}{\dem, 0}(\Adv) = 1] \\-
+      \text{Pr}[\experiment{\indrcca}{\dem, 1}(\Adv) = 1],
+    \end{multline*}
+    where $\experiment{\indrcca}{\dem, b}(\Adv)$ is defined in \cref{fig:dem_rcca}.
+  \end{definition}
+
+  \begin{figure}[!tbh]
+    \begin{gamebox}{\indrcca for \dem}
+      \begin{minipage}[t]{.5\linewidth}
+        \algoHead{Exp$^{\indrcca}_{\dem, b}(\Adv)$}
+        \begin{algorithmic}
+          \State $k\getsr \demKeyset$
+          \State $(St, m_0^*, m_1^*) \getsr \Adv^{\text{Dec},\text{Enc}}$
+          \State $c^* \getsr \demEnc(k, m_b)$
+          \State \Return $\Adv^{\text{Dec},\text{Enc}}(St, c^*)$
+        \end{algorithmic}
+      \end{minipage}
+    \hfill
+      \begin{minipage}[t]{.48\linewidth}
+        \algoHead{Oracle Dec$(c)$}
+        \begin{algorithmic}
+          \State $m' \getsr \demDec(k, c)$
+          \If{$m' \in \{m_0^*, m_1^*\}$}
+          \State \Return \keyword{test}
+          \Else
+          \State \Return $m'$
+          \EndIf
+        \end{algorithmic}
+        \medskip
+        \algoHead{Oracle Enc$(m)$}
+        \begin{algorithmic}
+          \State \Return $\demEnc(k, m)$
+        \end{algorithmic}
+      \end{minipage}
+    \end{gamebox}
+    \caption{\indrcca security for DEMs.}
+    \label{fig:dem_rcca}
+  \end{figure}
+
+\subsection{Message Authentication Codes (MAC)}
+Message authentication codes are defined in Definition~\ref{def:mac}.
+
+\begin{definition}\label{def:mac}
+  A message authentication code $\mac = (\mactag,$ $ \macvrf)$ consist of a keyspace $\mackeyspace$ and the following two
+  algorithms:
+  \begin{itemize}[align=left]
+    \item[$\mactag(k, m)\getsl \mtag$:] The tagging algorithm takes a key $k$ and a message $m$ and outputs
+      a tag $t$.
+    \item[$\macvrf(k, m, \mtag)\getsl\bits$:] The verification algorithm takes a key $k$, a message $m$ and
+      a tag $\mtag$ and outputs $0$ or $1$.
+    \end{itemize}
+    A mac \mac is correct, if for all $k\in\mackeyspace$ and messages $m$
+    \[
+      \text{Pr}[\macvrf(k, m, \mactag(k,m)) = 1] = 1
+    \]
+\end{definition}
+
+The security notion for MACs we consider is \emph{Unforgeability against chosen message attacks}(\ufcma).
+\begin{definition}
+  A mac \mac is \ufcma secure, if for all PPT adversaries \Adv the advantage
+  \begin{multline*}
+    \adv{\ufcma}{\mac}(\Adv) = \\\Pr
+    \left[
+      \begin{array}{c}
+        m \not \in Q \land\\
+        \macvrf(k, m^*, \mtag^*) = 1
+      \end{array}
+      \middle\vert
+      \begin{array}{c}
+        k\getsr \mackeyspace\\
+        (m^*, t^*) \getsr \Adv^{\text{Tag}, \text{Ver}}
+      \end{array}
+    \right]
+  \end{multline*}
+  is negligible, where the Tag oracle computes a tag under key $k$ on a given message $m$ and adds it to $Q$ and
+  \emph{Ver} takes a message and a tag and outputs the result of the \macvrf algorithm on the two inputs with $k$.
+\end{definition}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

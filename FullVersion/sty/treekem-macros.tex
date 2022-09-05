@@ -1,0 +1,168 @@
+%
+%
+%%     Macros for Defining the MLS construction
+%
+%
+
+%%% General formating (already included in macros.tex)
+\newcommand{\superscript}[1]{\ensuremath{^{\mbox{\tiny{\textit{#1}}}}}\xspace}
+\newcommand{\inc}{\texttt{++}}
+% \newcommand{\abs}[1]{\mdef{\left|#1\right|}}        % Absolute value
+
+%%% Counting things
+\def \th {\superscript{th}}                         % 'The i-th entry it a list...' --> i\th
+\def \st {\superscript{st}}                         % 'The 1-st entry it a list...' --> 1\st
+\def \nd {\superscript{nd}}                         % 'The 2-nd entry it a list...' --> 2\nd
+%\def \rd {\superscript{rd}}                         % 'The 3-rd entry it a list...' --> 3\rd
+\def \etal{{\it et~al.}}
+
+%%% Common sets and variables
+\newcommand{\eps}{\mdef{\epsilon}}                  % Empty string
+
+
+\def \treekemA {TreeKEMv2\xspace}
+\def \treekemB {TreeKEMv3\xspace}
+%\def \mls {MLSv9\xspace}
+\def \mlsfrozen {MLSv9\xspace}
+\def \mls {MLS\xspace}
+\def \saik {{\normalfont\textsf{SAIK}}\xspace}
+\newcommand{\heading}[1]{{\vspace{1ex}\noindent\sc\underline{\smash{#1}}}}
+\newcommand{\headingB}[1]{{\vspace{1ex}\noindent\bf{\smash{#1}}}}
+
+
+
+% =============
+% === Trees ===
+% =============
+
+% LBBT definition
+\newcommand{\FT}{\term{FT}}                         % Full binary tree
+\newcommand{\LBBT}{\term{LBBT}}                     % Left-balanced binary tree
+\newcommand{\maxp}{\term{mp2}}                      % Maimum power of 2 smaller than or equal to argument.
+\newcommand{\addleaf}{\term{addLeaf}}               % Add a leaf to LBBT_n to get LBBT_n+1
+\newcommand{\ltree}{\tree_{\mathsf L}}              % Arbitrary left sub-tree
+\newcommand{\rtree}{\tree_{\mathsf R}}              % Arbitrary right sub-tree
+\newcommand{\treeArity}{q}
+\newcommand{\lbt}[2]{\term{LBT}_{#1,#2}}
+\newcommand{\mpow}{\term{max\md pow}}
+\newcommand{\leaf}{\term{leaf}}
+
+
+% Basic stuff
+\newcommand{\tree}{\tau}                            % Arbitrary tree
+\newcommand{\rt}{\term{root}}                       % Root of a tree
+\newcommand{\nodes}{\term{nodes}}                   % The set of nodes in the LT.
+\newcommand{\isroot}{\term{isroot}}                 % Returns true iff node is the root.
+\newcommand{\isleaf}{\term{isleaf}}                 % Returns true iff node is the root.
+\newcommand{\parent}{\term{parent}}                 % Parent of a node
+\newcommand{\nodeIndex}{\term{nodeIdx}}				% The node index of a node
+\newcommand{\depth}{\term{depth}}
+\newcommand{\children}{\term{children}}
+
+
+% Node labels (unless otherwise defined)
+\newcommand{\unmergedLeaves}{\term{unmLvs}} % The set of unmerged leaves
+
+
+% Tree helper function
+\newcommand{\clone}{\term{clone}}					% Returns a deep copy of the tree
+\newcommand{\public}{\term{public}}                 % Returns the same LT but with private labels cleared.
+\newcommand{\roster}{\term{roster}}                 % Returns the set of group members' IDs.
+\newcommand{\leaves}{\term{leaves}}                 % Associative array leafIndex -> leaf.
+\newcommand{\leafof}{\term{leafof}}                 % Returns leaf of input ID.
+\newcommand{\getleaf}{\term{getLeaf}}               % Finds first blank leaf. If none insert new leaft and return it.
+\newcommand{\directpath}{\term{directPath}}		    % Returns the direct path starting at argument leafIndex
+\newcommand{\lca}{\term{lca}}                       % Least common ancestor function of two input nodes
+\newcommand{\blankpath}{\term{blankPath}}		    % Blanks the direct path starting at argument leafIndex
+\newcommand{\mergeleaves}{\term{mergeLvs}}       % Empties the unmergedLeaves set on the direct path
+\newcommand{\unmergeleaf}{\term{unmerge}}       % Adds the leaf to the unmergedLeaves set on the direct path
+
+
+% Node helper functions
+\newcommand{\inuse}{\term{inuse}}                   % Returns true iff node has labels
+\newcommand{\blank}{\term{blank}} 					% Blanks the node
+\newcommand{\resolution}{\term{resolution}}			% Returns the node's resolution (i.e., the set of nodes one needs to encrypt to instead)
+\newcommand{\resolvent}{\term{resolvent}}			% Deterimines the resolvent
+
+\newcommand{\id}{\term{id}}                         % An identity
+
+
+
+% ========================
+% === MLS Construction ===
+% ========================
+
+\newcommand{\protCMPKE}{{\normalfont\textsf{CmPKE}}\xspace}
+\newcommand{\protMLS}{{\normalfont\textsf{MLS}}}
+\newcommand{\protITK}{{\normalfont\textsf{ITK}}\xspace}
+\newcommand{\protITKI}{{\normalfont\textsf{ITK-I}}\xspace}
+\newcommand{\protITKalt}{{\normalfont\textsf{ITK}\texorpdfstring{\ensuremath{^*}}{*}}\xspace}
+
+
+% ITK State
+\newcommand{\itkSt}{\gamma}
+\newcommand{\groupId}{\term{grpId}}
+\newcommand{\treeHash}{\term{treeHash}}
+\newcommand{\lastAct}{\term{lastAct}}
+\newcommand{\applicationSecret}{\term{appSec}}
+\newcommand{\membershipKey}{\term{membKey}}
+\newcommand{\initSecret}{\term{initSec}}
+
+% State helper functions
+\newcommand{\groupContext}{\term{grpCtxt}}
+
+
+
+% Construction helper functions
+%\newcommand{\applyprops}{
+%	\hyperlink{helper:applyprops}{\method{apply-props}}}
+\newcommand{\deriveKeys}{{\method{derive-keys}}}
+\newcommand{\deriveEpochKeys}{{\method{derive-epoch-keys}}}
+\newcommand{\rekeypath}{{\method{rekey-path}}}
+\newcommand{\createEpoch}{\method{create-epoch}}
+\newcommand{\provState}{\method{create-epoch}}
+\newcommand{\nextState}{\method{transition}}
+\newcommand{\encSecrets}{\method{encrypt}}
+\newcommand{\encSecretsAdd}{\method{encrypt-with-joiner}}
+\newcommand{\decSecrets}{\method{decrypt-path-secret}}
+\newcommand{\applyact}{\method{apply-act}}
+\newcommand{\len}{\texttt{len}}
+\newcommand{\signMsg}{\method{authenticate}}
+\newcommand{\signMsgAdd}{\method{authenticate-for-joiner}}
+\newcommand{\populateSecrets}{\method{get-secrets}}
+\newcommand{\setTreeHash}{{\method{set-tree-hash}}}
+\newcommand{\computeTreeHash}{{\method{tree-hash}}}
+
+
+% Construction Variables
+\newcommand{\joinerSecret}{\term{joinerSec}}
+\newcommand{\epochSecret}{\term{epSec}}
+\newcommand{\commitSecret}{\term{commitSec}}
+\newcommand{\updatePath}{\term{updPath}}
+\newcommand{\updatePathNodes}{\term{updPathNodes}}
+\newcommand{\pathSecret}{\term{pathSec}}
+\newcommand{\pathSecrets}{\term{pathSecs}}
+\newcommand{\encPathSecrets}{\term{encPathSecs}}
+\newcommand{\encGroupSecret}{{\normalfont\textit{ctxt}}}
+\newcommand{\encGroupSecrets}{\term{encGrpSecs}}
+\newcommand{\nodeSecret}{\term{nodeSec}}
+\newcommand{\auxData}{\term{auxData}}
+\newcommand{\updatedPks}{\term{updEKs}}
+\newcommand{\redactedSig}{\sig'}
+\newcommand{\redactedUpPks}{\updatedPks'}
+\newcommand{\pathSecCtxt}{{\normalfont\textit{Ctxt}}}
+\newcommand{\pathSecCtxtInd}{{\normalfont\textit{ctxt}}}
+\newcommand{\genPKIkeys}{\method{AKS-kgen}}
+\newcommand{\KwQuery}{\keyword{query}}
+\newcommand{\epochSecretVec}{\term{EpSecs}}
+\newcommand{\fullpath}{\term{path}}
+\newcommand{\concat}{\mathrel{+\!\!+}}
+\newcommand{\inSubtree}{\term{inSubtree}}
+\newcommand{\getPathSecsMap}{\method{rcvrs-of-path-secs}}
+\newcommand{\getWeights}{\method{weights}}
+\newcommand{\myReduction}{\method{my-reduction-pattern}}
+\newcommand{\confTag}{\term{confTag}}
+\newcommand{\macsig}{\term{tag}}
+
+% Legacy
+\newcommand{\ckagk}{\mdef{I}}                       % CGKA group key

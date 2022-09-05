@@ -1,0 +1,195 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
+\begin{figure*}[!tbp]
+\begin{systembox}{\normalsize$\funcCGKA$}
+  \begin{flushleft}
+    Parameters: $\KwConf{}(\hgnodeid)$, $\KwAuth{}(\hgnodeid, \id)$, $\pgod$
+
+    \hrulefill
+  \end{flushleft}
+
+  {\begin{minipage}[t]{0.47\linewidth}
+    \vspace*{-1em}
+    {\bf Initialization} \Comment{Executed on first input.}
+    \begin{algorithmic}
+      \State $\ptr[\wc], \setvert[\wc] \gets \bot$
+	    \State $\hgnctr \gets 0$
+      \State $\ep \gets \hgnew$; $\ep.\hgorig \gets \pgod$; $\ep.\hgm \gets \{\pgod\}$
+      \State $\setvert[0] \gets \ep$
+      \State $\ptr[\pgod] \gets 0$
+    \end{algorithmic}
+
+    \medskip
+    {\bf Input $(\keyword{Send}, \hgact), \hgact \in \{\hglu , \hgla\md\id_t, \hglr\md\id_t\}$ from $\id$}
+    \begin{algorithmic}
+      \State \smash{\Comment{Send inputs to sim. and allow it to reject them.}}
+      \State Send $(\keyword{Send},\id,\hgact)$ to the sim. and receive $\mathit{ack}$.
+      \State\KwReq{} $\mathit{ack}$
+      \State \smashedComment{Compute the new epoch $\ep$ created by the action.}
+      \State $\ep \gets \hgnew$; $\ep.\hgpar \gets \ptr[\id]$; $\ep.\hgorig \gets \id$
+      \State $\ep.\hgact \gets \hgact$; $\ep.\hgm \gets \members(\ptr[\id],\hgact)$
+      \State $\hgnctr\inc$; $\setvert[\hgnctr]\gets \ep$
+      \State \smashedComment{Enforce security after possible changes to HG.}
+%\Comment{Creating $\ep$ must not destroy the HG (else, both the protocol and the simulator must reject the action).}
+      \State \KwAss{} $\hgConsistent \land \authPreserved$
+      \State \smashedComment{Immediately transition $\id$ into the created epoch.}
+      \State $\ptr[\id] \gets \hgnctr$
+      \State \smashedComment{Output the idealized message chosen by adv.}
+      \State Receive from the simulator $\msgS$.
+      \State \Return $\msgS$		% \State \Return $(\msgS,\wmsg)$
+    \end{algorithmic}
+
+    \medskip
+    {\bf Input $\keyword{GetKey}$ from $\id$}
+    \begin{algorithmic}
+      \State Send $(\keyword{Key},\id)$ to the simulator and receive $\ckagk$.
+      \State $\hgnodeid \gets \ptr[\id]$
+      \State \KwReq{} $\hgnodeid \neq \bot$
+      \If{$\setvert[\hgnodeid].\hgk = \bot$}
+        \ExtendedState{\Comment{{Set the key according to \KwConf{}.}}}
+        \If{$\KwConf{}(\hgnodeid)$}
+          \State $\setvert[\hgnodeid].\hgk \getsr \bits^\secparam$
+          \State $\setvert[\hgnodeid].\hgc \gets \true$
+        \Else
+          \State $\setvert[\hgnodeid].\hgk \gets \ckagk$
+        \EndIf
+      \EndIf
+      \State \Return $\setvert[\hgnodeid].\hgk$
+    \end{algorithmic}
+
+    \medskip
+    {\bf Corruption $(\keyword{Expose},\id)$}
+    \begin{algorithmic}
+      \If{$\ptr[\id]\neq\bot$}
+        \smash{\Comment{Record exposure.}}
+    	  \State $\setvert[\ptr[\id]].\hgexp \setadd \id$
+      \EndIf
+      \State \vspace*{-.1em}\Comment{Disallow adaptive corruptions to avoid commitment problem.}
+      \State $\textbf{only allowed if}\ \nexists\hgnodeid : \setvert[\hgnodeid].\hgc \land \neg\KwConf{}(\hgnodeid)$
+    \end{algorithmic}
+
+
+  \end{minipage}}\hspace*{1em}\hfill
+  {\begin{minipage}[t]{0.52\linewidth}
+    {\bf Input $(\keyword{Receive},\msgR)$ from $\id$}
+    \begin{algorithmic}
+      \State \smashedComment{Send inputs to sim. and allow it to reject them.}
+      \State Send $(\keyword{Receive},\id,\msgR)$ to the simulator and receive $\mathit{ack}$.
+      \State\KwReq{} $\mathit{ack}$
+      \State \smashedComment{Ask sim. to interpret the packet.}
+      \State Receive from the simulator $(\hgorig', \hgact')$.
+      \If{$\hgact' = \hglr\md\id$}
+        \ExtendedState{\Comment{Check that $\hgorig'$ removed $\id$ or auth. not guaranteed.}}
+        \State $\variable{honestRem} \gets \exists \hgnodeid : \big( \setvert[\hgnodeid].\hgpar = \ptr[\id]$\\\strut\hfill$ \land\  \setvert[\hgnodeid].\hgorig = \hgorig' \ \land  \setvert[\hgnodeid].\hgact = \hglr\md\id\big)$
+        \State \KwAss{} $\variable{honestRem} \lor \neg \KwAuth{}(\setvert[\ptr[\id]], \hgorig')$
+        \State $\ptr[\id] \gets \bot$
+        \State \Return $(\hgorig', \hgact')$
+      \EndIf
+
+      \State \Comment{Ask sim, to identify the epoch $\hgnodeid$ where $\id$ transitions. If $\hgnodeid=\bot$, a new injected epoch is created.}
+      \State Receive from the simulator $\hgnodeid$.
+      \If{$\hgnodeid = \bot$}
+        \State $\ep \gets \hgnew$
+        \State $\ep.\hgorig \gets \hgorig'$; $\ep.\hgact \gets \hgact'$; $\ep.\hginj \gets \true$
+        \If{$\ptr[\id]\neq\bot$}
+          \State\vspace*{-.2em} \Comment{If $\id$ is a member, compute $\ep.\hgpar$ and $\ep.\hgm$ using its epoch.}
+          \State $\ep.\hgpar \gets \ptr[\id]$
+          \State $\ep.\hgm \gets \members(\ptr[\id],\hgact')$
+        \Else
+          \State\vspace*{-.2em} \Comment{If $\id$ joined, $\ep$ is a detached root with arbitrary member set.}
+          \State Receive $\ep.\hgm$ from the simulator; set $\ep.\hgpar\gets\bot$.
+        \EndIf
+        \State $\hgnctr\inc$; $\setvert[\hgnctr] \gets V$
+        \State $\hgnodeid \gets \hgnctr$
+      \EndIf
+      \State \KwAss{} $\setvert[\hgnodeid] \neq \bot$
+
+      \State \Comment{If a current group member transitions to a detached root, attach it.}
+      \If{$\ptr[\id]\neq\bot \land \setvert[\hgnodeid].\hgpar=\bot$}
+         $\setvert[\hgnodeid].\hgpar\gets\ptr[\id]$
+      \EndIf
+
+      \State \KwAss{} $\ptr[\id]=\bot \lor \setvert[\hgnodeid].\hgpar = \ptr[\id]$
+      \State \KwAss{} $\ptr[\id]\neq\bot \lor \setvert[\hgnodeid].\hgact = \hgla\md\id$
+      \State \Comment{Enforce security after possible changes to HG.}
+  		\State \KwAss{} $\hgConsistent \land \authPreserved$
+
+
+      \State \Comment{Transition $\id$ and compute its output.}
+      \State $\ptr[\id] \gets \hgnodeid$
+      \If{$\setvert[\hgnodeid].\hgact=\hgla\md\id$}
+         \Return $(\setvert[\hgnodeid].\hgorig,\setvert[\hgnodeid].\hgm)$
+      \Else
+        \ \Return $(\setvert[\hgnodeid].\hgorig,\setvert[\hgnodeid].\hgact)$
+      \EndIf
+    \end{algorithmic}
+
+  \end{minipage}}
+
+
+\end{systembox}
+%\vspace*{-0.7em}
+%\caption{}\label{fig:CGKA-func-active}
+%\end{figure}
+%
+%\begin{figure}[p]
+
+\caption{The ideal CGKA functionality.}\label{fig:CGKA-func-active}
+\end{figure*}
+
+\begin{figure*}[tbp]
+  \begin{systembox}{$\funcCGKA$: Additional Methods}
+     {\begin{minipage}[t]{0.47\linewidth}
+%    \vspace*{-1em}
+%    \algoHead{Helpers}
+
+    {\bf Helper $\hgnew$}
+    \begin{algorithmic}
+      \State \Return new epoch with $\hgorig=\bot$, $\hgpar=\bot$, $\hgact=\bot$, $\hgm=\emptyset$, $\hginj=\false$, $\hgk=\bot$, $\hgexp=\emptyset$, $\hgc=\false$.
+    \end{algorithmic}
+
+    \medskip
+    {\bf Helper $\members(\hgnodeid,\hgact)$}
+    \begin{algorithmic}
+      \State $G \gets \setvert[\hgnodeid].\hgm $
+      \If{$\hgact=\hgla\md\id_t$}
+        \State $G \setadd \id_t$
+      \ElsIf{$\hgact=\hglr\md\id_t$}
+        \State $G \setrem \id_t$
+      \EndIf
+      \If{$\hgact\neq\hglu \land G=\setvert[\hgnodeid].\hgm $}
+        \State \Return $\bot$
+      \EndIf
+      \State \Return $G$
+    \end{algorithmic}
+  \end{minipage}}\hfill
+  {\begin{minipage}[t]{0.49\linewidth}
+
+    {\bf Helper \hgConsistent}
+    \begin{algorithmic}
+      \State \vspace*{-.6em} \Comment{True if HG is a forest and membership is consistent.}
+      \State \Return $\true$ iff
+      \State \hspace*{1.5em} a) $\forall \id$ s.t. $\ptr[\id] \neq \bot \ : \ \id \in \setvert[\ptr[\id]].\hgm$
+      \State \hspace*{1.5em} b) HG has no cycles
+      \State \hspace*{1.5em} c) $\forall \hgnodeid \in [\hgnctr]\ :\ \setvert[\hgnodeid].\hgm\neq\bot$
+      \State \hspace*{1.5em} d) $\forall \hgnodeid \in [\hgnctr]$ s.t. $\setvert[\hgnodeid].\hgpar\neq\bot\ :$\\\hspace*{4em} $\ \setvert[\hgnodeid].\hgm = \members(\setvert[\hgnodeid].\hgpar,\setvert[\hgnodeid].\hgact)$
+    \end{algorithmic}
+
+    \medskip
+    {\bf Helper \authPreserved}
+    \begin{algorithmic}
+      \State \vspace*{-.6em}\Comment{{True if there is no authentic epoch created by injected packet. Observe that the root $\hgnodeid=0$ cannot be injected by definition.}}
+      \State \Return $\nexists\hgnodeid :  1 \leq \hgnodeid \leq \hgnctr \land \setvert[\hgnodeid].\hginj$ \\\strut\hfill $ \land\ \KwAuth(\setvert[\hgnodeid].\hgpar, \setvert[\hgnodeid].\hgorig)$
+    \end{algorithmic}
+
+  \end{minipage}}
+  \end{systembox}
+
+  \caption{The ideal CGKA functionality: additional methods.}\label{fig:CGKA-func-active-helpers}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

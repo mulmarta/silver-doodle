@@ -1,0 +1,64 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
+\section{Details of the (sa)CGKA Security Model}\label{sec:model}
+In this section, we formally define $\funcCGKA$. The code of $\funcCGKA$ is in \cref{fig:CGKA-func-active,fig:CGKA-func-active-helpers}.
+\input{fig_cgka_secdef}
+%
+\paragraph{Notation.}
+We use the keyword \KwAss{} \textit{cond} to restrict the simulator's actions. Formally, if the condition \textit{cond}
+is false, then the functionality permanently halts, making the real and ideal worlds easily distinguishable. Further, we
+use {\bf only allowed if} \textit{cond} to restrict the environment. That is, our statements quantify only over
+environments who, when interacting with $\funcCGKA$ and any simulator, never make \textit{cond} false\footnote{A relaxed
+  restriction would require that $\Adv$ makes \textit{cond} false with a small probability $\epsilon$. In our case
+  $\Adv$ knows if it violates \textit{cond}, so fixing $\epsilon=0$ is without loss of generality.}.
+We write \emph{receive from the simulator} to denote that the functionality sends a dummy value to it, waits
+until it sends a value back and asserts via \KwAss{} that the received value is of the correct format. Lastly, all
+functions prefixed with a $\method{}$ are \emph{helper functions} and not exposed outside the protocol.
+
+\paragraph{State.}
+$\funcCGKA$ maintains a history graph represented as an array $\setvert$, where $\setvert[\hgnodeid]$ denotes the epoch identified by an integer $\hgnodeid$. We use the standard object-oriented notation for epochs. In particular, each epoch $\ep$ has a number of attributes listed in \cref{tab:state} ($\ep.\hginj$, $\ep.\hgexp$ and $\ep.\hgc$ are related to corruptions).
+ Apart from $\setvert$, $\funcCGKA$ stores an array $\ptr$, where $\ptr[\id]$ denotes the current epoch of the party $\id$.
+
+\begin{table}[!tb]
+\noindent	\begin{center}\scalebox{.9}{\begin{tabularx}{.5\textwidth}{| l | X |}
+		\hline
+		$\ep.\hgpar$ & The integer identifier of the parent epoch.\\
+		\hline
+    $\ep.\hgorig$ & The party who created the epoch by performing a group operation.\\
+		\hline
+    $\ep.\hgact$ & The group modification performed when $E$ was created: either $\hglu$ for update, or $\hgla\md\id_t$ for adding $\id_t$, or $\hglr\md\id_t$ for removing $\id_t$.\\
+		\hline
+    $\ep.\hgm$ & The set of group members.\\
+		\hline
+    $\ep.\hgk$ & The shared group key.\\
+		\hline
+    $\ep.\hginj$ & A boolean flag indicating if the epoch is injected.\\
+		\hline
+    $\ep.\hgexp$ & The set of group members exposed (i.e., corrupted) in this epoch.\\
+		\hline
+    $\ep.\hgc$ & A flag indicating if a random group key has been outputted.\\
+		\hline
+	\end{tabularx}}\end{center}
+\caption{Attributes on an epoch in $\funcCGKA$.}\label{tab:state}.
+\end{table}
+
+\paragraph{Inputs from parties.}
+The first two inputs, Send and Receive, are handled quite similarly. First, all inputted values are sent to the simulator (there are no private inputs). Second, the simulator sends a flag {\it ack} which decides if sending/receiving succeeds (or fails with output $\bot$). Third, $\funcCGKA$ updates the history graph and enforces that this does not destroy authenticity and consistency by checking that $\authPreserved$ and $\hgConsistent$ are true. Finally, $\funcCGKA$ transitions the sender/receiver to the new epoch (or removes its pointer in case it is removed) and computes the output using the new graph.
+
+One aspect that needs more explanation is updating the graph when a party $\id$ receives $c$. In this case, the simulator interprets $c$ for $\funcCGKA$ (which abstracts away ciphertexts) by providing the sender $\hgorig'$ and the action $\hgact'$. If $\hgact'$ removes $\id$, then the only possible authenticity check is that either $\hgorig'$ removed $\id$ in its current epoch or the epoch is not authentic for $\hgorig'$.
+%
+If $\id$ is not removed, the simulator identifies the epoch $\hgnodeid$ into which $\id$ transitions or joins. The epoch can be $\bot$, in which case $\funcCGKA$ creates a new epoch $\ep$ with the infected flag $\hginj$ set. If $\id$ is a current group member, then $\ep$ is a child of its current epoch. Otherwise, if $\id$ joins, then $\ep$ is a detached root.
+Afterwards, $\funcCGKA$ checks if $\hgnodeid$ identifies a detached root into which a current group member $\id$ transitions. If this is the case, the root is attached as a child of $\id$'s current epoch. For instance, this implies that any other party transitioning to $\hgnodeid$ must do so from $\id$'s current epoch and the epoch semantic must be consistent between it, $\id$ and the party who joined into $\hgnodeid$.
+
+The last input to $\funcCGKA$ is GetKey, which simply outputs the group key from the party's current epoch. The key is set to a random or arbitrary value the first time it is retrieved by some party.
+
+\paragraph{Corruptions.}
+When a party is corrupted, $\funcCGKA$ simply adds it to the exposed set $\hgexp$ of its current epoch. The set is later used by the security predicates. Then $\funcCGKA$ disallows corruptions in case extending the $\hgexp$ set switched \KwConf{} of some epoch $E$ with $E.\hgc$ set from true to false.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

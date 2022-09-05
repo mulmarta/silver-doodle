@@ -2,7 +2,9 @@
 % !TeX spellcheck = en_US
 
 \section{Server-Aided CGKA}\label{sec:cgka}
-In this section, we first explain the saCGKA syntax, i.e., the interface exposed by saCGKA protocols to higher-level applications. Then, we give intuitive security properties saCGKA protocols should provide and an overview of our saCGKA security model. For details, see \cref{sec:model}. Finally, we highlight the additional flexibility provided by semantic agreement of saCGKA and list simplifications it makes compared with previous works on active CGKA security \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke}.
+In this section, we first explain the saCGKA syntax, i.e., the interface exposed by saCGKA protocols to higher-level
+applications. Then, we give intuitive security properties saCGKA protocols should provide and an overview of our saCGKA
+security model. For details, see the full version~\cite{EPRINT:AHKM21}. Finally, we highlight the additional flexibility provided by semantic agreement of saCGKA and list simplifications it makes compared with previous works on active CGKA security \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke}.
 
 \subsection{Syntax}
 A saCGKA protocol allows a dynamic group of parties to agree on a continuous sequence of symmetric group keys. An execution of a saCGKA protocol proceeds in \emph{epochs}. During each epoch, a fixed set of current group members shares a single group key. A group member can modify the group state, that is, create a new epoch, by sending a single message to the mailboxing service. Afterwards, each group member can download a possibly personalized message and, if they accept it, transition to the new epoch. Three types of group modifications are supported: adding a member, removing a member and updating, i.e., refreshing the group key.
@@ -72,7 +74,7 @@ Most CGKA protocols, including \protITK and \saik, rely on a type of PKI called 
 
 
 \subsection{Formal Model Intuition}
-We define security of saCGKA protocols in the UC framework. That is, a saCGKA protocol is secure if no environment $\Adv$ can distinguish between the real world where it interacts with parties executing the protocol and the ideal world where it interacts with the ideal saCGKA functionality and a simulator. Readers familiar with game-based security should think of $\Adv$ as the adversary (see also \cref{sec:uc} for some additional discussion).
+We define security of saCGKA protocols in the UC framework. That is, a saCGKA protocol is secure if no environment $\Adv$ can distinguish between the real world where it interacts with parties executing the protocol and the ideal world where it interacts with the ideal saCGKA functionality and a simulator. Readers familiar with game-based security should think of $\Adv$ as the adversary (see also~\cite{EPRINT:AHKM21} for some additional discussion).
 
 \paragraph{The real world.}
 In the real-world experiment, the following actions are available to $\Adv$: First, it can instruct parties to perform

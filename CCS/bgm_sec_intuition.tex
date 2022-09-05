@@ -3,7 +3,7 @@
 
 \section{Security of \saik}\label{sec:saik-sec-int}
 To define the security we prove for \saik we fix the two safety
-predicates \KwConf{} and \KwAuth{} used by $\funcCGKA$. We next give the intuition; see \cref{fig:safe} in \cref{sec:bgm_prot_proof} for the pseudocode. We define two versions of the
+predicates \KwConf{} and \KwAuth{} used by $\funcCGKA$. We next give the intuition; see the full version~\cite{EPRINT:AHKM21} for the pseudocode. We define two versions of the
 predicates: a stronger and a weaker one. For better exposition, the
 stronger version is not achieved by \saik as presented in this work. But at the cost of added complexity
 \saik can easily be extended to achieve it, as
@@ -70,11 +70,11 @@ $\id$ joins $\Adv$'s epoch and is corrupted before sending any message. We expla
 \cref{sec:ext-sec-predicates}.
 
 \paragraph{Security.} 
-For the \mmPKE scheme we assume a security property called \mmowrcca, defined in \cref{sec:mmowrcca}. The notion is strictly weaker than \mmindcca; in \cref{sec:mmowrcca} we prove the implication.
+For the \mmPKE scheme we assume a security property called \mmowrcca, defined in the full version~\cite{EPRINT:AHKM21}. The notion is strictly weaker than \mmindcca; in~\cite{EPRINT:AHKM21} we prove the implication.
 %
-Formally, the AKS is modeled as the functionality $\funcPKI$ defined in \cref{sec:pki}. \saik
+Formally, the AKS is modeled as the functionality $\funcPKI$. \saik
 works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real world and emulated by the simulator in the ideal world.
-The formal proof of \cref{thm:saik-security} can be found in \cref{sec:bgm_prot_proof}.
+The formal proof of \cref{thm:saik-security} and the definition of $\funcPKI$ are given in the full version~\cite{EPRINT:AHKM21}.
 
 \newcommand{\ucideal}{\textnormal{\textsc{ideal}}}
 \newcommand{\ucreal}{\textnormal{\textsc{real}}}

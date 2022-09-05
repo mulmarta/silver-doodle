@@ -1,0 +1,582 @@
+% !TEX root = ../main.tex
+%
+%  ADD NEW NOTATION at the bottom
+%
+%-------------------------------------------------------------------------------
+%  Font and Notation
+%-------------------------------------------------------------------------------
+\newcommand{\xmath}[1]{\ensuremath{#1}\xspace}
+
+\newcommand{\N}{\ensuremath{\mathbbm{N}}\xspace}
+% \newcommand{\R}{\ensuremath{\mathbbm{R}}\xspace}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}\xspace}
+\newcommand{\Z}[0]{\ensuremath{\mathbbm{Z}}\xspace}
+\newcommand{\Zp}[0]{\ensuremath{\Z_p}\xspace}
+\newcommand{\powerset}[1]{\ensuremath{\mathcal{P}(#1)}\xspace}
+
+\newcommand{\iseq}[0]{\ensuremath{\overset{?}{=}}}
+%-------------------------------------------------------------------------------
+%  Fonts used in this project
+%-------------------------------------------------------------------------------
+\newcommand{\command}[1]{\xmath{\textsc{#1}}}
+\newcommand{\algorithm}[1]{\xmath{\textsf{#1}}}
+\newcommand{\variable}[1]{\xmath{\textnormal{\textsf{#1}}}}
+\newcommand{\parameter}[1]{\xmath{\texttt{#1}}}
+\newcommand{\keyword}[1]{\xmath{{\normalfont\texttt{#1}}}}
+
+\newcommand{\hardprobfont}[1]{\texorpdfstring{\ensuremath{\textsf{#1}}}{#1}}
+\newcommand{\gamefont}[1]{\texorpdfstring{{\normalfont \ensuremath{\textsf{#1}}}}{#1}}
+\newcommand{\algorithmfont}[1]{\texorpdfstring{\algorithm{#1}}{#1}}
+
+\newcommand{\bigO}{\ensuremath{\textsf{O}}\xspace}
+
+% assumptions
+\newcommand{\sdh}[0]{\textnormal{\hardprobfont{DSSDH}}\xspace}
+
+% Security notions
+\newcommand{\indcca}[0]{\gamefont{IND-CCA}\xspace}
+\newcommand{\indrcca}[0]{\gamefont{IND-RCCA}\xspace}
+\newcommand{\indcpa}[0]{\gamefont{IND-CPA}\xspace}
+\newcommand{\mmindcca}[0]{\gamefont{mmIND-CCA}\xspace}
+\newcommand{\mmindrcca}[0]{\gamefont{mmIND-RCCA}\xspace}
+\newcommand{\mmowrcca}{\gamefont{mmOW-RCCA}\xspace}
+%\newcommand{\wmmindcca}[0]{\gamefont{w-mmIND-CCA}\xspace}
+%\newcommand{\sceo}{\gamefont{S-CEO}\xspace}
+%\newcommand{\msceo}{\gamefont{MS-CEO}\xspace}
+%\newcommand{\ssceo}{\gamefont{MS-sCEO}\xspace}
+\newcommand{\ufcma}[0]{\gamefont{EUF-CMA}\xspace}
+%\newcommand{\rsufcma}[0]{\gamefont{RS-EUF-CMA}\xspace}
+%\newcommand{\ersufcma}[0]{\gamefont{EUF-RCMA}\xspace}
+%\newcommand{\ahrsufcma}[0]{\gamefont{A}\ersufcma}
+%\newcommand{\shrsufcma}[0]{\gamefont{S}\ersufcma}
+\newcommand{\mmufcma}[0]{\gamefont{mmEUF-CMA}\xspace}
+
+\newcommand{\op}[0]{\gamefont{OP}\xspace}
+
+\newcommand{\kc}[0]{\gamefont{KC}\xspace}
+\newcommand{\rkc}[0]{\gamefont{RKC}\xspace}
+
+%-------------------------------------------------------------------------------
+%  General notation
+%-------------------------------------------------------------------------------
+%Fields, sets, tions
+\newcommand{\aset}[1]{\left\{ { #1 }\right\}}% {#1}
+\newcommand{\union}{\ensuremath{\cup}}
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}% |#1|
+%\newcommand{\nicevec}[1]{\overrightarrow{#1}}
+\newcommand{\Mspace}{\ensuremath{\mathcal{M}}\xspace}
+
+
+%Distribution
+\newcommand{\getsDist}{\twoheadleftarrow} %<<--
+
+%Player sets, adversary
+\newcommand{\party}{P\xspace}
+\newcommand{\PS}{\mathcal{P}}
+\newcommand{\HS}{\mathcal{H}} %honest parties
+\newcommand{\CS}{\mathcal{Z}} %corrupted parties
+\newcommand{\crashedP}{\mathcal{C}}
+\newcommand{\passiveP}{\mathcal{Z}^p}
+\newcommand{\semiP}{\mathcal{Z}^s}
+\newcommand{\failstopP}{\mathcal{Z}^f}
+\newcommand{\Adv}[1][\relax]{\xmath{\mathcal{A}_{#1}}}
+\newcommand{\Bdv}[1][\relax]{\xmath{\mathcal{B}_{#1}}}
+
+
+%Graph and neighborhood
+\newcommand{\graph}{G}
+\newcommand{\graphfam}{\mathcal{G}}% G
+\newcommand{\nbh}[1]{\mathbf{N}_G(#1)}% N(v)
+\newcommand{\nbhi}[2]{\mathbf{N}_{G_{#1}}(#2)}
+\newcommand{\nbhc}[1]{\mathbf{N}_G[#1]}% N[v]
+
+% oracles
+\newcommand{\oracleDec}[0]{\ensuremath{\mathcal{O}_{\text{\mmpkeDec}}(\cdot,\mmpkesk,\cdot)}\xspace}
+
+
+%-------------------------------------------------------------------------------
+% Global parameters
+%-------------------------------------------------------------------------------
+%Security param
+\newcommand{\secparam}{\xmath{\kappa}}
+\newcommand{\negl}{\text{negl}}
+\newcommand{\poly}{\mathsf{poly}}
+
+%-------------------------------------------------------------------------------
+%  UC and Functionalites
+%-------------------------------------------------------------------------------
+\newcommand{\ucexe}[3]{\command{EXEC}_{#1,#2,#3}}
+%\newcommand{\uchyb}[2]{\command{HYB}_{#1,#2}}
+\newcommand{\uchyb}[1]{\mathcal{H}_{#1}}
+\newcommand{\ucenv}{\xmath{\mathcal{Z}}}
+\newcommand{\ucsim}[1][\relax]{\xmath{\mathcal{S}_{\textsc{#1}}}}
+\newcommand{\indist}[1][\relax]{\ensuremath{\overset {#1}{\approx}}}
+
+%Turning machines
+\newcommand{\itm}{\xmath{\mathtt{ITM}}}
+\newcommand{\iti}{\xmath{\mathtt{ITI}}}
+
+%Protocol
+\newcommand{\prot}{\Pi}
+
+%Functionalities
+\newcommand{\Func}[1][\relax]{\xmath{\mathcal{F}_{\normalfont\textsc{#1}}}}
+\newcommand{\GFunc}[1][\relax]{\xmath{\mathcal{G}_{\normalfont\textsc{#1}}}}
+%\newcommand{\wrapper}{\mathcal{W}}
+
+%M/S-ID
+\newcommand{\sid}{\mathsf{sid}}
+\newcommand{\pid}{\mathsf{pid}}
+
+%------------------------------
+%  ADD NEW NOTATION below
+%-------------------------------
+
+\newcommand{\true}{\keyword{true}}
+\newcommand{\false}{\keyword{false}}
+
+% === Misc ===
+
+\newcommand{\getsr}{\gets_{\scriptscriptstyle\$}} %dollar behind arrow
+\renewcommand{\getsr}{\mathrel{\vbox{\offinterlineskip\ialign{
+        \hfil##\hfil\cr
+        \hspace{0.1em}$\scriptscriptstyle\$$\cr
+        $\leftarrow$\cr
+      }}}} %dollar on arrow
+\newcommand{\getsl}{\rightarrow_{\scriptscriptstyle\$}} %dollar behind arrow
+\renewcommand{\getsl}{\mathrel{\vbox{\offinterlineskip\ialign{
+        \hfil##\hfil\cr
+        \hspace{-0.2em}$\scriptscriptstyle\$$\cr
+        $\rightarrow$\cr
+      }}}} %dollar on arrow
+
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\wc}{*}
+
+%%% General formating
+\newcommand{\mdef}[1]{{\ensuremath{#1}}\xspace}      % Math Def which can also be used in normal text.
+\newcommand{\term}[1]{\mdef{\mathsf{#1}}}            % Math Term/Algorithm
+\newcommand{\method}[1]{\mdef{\textnormal{\tt*#1}}}  % Method in a class
+%\newcommand{\str}[1]{\mdef{\texttt{"#1"}}}           % Constant
+\newcommand{\attrib}[1]{\mdef{\mathsf{#1}}}          % Attribute in a class
+\newcommand{\myvar}[1]{\mdef{#1}}                    % Concrete variable. I.e. an instantiated object.
+\newcommand{\func}[1]{\mdef{\mathsf{#1}}}            % Stand alone function / algorithm.
+\newcommand{\myvec}[1]{\vec{#1}}
+\newcommand{\literal}[1]{\mdef{\text{\normalfont \it`#1'}}}			% String literals
+
+\newcommand{\md}{\textrm{-}}
+\newcommand{\algoskip}{\smallskip}
+
+\newcommand{\set}[1]{\{#1\}}
+
+\newcommand{\ititle}[1]{{\bf #1}}
+\newcommand{\from}{\gets}
+
+
+
+% ==========================
+% === CGKA Functionality ===
+% ==========================
+
+
+% === History Graph ===
+
+\newcommand{\hg}{\term{HG}}
+\newcommand{\hge}{V}
+
+%\newcommand{\hgroot}{\hge_{\mathsf{root}}}
+\newcommand{\hgroot}[1]{\mathsf{root}_{#1}}
+\newcommand{\rootCount}{\mathsf{rootCtr}}
+\newcommand{\numRoot}{rt}
+
+\newcommand{\hgl}{\literal{lbl}}
+\newcommand{\hgt}{\literal{type}}
+\newcommand{\hgli}{\literal{init}}
+\newcommand{\hgla}{\literal{add}}
+\newcommand{\hglr}{\literal{rem}}
+\newcommand{\hglu}{\literal{up}}
+
+\newcommand{\hgm}{\mathsf{mem}}
+\newcommand{\hgk}{\mathsf{key}}
+\newcommand{\hgc}{\mathsf{chall}}
+\newcommand{\hgpar}{\mathsf{par}}
+\newcommand{\hgexp}{\mathsf{exp}}
+
+\newcommand{\ptr}{\textsf{CurEp}}
+\newcommand{\hgnew}{\method{new-ep}}
+\newcommand{\ep}{E}
+
+\newcommand{\grp}{G}
+
+\newcommand{\hgorig}{\mathsf{sndr}}
+\newcommand{\hgact}{\mathsf{act}}
+\newcommand{\hginj}{\textsf{inj}}
+\newcommand{\setvert}{\mathsf{HG}}
+\newcommand{\pgod}{\id_\mathsf{creator}}
+
+\newcommand{\msgS}{C}
+\newcommand{\msgR}{c}
+\newcommand{\hgnodeid}{{\normalfont\textsf{epid}}}
+\newcommand{\hgnctr}{\textsf{epCtr}}
+
+\newcommand{\hgConsistent}{\method{HG-is-consistent}}
+\newcommand{\authPreserved}{\method{auth-is-preserved}}
+\newcommand{\members}{\method{mem}}
+
+% === Keywords ===
+\newcommand{\KwReq}{\textbf{req}}
+\newcommand{\KwTry}{\textbf{try}}
+\newcommand{\KwWin}{\textbf{win}}
+\newcommand{\KwPub}{\textbf{pub}}
+\newcommand{\KwSafe}{\textbf{safe}}
+\newcommand{\KwConf}{\textnormal{\textbf{confidential}}}
+\newcommand{\KwAuth}{\textnormal{\textbf{authentic}}}
+\newcommand{\KwCanInj}{\textbf{inj-allowed}}
+\newcommand{\KwAss}{\textbf{assert}}
+\newcommand{\KwRestrEnv}{\textbf{restrict}}
+\newcommand{\KwParse}{\textbf{parse}}
+
+% === Safe ===
+\newcommand{\ancestor}{\text{\sffamily *ancestor}}
+\newcommand{\safeDetached}{\text{\sffamily\bfseries *in-detached-tree}}
+
+% === PKI ===
+\newcommand{\SSK}{\term{SSK}}
+\newcommand{\kbpk}{\term{kp}}
+\newcommand{\kbsk}{\term{sk}}
+\newcommand{\KBSK}{\term{SK}}
+\newcommand{\KBSPK}{\term{SPK}}
+\newcommand{\corrSPK}{\term{Exposed}}
+\newcommand{\regSPK}{\term{Registered}}
+%\newcommand{\honPK}{\term{HonestPK}}
+
+
+%\newcommand{\pkig}{\mathsf{get\md{}pk}}
+\newcommand{\getKbSks}{get\md{}sks}
+
+\newcommand{\pkepk}{\mathsf{pk}}
+\newcommand{\pkesk}{\mathsf{sk}}
+
+
+
+% === Safe ===
+\newcommand{\safeKnow}{\text{\sffamily\bfseries *know}}
+\newcommand{\safeStateKnown}{\text{\sffamily\bfseries *exposed}}
+\newcommand{\safeHeals}{\text{\sffamily\bfseries *heals}}
+\newcommand{\safeInjAct}{\text{\sffamily\bfseries *secrets-injected}}
+\newcommand{\safeCanTraverse}{\text{\sffamily\bfseries *can-traverse}}
+\newcommand{\safeExpWelcome}{\text{\sffamily\bfseries *leaf-welcome-key-reuse}}
+\newcommand{\safeDetachedTree}{\method{in-det-tree}}
+\newcommand{\safePartySecPres}{\method{party-secrecy-is-preserved}}
+\newcommand{\safePartyExp}{\method{party-secs-are-exposed}}
+\newcommand{\safeRestoresPartySec}{\method{restores-party-secrecy}}
+
+
+% === Functionalities ===
+\newcommand{\funcCGKA}{\Func[cgka]}
+%\newcommand{\funcPKI}{\GFunc[as]}					% authentication service
+%\newcommand{\funcKB}{\GFunc[ks]}					% key service
+\newcommand{\funcPKI}{\Func[aks]}					% authentication service
+\newcommand{\funcKB}{\Func[ks]}					% key service
+
+\newcommand{\funcPKIideal}{\Func[as]^{\normalfont\textsc{iw}}}
+\newcommand{\funcKBideal}{\Func[ks]^{\normalfont\textsc{iw}}}
+
+% ==================
+% === mmGSD-RCCA ===
+% ==================
+
+\newcommand{\vrxCtr}{N}
+\newcommand{\vrxNum}{u}
+\newcommand{\vrxNumT}{v}
+\newcommand{\vrxSeed}[1]{\term{Seed}[#1]}
+\newcommand{\vrxUsed}{\term{Used}}
+\newcommand{\Edges}{\term{Dependencies}}
+\newcommand{\decrypted}{\term{Decrypted}}
+\newcommand{\vrxCorr}{\term{Corr}}
+\newcommand{\funcPK}{\method{pk}}
+\newcommand{\hashlbl}{\term{lbl}}
+\newcommand{\vrx}[1]{u_{\textsf{#1}}}
+
+
+% ==================
+% === Primitives ===
+% ==================
+
+% === Groups ===
+% \newcommand{\G}{\ensuremath{\mathbbm{G}}\xspace}
+\newcommand{\Grp}{\ensuremath{\mathbbm{G}}\xspace}
+\newcommand{\Group}{\ensuremath{\mathcal{G}}\xspace}
+\newcommand{\GGen}{\term{GGen}\xspace}
+
+% === Nominal Groups ===
+\newcommand{\ngroup}{\ensuremath{\mathcal{N}}\xspace}
+\newcommand{\nG}{\ensuremath{\mathcal{G}}\xspace}
+\newcommand{\nGE}{\ensuremath{\mathcal{E}_H}\xspace}
+\newcommand{\nGU}{\ensuremath{\mathcal{E}_U}\xspace}
+\newcommand{\nGexp}{\textnormal{\sf exp}\xspace}
+
+% === Accumulator ===
+\newcommand{\acc}[0]{\term{Acc}}
+\newcommand{\wacc}[0]{\term{wAcc}}
+
+\newcommand{\accSetup}[0]{\term{Setup}}
+\newcommand{\accEval}[0]{\term{Eval}}
+\newcommand{\accProve}[0]{\term{Prove}}
+\newcommand{\accVrfy}[0]{\term{Vrfy}}
+
+\newcommand{\waccSetup}[0]{\term{wSetup}}
+\newcommand{\waccEval}[0]{\term{wEval}}
+\newcommand{\waccProve}[0]{\term{wProve}}
+\newcommand{\waccVrfy}[0]{\term{wVrfy}}
+
+\newcommand{\accpub}[0]{\ensuremath{pp}\xspace}
+\newcommand{\acctrap}[0]{\ensuremath{\tau}\xspace}
+\newcommand{\accSpace}[0]{\ensuremath{\mathcal{X}}\xspace}
+\newcommand{\accValue}[0]{\ensuremath{\mathit{acc}}\xspace}
+\newcommand{\accaux}[0]{\ensuremath{\mathit{aux}}\xspace}
+\newcommand{\accProof}[0]{\ensuremath{\pi}\xspace}
+
+% === mmPKE and mmAPKE===
+\newcommand{\mmPKE}[0]{\term{mmPKE}}
+
+\newcommand{\mmpkeKeyGen}[0]{\term{KG}}
+\newcommand{\mmpkeEnc}[0]{\term{Enc}}
+\newcommand{\mmpkeDec}[0]{\term{Dec}}
+\newcommand{\mmpkeExt}[0]{\term{Ext}}
+
+\newcommand{\mmpkeKeyGenL}[0]{\mmPKE.\term{KG}\xspace}
+\newcommand{\mmpkeEncL}[0]{\mmPKE.\term{Enc}\xspace}
+\newcommand{\mmpkeDecL}[0]{\mmPKE.\term{Dec}\xspace}
+\newcommand{\mmpkeExtL}[0]{\mmPKE.\term{Ext}\xspace}
+
+\newcommand{\mmpkesk}{\term{dk}}
+\newcommand{\mmpkepk}{\term{ek}}
+\newcommand{\mmpkessk}{\term{ssk}}
+\newcommand{\mmpkespk}{\term{spk}}
+\newcommand{\mmpkersk}{\term{rsk}}
+\newcommand{\mmpkerpk}{\term{rpk}}
+
+
+\newcommand{\mmpkeskL}{\mmPKE.\term{sk}}
+\newcommand{\mmpkepkL}{\mmPKE.\term{pk}}
+\newcommand{\mmpkePK}{\ensuremath{\vec{\mathsf{PK}}}\xspace}
+\newcommand{\mmpkeSPK}{\ensuremath{\vec{\mathsf{SPK}}}\xspace}
+
+\newcommand{\mmpkeCtxt}{\ensuremath{{\mmPKE}\term{Ctxt}}\xspace}
+
+\newcommand{\leak}[0]{\term{leak}}
+% === mKEM ===
+\newcommand{\mKEM}[0]{\term{mKEM}}
+
+\newcommand{\mKEMSetup}[0]{\term{mSetup}}
+\newcommand{\mKEMGen}[0]{\term{mKeyGen}}
+\newcommand{\mKEMEncaps}[0]{\term{mEncaps}}
+\newcommand{\mKEMDecaps}[0]{\term{mDecaps}}
+\newcommand{\mKEMExt}[0]{\term{mExt}}
+
+\newcommand{\mKEMpub}[0]{\term{pp}}
+\newcommand{\mKEMsk}[0]{\term{sk}}
+\newcommand{\mKEMpk}[0]{\term{pk}}
+
+\newcommand{\mKEMpubL}[0]{\mKEM.\term{pp}}
+\newcommand{\mKEMskL}[0]{\mKEM.\term{sk}}
+\newcommand{\mKEMpkL}[0]{\mKEM.\term{pk}}
+
+% === mPKE ===
+\newcommand{\mPKE}[0]{\term{mPKE}}
+
+\newcommand{\mPKESetup}[0]{\term{mSetup}}
+\newcommand{\mPKEGen}[0]{\term{mGen}}
+\newcommand{\mPKEEnc}[0]{\term{mEnc}}
+\newcommand{\mPKEDec}[0]{\term{mDec}}
+\newcommand{\mPKEExt}[0]{\term{mExt}}
+
+\newcommand{\mPKEpub}[0]{\term{pp}}
+\newcommand{\mPKEsk}[0]{\term{sk}}
+\newcommand{\mPKEpk}[0]{\term{pk}}
+
+\newcommand{\mPKEpubL}[0]{\mPKE.\term{pp}}
+\newcommand{\mPKEskL}[0]{\mPKE.\term{sk}}
+\newcommand{\mPKEpkL}[0]{\mPKE.\term{pk}}
+
+\newcommand{\mPKEKS}{\mathcal{PK}}
+
+% === Redactable Signatures ===
+\newcommand{\rs}{\term{RS}}
+\newcommand{\rssign}{\term{Sign}}
+\newcommand{\rskeygen}{\term{KeyGen}}
+\newcommand{\rsvrfy}{\term{Vrfy}}
+\newcommand{\rsred}{\term{Reduce}}
+
+\newcommand{\rssignL}{\rs.\term{Sign}}
+\newcommand{\rskeygenL}{\rs.\term{KeyGen}}
+\newcommand{\rsvrfyL}{\rs.\term{Vrfy}}
+\newcommand{\rsredL}{\rs.\term{Redact}}
+
+\newcommand{\rssk}{\term{sk}}
+\newcommand{\rsvk}{\term{vk}}
+
+\newcommand{\rsskL}{\rs.\term{sk}}
+\newcommand{\rsvkL}{\rs.\term{vk}}
+
+\newcommand{\rdclass}{\term{RPC}}
+\newcommand{\rdclassset}{\term{RPCS}}
+\newcommand{\rd}{\term{rp}}
+
+\newcommand{\rdclassBGM}{\ensuremath{\rdclass^{\textnormal{SAIK}}}\xspace}
+\newcommand{\rdclasssetBGM}{\ensuremath{\rdclassset^{\textnormal{SAIK}}}\xspace}
+% === Enhanced Red. Signatures ===
+\newcommand{\ers}{\term{HRS}}
+\newcommand{\erssign}{\term{Sign}}
+\newcommand{\erskeygen}{\term{KeyGen}}
+\newcommand{\ersvrfy}{\term{Vrfy}}
+\newcommand{\ersred}{\term{Reduce}}
+
+\newcommand{\erssignL}{\ers.\term{Sign}}
+\newcommand{\erskeygenL}{\ers.\term{KeyGen}}
+\newcommand{\ersvrfyL}{\ers.\term{Vrfy}}
+\newcommand{\ersredL}{\ers.\term{Redact}}
+
+\newcommand{\erssk}{\term{sk}}
+\newcommand{\ersvk}{\term{vk}}
+
+\newcommand{\ersskL}{\ers.\term{sk}}
+\newcommand{\ersvkL}{\ers.\term{vk}}
+
+% === PK Encryption ===
+\newcommand{\pke}{\term{PKE}}                       % PK Encryption Scheme
+\newcommand{\pkkg}{\pke.\term{kg}}                  % PK Key Gen
+\newcommand{\pkenc}{\pke.\term{enc}}                % PK Encrypt
+\newcommand{\pkdec}{\pke.\term{dec}}                % PK Decrypt
+\newcommand{\pkpk}{\term{ek}}                      % PK Enc public key
+\newcommand{\pksk}{\term{dk}}                      % PK Enc secret key
+\newcommand{\pkpkL}{\pke.\term{ek}}                      % PK Enc public key
+\newcommand{\pkskL}{\pke.\term{dk}}                      % PK Enc secret key
+
+
+% === Signing scheme ===
+\newcommand{\sigscheme}{\term{Sig}}
+\newcommand{\sigsign}{\sigscheme.\term{sign}}
+\newcommand{\sigvrf}{\sigscheme.\term{vrf}}
+\newcommand{\sigkg}{\sigscheme.\term{KG}}
+\newcommand{\sig}{\term{sig}}
+\newcommand{\spk}{\term{spk}}
+\newcommand{\ssk}{\term{ssk}}
+
+% === DEM scheme ===
+\newcommand{\dem}{\term{DEM}}
+\newcommand{\demKeyset}{\ensuremath{\mathcal{K}}}
+\newcommand{\demEnc}{\term{D}}
+\newcommand{\demDec}{\ensuremath{\term{D}^{-1}}}
+
+% === MAC scheme ===
+\newcommand{\mac}{\term{MAC}}
+\newcommand{\mackeyspace}{\ensuremath{\mathcal{K}}\xspace}
+\newcommand{\mactag}{\mac.\term{tag}}
+\newcommand{\macvrf}{\mac.\term{vrf}}
+\newcommand{\mtag}{\term{tag}}
+
+
+% === KDF ===
+\newcommand{\kdf}{\term{KDF}}
+\newcommand{\hkdf}{\term{HKDF}}
+\newcommand{\hkdfexp}{\hkdf.\term{Exp}}
+\newcommand{\hkdfext}{\hkdf.\term{Ext}}
+
+
+% === Hash function ===
+\newcommand{\hash}{\term{Hash}}
+\newcommand{\CR}{\gamefont{CR}\xspace}
+
+% =======================
+% === Data Structures ===
+% =======================
+
+
+% ==== Sets ====
+\let\oldemptyset\emptyset                           %Nice empty set
+\let\emptyset\varnothing
+
+\newcommand{\setadd}{\ \texttt{+$\gets$}\ }
+\newcommand{\setrem}{\ \texttt{-$\gets$}\ }
+
+
+% === Lists ===
+\newcommand{\emptylist}{()}
+\newcommand{\append}{\mathrel{+\!\!+}}              % Append an element to a list
+\newcommand{\listapp}{\ \texttt{+\!\!+$\gets$}\ }
+\newcommand{\reverse}{\term{reverse}}               % Reverses the list
+\newcommand{\indexof}{\term{indexof}}
+\newcommand{\zip}{\term{zip}}
+
+
+% === Paths ===
+\newcommand{\newpath}{\term{  path}}                % Declare a new path object
+\newcommand{\source}{\term{source}}                 % Returns first (deepest) node in a path
+\newcommand{\sink}{\term{sink}}                     % Returns last (shallowest) node in a path
+\newcommand{\traverses}{\term{traverses}}           % Boolean indicating if path traverses argument node
+\newcommand{\meets}{\term{meets}}                   % Returns true iff the 2 argument paths meet
+\newcommand{\meetsat}{\term{meetsAt}}               % Returns first (deepest)
+%node on both argument paths
+
+
+%% === Queus & Maps (Legacy) ===
+%\newcommand{\enq}{\term{enq}}                       % Enqueu an item into a queue
+%\newcommand{\deq}{\term{deq}}                       % Dequeu an item from a queue
+%\newcommand{\delete}{\term{del}}                    % Delete an item from a queue
+%\newcommand{\clear}{\term{clear}}                   % Delete all entries from an associative array
+
+\newcommand{\gsdLbl}{\term{lbl}}
+\newcommand{\adv}[2]{\ensuremath{\textnormal{Adv}_{#2}^{#1}}\xspace}
+\newcommand{\advantage}[3]{\textnormal{Adv}_{#2, \text{#3}}^{#1}}			%
+\newcommand{\experiment}[2]{\textnormal{Exp}_{#2}^{#1}}			%
+\newcommand{\Exp}{\textnormal{Exp}}
+\newcommand{\grpSecret}{\textsf{`epoch'}}
+\newcommand{\dist}{\mathcal{D}}
+
+\newcommand{\nodeUsed}{\textbf{gen-key-if-nec}}
+\newcommand{\reachable}{\textbf{gsd-exp}}
+
+\newcommand{\nUsers}{N}
+\newcommand{\nMsgs}{\ell}
+\newcommand{\nRcvrs}{n}
+\newcommand{\idxUser}{i}
+\newcommand{\idxMsg}{j}
+\newcommand{\idxRcvr}{k}
+
+\newcommand{\trivialComput}{\method{triv-comput}}
+\newcommand{\triggerE}{\variable{ItriggerE}}
+\newcommand{\oracle}[1]{\textnormal{\textsf{\bfseries #1}}}
+
+\newcommand{\injects}{\variable{Forges}}
+\newcommand{\injected}{\variable{injected}}
+\newcommand{\wins}{\variable{Wins}}
+\newcommand{\injectsA}{\variable{ForgesAsym}}
+\newcommand{\injectsB}{\variable{ForgesSym}}
+\newcommand{\injectsBstat}{\variable{ForgesSym'}}
+\newcommand{\gforge}{G^\mathsc{forge}}
+
+\newcommand{\dhmmpke}{\term{DH\md mmPKE}}
+\newcommand{\huffmanacc}{\term{Huf\md wAcc}}
+\newcommand{\huffman}{\algorithm{huffman}}
+\newcommand{\bgmHrs}{\normalfont{\algorithm{BGM-HRS}}}
+% === Acronyms ===
+\DeclareAcronym{hrs}{%
+  short=RS, long=Reducible Signature
+}
+\newcommand{\smashedComment}[1]{\smash{\Comment{#1}}}
+\newcommand{\safeExposedSecrets}{\method{exposed-ind-secs}}
+\newcommand{\safeExposedGrpSecrets}{\method{exposed-grp-secs}}
+\newcommand{\safeSharesSecrets}{\method{share-ind-secs}}
+\newcommand{\safeKnowsSecrets}{\method{ind-secs-bad}}
+\newcommand{\safeWeakAdd}{\method{exposed-ind-secs-weak}}
+
+\newcommand{\safeGrpSecsSecure}{\method{grp-secs-secure}}
+\newcommand{\safeRestoresGrpSec}{\method{all-ind-secs-secure}}
+\newcommand{\safeIndSecsSecure}{\method{ind-secs-secure}}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

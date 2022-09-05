@@ -1,0 +1,438 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
+
+\begin{figure*}[!p]%\vspace*{-2em}\hspace*{-1.5em}
+%  \begin{minipage}{\linewidth+2em}
+	\begin{anybox}{\sffamily\bfseries \saik : Algorithms}
+			\begin{minipage}[t]{0.48\linewidth}
+        {\bf Initialization}
+        \begin{algorithmic}
+          \If{$\id = \pgod$}
+            \State $\itkSt \gets \method{new-state}()$
+            \State $\itkSt.\groupId, \itkSt.\initSecret, \itkSt.\membershipKey, \itkSt.\applicationSecret \getsr \bits^\secparam$
+            \State $\itkSt.\tree \gets \method{new-LBT}()$
+            \State $\itkSt.\leaf \gets \itkSt.\tree.\leaves[0]$
+            \State $(\itkSt.\leaf.\rsvk, \itkSt.\leaf.\rssk) \gets \sigkg()$
+          \EndIf
+        \end{algorithmic}
+
+        \medskip
+        {\bf Input $(\keyword{Send}, \hgact), \hgact \in \{\hglu , \hglr\md\id_t, \hgla\md\id_t\}$ from $\id$}
+				\begin{algorithmic}
+					\State $\KwReq\ \itkSt \neq \bot$
+          \State \vspace*{-.5em}\Comment{In case of add, fetch $\id_t$'s keys from AKS (AKS runs $\genPKIkeys$).}
+          \If{$\hgact = \hgla\md\id_t$}
+            \State $(\mmpkepk_t, \rsvk_t, \mmpkepk_t') \gets \KwQuery\ (\keyword{GetPk},\id_t) \text{ to } \funcKB$
+            \State $\hgact \gets \hgla\md\id_t\md(\mmpkepk_t, \rsvk_t,\mmpkepk_t')$
+          \EndIf
+          \State \smashedComment{Create the state and secrets for the new epoch.}
+          \State \KwTry{} $(\itkSt', \pathSecrets, \joinerSecret)  \gets\provState(\hgact)$
+          \State \Comment{Encrypt the path secrets using the new epoch's ratchet tree. For adds, also encrypt the joiner secret.}
+          \If{$\hgact \in \{\hglu , \hglr\md\id_t\}$}
+            \State $\pathSecCtxt \gets \encSecrets(\itkSt', \pathSecrets, \bot, \bot, \bot)$
+          \ElsIf{$\hgact = \hgla\md\id_t\md(\mmpkepk_t, \rsvk_t,\mmpkepk_t')$}
+            \State $\pathSecCtxt \gets \encSecrets(\itkSt', \pathSecrets, \id_t, \mmpkepk_t', \joinerSecret)$
+          \EndIf
+%          \State \smashedComment{Sign data under current epoch's secrets.}
+%          \State $\updatedPks \gets ((\itkSt'.\leaf.\mmpkepk, \itkSt'.\leaf.\rsvk))$
+%          \State $\updatedPks \gets \updatedPks \concat (v.\mmpkepk : v \in \itkSt'.\tree.\directpath(\itkSt'.\leaf))$
+%          \State $(\vec{\variable{tbs}}, \rdclass) \gets \method{to-be-signed}(\pathSecCtxt, \updatedPks, \hgact)$
+%          \State $\sig \gets \rssignL(\itkSt.\tree.\leafof(\id).\rssk, \itkSt.\membershipKey, \vec{\variable{tbs}}, \rdclass)$
+%          \State $\itkSt \gets \itkSt'$
+          \State $\ssk \gets \itkSt.\tree.\leafof(\id).\ssk$
+          \State  $\sig \gets \sigsign(\ssk, \underline{\itkSt'.\confTag})$
+          \If{$\hgact = \hglr\md\id_t$}
+            \State \smashedComment{Authenticate removal message for $\id_t$}
+            \State $\sig_t \gets \sigsign(\ssk, (\id, \hglr\md\id_t))$
+            \State $\macsig_t \gets \mactag(\itkSt.\membershipKey, (\id, \hglr\md\id_t, \underline{\itkSt.\confTag}))$
+            \State \Return $(\id, \hgact, \underline{\pathSecCtxt}, \updatedPks, \sig, \sig_t, \macsig_t)$
+          \EndIf
+          \State $\itkSt \gets \itkSt'$
+          \If{$\hgact = \hgla\md\id_t\md(\mmpkepk_t, \rsvk_t,\mmpkepk_t')$}
+            \State \smashedComment{Send additional data for $\id_t$.}
+            \State $\variable{welcomeData} \gets (\itkSt.\groupId, \itkSt.\tree.\public(), \mmpkepk_t')$
+            \State \Return $(\id, \hgact, \underline{\pathSecCtxt}, \updatedPks, \sig, \variable{welcomeData})$
+          \EndIf
+          \State \Return $(\id, \hgact, \underline{\pathSecCtxt}, \updatedPks, \sig)$
+				\end{algorithmic}
+
+      \end{minipage}
+		\hfill
+			\begin{minipage}[t]{0.5\linewidth}
+        \bf Input {$\keyword{Key}$ from $\id$}
+				\begin{algorithmic}
+					\State $\KwReq\ \itkSt \neq \bot$
+					\State $k \gets \itkSt.\applicationSecret$
+					\State $\itkSt.\applicationSecret \gets \bot$
+					\State \Return $k$
+				\end{algorithmic}
+
+        \medskip
+        {\bf Input $(\keyword{Receive}, (\id_s, \literal{removed}, \sig_t, \macsig_t))$ from $\id$}
+
+        \textnormal{\smashedComment{Receiver is removed.}}
+        \begin{algorithmic}
+          \State $\ersvk \gets \itkSt.\tree.\leafof(\id_s).\rsvk$
+          \State \KwReq{} $\sigvrf(\ersvk, (\id_s, \hglr\md\id), \sig_t)$
+          \State \KwReq{} $\macvrf(\itkSt.\membershipKey, (\id_s, \hglr\md\id, \underline{\itkSt.\confTag}), \macsig_t)$
+%          \State $\vec{\variable{tbv}} \gets ((\id_s, \hglr\md\id, \itkSt.\groupId))$
+%          \State \vspace*{-.5em}\Comment{\normalfont Check if removing allowed and compute the reduction pattern $\rd=(\ell,0,1)$.}
+%          \State \KwTry{} $\itkSt' \gets \applyact(\itkSt.\clone(), \id_s, \hglr\md\id)$
+%          \State $\ell \gets \getWeights(\itkSt', \id_s)$
+%          \State $\ersvk \gets \itkSt.\tree.\leafof(\id_s).\rsvk$
+%          \State \KwReq{} $\rsvrfyL(\rsvk, \itkSt.\membershipKey, \vec{\variable{tbv}}, (\ell,0,1), \redactedSig)$
+          \State $\itkSt \gets \bot$
+          \State \Return $(\id_s, \hglr\md\id)$
+        \end{algorithmic}
+
+        \medskip
+        \textbf{Input $(\keyword{Receive}, (\id_s, \hgact, \underline{\pathSecCtxtInd}, \underline{\redactedUpPks}, \sig))$ from $\id$}
+
+        \textnormal{\smashedComment{Receiver is a member.}}
+        \begin{algorithmic}
+          \State \KwTry{} $\itkSt' \gets \applyact(\itkSt.\clone(), \id_s, \hgact)$
+%          \State \smashedComment{\normalfont Get the expected reduction pattern using the new state.}
+%          \State \KwTry{} $\rd \gets \myReduction(\itkSt'.\tree, \id_s)$
+%          \State $\vec{\variable{tbv}} \gets (\pathSecCtxtInd) \concat ((\id_s, \hgact, \itkSt.\groupId)) \concat \redactedUpPks$
+%          \State $\ersvk \gets \itkSt.\tree.\leafof(\id_s).\rsvk$
+%          \State \KwReq{} $\rsvrfyL(\rsvk, \itkSt.\membershipKey, \vec{\variable{tbv}}, \rd, \redactedSig)$
+%          \State \smashedComment{\normalfont Transition to next epoch.}
+          \State \KwTry{} $(\itkSt, \confTag) \gets \nextState(\itkSt', \underline{\pathSecCtxtInd}, \underline{\redactedUpPks}, \id_s, \hgact)$
+          \State $\ersvk \gets \itkSt.\tree.\leafof(\id_s).\rsvk$
+          \State \KwReq{} $\sigvrf(\ersvk, \underline{\confTag}, \sig)$
+          \If{$\hgact=\hgla\md\id_t\md(\mmpkepk_t,\rsvk_t)$}
+            \Return $(\id_s, \hgla\md\id_t)$
+          \Else\
+            \Return $(\id_s, \hgact)$
+          \EndIf
+        \end{algorithmic}
+
+        \medskip
+        \textbf{Input $(\keyword{Receive}, (\id_s, \hgact, \encGroupSecret_1, \encGroupSecret_2, \variable{welcomeData})))$ from $\id$}
+
+        \textnormal{\smashedComment{Receiver joins.}}
+        \begin{algorithmic}
+          \State $\KwReq\ \itkSt = \bot$
+          \State \KwParse{} $(\groupId, \tree, \mmpkepk') \gets \variable{welcomeData}$
+          \State $\itkSt \gets \method{new-state}$
+          \State $(\itkSt.\groupId, \itkSt.\tree, \itkSt.\lastAct) \gets (\groupId, \tree, (\id_s, \hgla\md\id))$
+          \State $v \gets \itkSt.\tree.\leafof(\id)$
+          \State \KwTry{} $(\mmpkesk, \rssk, \mmpkesk') \gets \KwQuery\ \keyword{GetSk}((v.\mmpkepk, v.\rsvk, \mmpkepk')) \textnormal{ to } \funcKB$
+          \State $(v.\mmpkesk, v.\rssk) \gets (\mmpkesk, \rssk)$
+          \State $\itkSt \gets \setTreeHash(\itkSt)$
+          \State \KwTry{} $(\itkSt, \confTag) \gets \populateSecrets(\itkSt, \mmpkesk', \encGroupSecret_1, \encGroupSecret_2, \id_s)$
+%          \State $\ersvk \gets \itkSt.\tree.\leafof(\id_s).\rsvk$
+%          \State \KwReq{} $\sigvrf(\ersvk, \confTag)$
+					\State \Return $(\itkSt.\tree.\roster(), \id_s)$
+        \end{algorithmic}
+      \end{minipage}
+  \end{anybox}
+
+  \medskip
+  \begin{anybox}{\sffamily\bfseries \saik : Helpers for encryption and key generation for $\funcPKI$}
+			\begin{minipage}[t]{.49\linewidth}
+        {\bf {helper $\encSecrets(\itkSt', \pathSecrets, \id_t, \mmpkepk_t', \joinerSecret)$}}
+				\begin{algorithmic}
+          \State $L \gets \getPathSecsMap(\itkSt'.\tree, \id)$
+          \State $\vec m, \vec \mmpkepk \gets ()$
+          \For{$j=1$ \bf to $\len(L)$}
+            \State $(i, v) \gets L[j]$
+            \State $\vec m \listapp \pathSecrets[i]$
+            \If{$\id_t\neq\bot \land v = \itkSt'.\tree.\leafof(\id_t)$}
+              $\vec \mmpkepk \listapp \mmpkepk_t'$
+            \Else\
+              $\vec \mmpkepk \listapp \vec v.\mmpkepk$
+            \EndIf
+          \EndFor
+          \If{$\id_t\neq\bot$}
+            \State $\vec m \listapp \joinerSecret$
+            \State $\vec\mmpkepk \listapp \mmpkepk_t'$
+          \EndIf
+          \State \Return $\underline{\mmpkeEncL}(\vec{\mmpkepk}, \vec m)$
+        \end{algorithmic}
+      \end{minipage}
+		\hfill
+			\begin{minipage}[t]{0.49\linewidth}
+        {\bf {helper $\decSecrets(\itkSt', \id_s, \pathSecCtxtInd)$}}
+				\begin{algorithmic}
+          \State $v \gets \lca(\itkSt'.\tree.\leafof(\id_s), \itkSt'.\leaf).\resolvent(\itkSt'.\leaf)$
+          \State \Return $\underline{\mmpkeDecL}(v.\mmpkesk, \pathSecCtxtInd)$
+        \end{algorithmic}
+
+        \medskip
+        {\bf {helper $\genPKIkeys()$}}
+				\begin{algorithmic}
+          \State $(\mmpkepk, \mmpkesk) \gets \underline{\mmpkeKeyGenL}()$
+          \State $(\rsvk, \rssk) \gets \sigkg()$
+          \State $(\mmpkepk', \mmpkesk') \gets \underline{\mmpkeKeyGenL}()$
+          \State \Return $((\mmpkepk, \rsvk, \mmpkepk'), (\mmpkesk, \rssk, \mmpkesk'))$
+        \end{algorithmic}
+      \end{minipage}
+  \end{anybox}
+	\vspace*{-0.7em}
+	\caption{The algorithms of \saik.}
+	\label{fig:prot1}
+%  \end{minipage}
+\end{figure*}
+
+
+%\begin{figure}[!tpb]\vspace*{-5em}\hspace*{-1.5em}
+%  \begin{minipage}{\linewidth+2em}
+%	\begin{anybox}{\sffamily\bfseries \saik : Helpers for encryption and authentication}
+%		\scalebox{0.7}{
+%			\begin{minipage}[t]{.6\linewidth}
+%        {\bf {helper $\encSecrets(\itkSt', \pathSecrets, \id_t, \mmpkepk_t', \joinerSecret)$}}
+%				\begin{algorithmic}
+%          \State $L \gets \getPathSecsMap(\itkSt'.\tree, \id)$
+%          \State $\vec m, \vec \mmpkepk \gets ()$
+%          \For{$j=1$ \bf to $\len(L)$}
+%            \State $(i, v) \gets L[j]$
+%            \State $\vec m \listapp \pathSecrets[i]$
+%            \If{$\id_t\neq\bot \land v = \itkSt'.\tree.\leafof(\id_t)$}
+%              $\vec \mmpkepk \listapp \mmpkepk_t'$
+%            \Else\
+%              $\vec \mmpkepk \listapp \vec v.\mmpkepk$
+%            \EndIf
+%          \EndFor
+%          \If{$\id_t\neq\bot$}
+%            \State $\vec m \listapp \joinerSecret$
+%            \State $\vec\mmpkepk \listapp \mmpkepk_t'$
+%          \EndIf
+%          \State \Return $(\mmpkeEncL(\vec{\mmpkepk}, \vec m))$
+%        \end{algorithmic}
+%
+%        \medskip
+%        {\bf {helper $\decSecrets(\itkSt', \id_s, \pathSecCtxtInd)$}}
+%				\begin{algorithmic}
+%          \State $v \gets \lca(\itkSt'.\tree.\leafof(\id_s), \itkSt'.\leaf).\resolvent(\itkSt'.\leaf)$
+%          \State \Return $\mmpkeDecL(v.\mmpkesk, \pathSecCtxtInd)$
+%        \end{algorithmic}
+
+%        \medskip
+%        {\bf \mbox{helper $\method{to-be-signed}(\itkSt', \pathSecCtxt, \updatedPks, \hgact)$}}
+% 				\begin{algorithmic}
+%          \State $\vec w \gets \getWeights(\itkSt'.\tree, \id)$
+%          \State $\vec{\variable{tbs}} \gets ()$
+%          \For{$j=1$ \bf to $\abs{\vec w}$}
+%            \State $\vec{\variable{tbs}} \listapp \mmpkeExtL(\pathSecCtxt,j)$
+%          \EndFor
+%          \State $\vec{\variable{tbs}} \listapp (\id, \hgact, \itkSt.\groupId)$
+%          \State $\vec{\variable{tbs}} \listapp \updatedPks$
+%          \State \Return $(\vec{\variable{tbs}}, \rdclassBGM_{\abs{\vec w},\vec w})$
+%        \end{algorithmic}
+%      \end{minipage}}
+%		\hfill\scalebox{.7}{
+%			\begin{minipage}[t]{0.75\linewidth}
+%        {\bf \mbox{helper $\myReduction(\tree', \id_s)$}}
+% 				\begin{algorithmic}
+%          \State $L \gets \getPathSecsMap(\tree', \id_s)$
+%          \For{$j=1$ \bf to $\len(L)$}
+%            \State $(i, v) \gets L[j]$
+%            \If{$\itkSt'.\tree.\inSubtree(\tree'.\leafof(\id), v)$}
+%              \State \vspace*{-.5em}\Comment{We want the $j$-th ciphertext out of $\len(L)$ and the first $i+1$ items on the prefix list: the aux data, the leaf $\mmpkepk$ and $i-1$ $\mmpkepk$'s on $\id_s$'s direct path.}
+%              \State \Return $(\len(L), j, i)$
+%            \EndIf
+%          \EndFor
+%          \State \Return $\bot$
+%        \end{algorithmic}
+
+%        \medskip
+%        {\bf {helper $\getPathSecsMap(\tree', \id_s)$}}
+%				\begin{algorithmic}
+%          \State\vspace*{-.7em}{\Comment{Returns a list of tuples $(i,v)$, denoting that when $\id_s$ commits in $\tree'$, the $i$-th path secret is encrypted under node $v$'s keys.}}
+%          \State $L \gets ()$
+%          \State $\fullpath \gets (\tree'.\leafof(\id_s)) \concat \tree'.\directpath(\tree'.\leafof(\id_s))$
+%          \For{$i=1$ \bf to $\len(\fullpath)-1$}
+%            \State $\vec v \gets \fullpath[i+1].\resolution() \setminus \fullpath[i].\resolution()$
+%            \For{$j=1$ \bf to $\abs{\vec v}$}
+%              \State $L \listapp (i, \vec v[j])$
+%            \EndFor
+%          \EndFor
+%          \State \Return $L$
+%        \end{algorithmic}
+
+%        \medskip
+%        {\bf {helper $\getWeights(\tree', \id_s)$}}
+%				\begin{algorithmic}
+%          \State\vspace*{-.7em}{\Comment{Returns a list of weights for $\rdclassBGM_{\ell,\vec w}$ when $\id_s$ commits in $\tree'$. Also allows to compute $\ell = \abs{\vec w}$.}}
+%          \State $\vec w \gets ()$
+%          \State $\fullpath \gets (\tree'.\leafof(\id_s)) \concat \tree'.\directpath(\tree'.\leafof(\id_s))$
+%          \For{$i=2$ \bf to $\len(\fullpath)$}
+%            \State $\vec v \gets \fullpath[i].\resolution() \setminus \fullpath[i-1].\resolution()$
+%            \For{$j=1$ \bf to $\abs{\vec w}$}
+%              \State \mbox{$\vec w \listapp  \big|\{u \in  \tree'.\leaves \mid u.\inuse() \land \tree'.\inSubtree(u,\vec v[j]) \}\big|$}
+%            \EndFor
+%          \EndFor
+%          \State \Return $\vec w$
+%        \end{algorithmic}
+%      \end{minipage}}
+%  \end{anybox}
+%	\vspace*{-0.7em}
+%	\caption{The algorithms of \saik.}
+%	\label{fig:prot}
+%  \end{minipage}
+%\end{figure}
+
+
+\begin{figure*}[!p]
+  	\begin{anybox}{\sffamily\bfseries \saik : Creating epochs}
+			\begin{minipage}[t]{.49\linewidth}
+        {\bf {helper $\provState(\itkSt, \id, \hgact)$}}
+				\begin{algorithmic}
+          \State $\itkSt' \gets \itkSt.\clone()$
+          \State \vspace*{-.7em}\Comment{Apply the action to the tree. Fails if the action is not allowed.}
+          \State $\KwTry\ \itkSt' \gets \applyact(\itkSt', \id, \hgact)$
+          \State \smashedComment{Re-key the direct path.}
+          \State $\directpath \gets \itkSt'.\tree.\directpath(\itkSt'.\leaf)$
+          \State $\pathSecrets[\wc] \gets \bot$
+          \State $\pathSecrets[1] \getsr \{0,1\}^\secparam$
+					\For{$i=1$ \textbf{to} $\len(\directpath)-1$}
+            \State $v \gets \directpath[i]$
+					  \State $r \gets \hkdfexp(\pathSecrets[i], \literal{node})$
+            \State $(v.\mmpkepk, v.\mmpkesk) \gets \mmpkeKeyGenL(r)$
+            \State $\pathSecrets[i+1] \gets \hkdfexp(\pathSecret[i], \literal{path})$
+          \EndFor
+          \State $\itkSt'.\tree.\mergeleaves(\itkSt'.\leaf)$
+          \State \smashedComment{Re-key the leaf.}
+          \State $(\itkSt'.\leaf.\mmpkepk, \itkSt'.\leaf.\mmpkesk) \gets \mmpkeKeyGenL()$
+%          \State $(\itkSt'.\leaf.\rsvk, \itkSt'.\leaf.\rssk) \gets \rskeygenL()$
+          \State $(\itkSt'.\leaf.\rsvk, \itkSt'.\leaf.\rssk) \gets \sigkg()$
+          \State \vspace*{-.5em}\Comment{Set all context variables and then derive epoch secrets.}
+          \State $\itkSt'.\lastAct \gets (\id, \hgact)$
+          \State $\itkSt' \gets \setTreeHash(\itkSt')$
+          \State $\commitSecret \gets \pathSecrets[\len(\pathSecrets)]$
+          \State $(\itkSt', \joinerSecret) \gets \deriveKeys(\itkSt', \commitSecret)$
+          \State \Return $(\itkSt', \pathSecrets, \joinerSecret)$
+        \end{algorithmic}
+
+        \medskip
+        {\bf {helper $\applyact(\itkSt', \id_s, \hgact)$}}
+				\begin{algorithmic}
+          \State \KwReq{} $\id_s \in \itkSt'.\tree.\roster()$
+          \If{$\hgact=\hglr\md\id_t$}
+            \State \KwReq{} $\id_s \neq \id_t \land \id_t \in \itkSt'.\tree.\roster()$
+            \State $\itkSt'.\tree.\blankpath(\itkSt'.\tree.\leafof(\id_t))$
+            \State $\itkSt'.\tree.\leafof(\id_t).\blank()$
+          \ElsIf{$\hgact=\hgla\md\id_t\md(\mmpkepk_t, \rsvk_t)$}
+            \State \KwReq{} $\id_t \notin \itkSt'.\tree.\roster()$
+            \State $v \gets \itkSt'.\tree.\getleaf()$
+            \State $(v.\id, v.\mmpkepk, v.\rsvk) \gets (\id_t, \mmpkepk_t, \rsvk_t)$
+            \State $\itkSt.\tree.\unmergeleaf(v)$
+          \EndIf
+        \end{algorithmic}
+
+      \end{minipage}
+		\hfill
+			\begin{minipage}[t]{0.49\linewidth}
+        {\bf {helper $\nextState(\itkSt', \pathSecCtxtInd, \redactedUpPks, \id_s, \hgact)$}}
+				\begin{algorithmic}
+          \State \smashedComment{Set keys on the re-keyed path.}
+          \State $v_s \gets \itkSt'.\tree.\leafof(\id_s)$
+          \State $\directpath \gets \itkSt'.\tree.\directpath(v_s)$
+          \State $(v_s.\mmpkepk, v_s.\rsvk) \gets \redactedUpPks[1]$
+          \State $i \gets 1$
+          \While{$\directpath[i] \notin \{\itkSt'.\tree.\lca(\itkSt'.\leaf, v_s), \itkSt'.\tree.\rt\}$}
+            \State \smashedComment{If message contains too few ek's, reject it.}
+            \State \KwReq{} $i+1\leq\len(\redactedUpPks)$
+            \State $\directpath[i].\mmpkepk \gets \redactedUpPks[i+1]$
+            \State $i\inc$
+          \EndWhile
+          \State \smashedComment{Decrypt the path secret using the updated tree.}
+          \State \KwTry{} $\pathSecret \gets \decSecrets(\itkSt', \id_s, \pathSecCtxtInd)$
+          \While{$i < \len(\directpath)$}
+            \State $v \gets \directpath[i]$
+					  \State $r \gets \hkdfexp(\pathSecrets[i], \literal{node})$
+            \State $(v.\pkpk, v.\pksk) \gets \mmpkeKeyGenL(r)$
+            \State $\pathSecret \gets \hkdfexp(\pathSecret, \literal{path})$
+            \State $i\inc$
+          \EndWhile
+          \State $\commitSecret \gets \pathSecret$
+          \State $\itkSt'.\tree.\mergeleaves(v_s)$
+          \State \smashedComment{Set all context variables and then derive epoch secrets.}
+          \State $\itkSt'.\lastAct \gets (\id_s, \hgact)$
+          \State $\itkSt' \gets \setTreeHash(\itkSt')$
+          \State $(\itkSt', \joinerSecret)  \gets \deriveKeys(\itkSt', \commitSecret)$
+          \State \Return $\itkSt'$
+        \end{algorithmic}
+
+        \medskip
+        {\bf {helper $\populateSecrets(\itkSt', \pksk', \encGroupSecret_1, \encGroupSecret_2, \id_s)$}}
+				\begin{algorithmic}
+					\State \KwTry{} $\pathSecret \gets \underline{\mmpkeDecL}(\pksk, \encGroupSecret_1)$
+          \State \KwTry{} $\joinerSecret \gets \underline{\mmpkeDecL}(\pksk, \encGroupSecret_2)$
+					\State $v \gets \itkSt'.\tree.\lca(\itkSt'.\leaf, \itkSt'.\tree.\leafof(\id_s))$
+					\While{$v \neq \itkSt'.\tree.\rt$}
+					  \State $r \gets \hkdfexp(\pathSecret, \literal{node})$
+					  \State $(\mmpkepk, v.\mmpkesk) \gets \underline{\mmpkeKeyGenL}(r)$
+					  \State $\KwReq\ v.\mmpkepk = \mmpkepk$
+					  \State $\pathSecret \gets \hkdfexp(\pathSecret, \literal{path})$
+					  \State $v \gets v.\parent$
+					\EndWhile
+          \State $\itkSt' \gets \deriveEpochKeys(\itkSt', \joinerSecret)$
+          \State \Return $\itkSt'$
+        \end{algorithmic}
+      \end{minipage}
+  \end{anybox}
+%\caption{}\label{fig:prot-helpers1}
+%\end{figure}
+%\begin{figure}[tbp]
+	\begin{tcbraster}[raster columns=2, raster equal height]
+		\begin{anybox}{\sffamily\bfseries \saik : Key schedule}
+				\begin{minipage}[t]{\linewidth}
+					{\bf {helper $\deriveKeys(\itkSt, \itkSt', \commitSecret)$}}
+					\begin{algorithmic}
+						\State $\joinerSecret \gets \hkdfext(\itkSt.\initSecret, \commitSecret)$
+						\State $\itkSt' \gets \deriveEpochKeys(\itkSt', \joinerSecret)$
+						\State \Return $\itkSt', \joinerSecret$
+					\end{algorithmic}
+
+					\medskip
+					{\bf {helper $\deriveEpochKeys(\itkSt', \joinerSecret)$}}
+					\begin{algorithmic}
+            \State $\epochSecret \gets \hkdfext(\joinerSecret, \itkSt'.\groupContext())$
+
+						\State $\itkSt'.\applicationSecret \gets \hkdfexp(\epochSecret, \literal{app})$
+						\State $\itkSt'.\membershipKey \gets \hkdfexp(\epochSecret, \literal{membership})$
+						\State $\itkSt'.\initSecret \gets \hkdfexp(\epochSecret, \literal{init})$
+            \State $\itkSt'.\confTag \gets \hkdfexp(\epochSecret, \literal{confirmation})$
+						\State \Return $\itkSt'$
+					\end{algorithmic}
+				\end{minipage}
+		\end{anybox}
+		%
+		\begin{anybox}{\sffamily\bfseries \saik : Tree hash}
+				\begin{minipage}[t]{\linewidth}
+					{\bf {helper $\setTreeHash(\itkSt')$}}
+        \begin{algorithmic}
+					\State $\itkSt'.\treeHash \gets \computeTreeHash(\itkSt'.\tree.\rt)$
+					\State \Return $\itkSt'$
+				\end{algorithmic}
+
+        \medskip
+        {\bf {helper $\computeTreeHash(v)$}}
+				\begin{algorithmic}
+					\If{$v.\isleaf$}
+					  \State \Return $\hash(v.\nodeIndex, v.\mmpkepk, v.\ersvk)$
+					\Else
+            \State $\ell \gets \len(v.\children)$
+            \For{$i\in[\ell]$}
+  					  $h_i \gets \computeTreeHash(v.\children[i])$
+            \EndFor
+            \State $h \gets (h_1, \dots, h_\ell)$
+            \State \Return $\hash(v.\nodeIndex, v.\mmpkepk, v.\unmergedLeaves, h)$
+					\EndIf
+				\end{algorithmic}
+				\end{minipage}
+		\end{anybox}
+	\end{tcbraster}
+
+	\caption{Additional helper methods for \saik.}
+	\label{fig:prot-helpers2}
+%\end{minipage}
+\end{figure*}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

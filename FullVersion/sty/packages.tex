@@ -1,0 +1,77 @@
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{etoolbox}
+
+%---- Fonts
+%\usepackage{lmodern}
+%\usepackage{bbold}
+% \usepackage[final]{microtype}
+
+%---- Math
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amsthm}
+%\usepackage{nccmath}
+\usepackage{bbm}
+%\usepackage[b]{esvect}
+%\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{mathdots}
+\usepackage{centernot}
+\usepackage{xspace}
+%\usepackage{stmaryrd}
+%\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % disable font warning
+\usepackage{thm-restate}
+
+%---- Comments
+\usepackage{totcount}
+\usepackage{color}
+
+\ifWorkInProgress
+\usepackage[colorinlistoftodos]{todonotes}
+\else
+\usepackage[colorinlistoftodos, disable]{todonotes}
+\fi
+
+% \usepackage[colorinlistoftodos]{todonotes}
+%Literally multi-line comments in the source
+\usepackage{verbatim}
+
+%---- Images
+%Images
+\usepackage{graphicx}
+%\usepackage[caption=false]{subfig} %use with [caption=false] for lncs
+
+%---- Layout
+\usepackage{lscape}
+\usepackage{float}
+\usepackage{supertabular}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{tabulary}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{varwidth} %required for boxes
+\usepackage[most]{tcolorbox} %and thus tikz
+\usetikzlibrary{calc,arrows,positioning,decorations.pathmorphing,shapes,backgrounds,arrows.meta}
+\usepackage{placeins}
+
+%---- Refs & URLs
+%\usepackage{nameref}
+%\usepackage{url}
+\PassOptionsToPackage{hyphens}{url}
+% \usepackage[hidelinks]{hyperref} %Load last if possible
+\usepackage[capitalise,nameinlink,sort&compress]{cleveref}
+\usepackage{subfig}
+
+%---- Tables
+\usepackage{makecell}
+
+% ---- Acronyms
+\usepackage{acro}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
