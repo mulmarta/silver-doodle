@@ -7,7 +7,7 @@
 %\dnote{Move to appendix if we can't fit the page limit? Or replace with a short paragraph on which
 %concepts we assume to be known? I.e. ratchet trees, etc.}
 Readers familiar with \protITK can jump directly to \cref{sec:intuition2} which gives intuition how \saik improves on
-\protITK. The detailed description of \saik can be found in the full version~\cite{EPRINT:AHKM21}.
+\protITK. The detailed description of \saik is in the full version~\cite{EPRINT:AHKM21}.
 
 \subsection{Intuition for the \protITK Protocol}\label{sec:intuition1}
 
@@ -43,7 +43,7 @@ Removing a member $\id_t$ corresponds to removing all keys known to it, i.e., bl
 Adding a member $\id_t$ corresponds to inserting a new leaf into $\tree$. The leaf's public signature and encryption keys are fetched from the AKS. Further, the new leaf becomes an \emph{unmerged leaf} of all nodes on the path from it to the root. A leaf $l$ being unmerged at a node $v$ indicates that the $l$'s owner doesn't know the secret key in $v$, so messages should be encrypted directly to $l$. When $v$'s key is refreshed during an update, its set of unmerged leaves is cleared.
 
 \paragraph{Key schedule.}
-Apart from the ratchet tree, all group members store a number of shared symmetric keys, unique to the current epoch. These are: the \emph{application secret} --- the group key exported to the E2E application, the \emph{membership key} used to authenticate sent messages and the \emph{init key} --- mixed in the next epoch's secrets for FS.
+Apart from the ratchet tree, all group members store a number of shared symmetric keys, unique to the current epoch. These are: \emph{application secret} --- the group key exported to the E2E application,  \emph{membership key} used to authenticate sent messages and the \emph{init key} --- mixed in the next epoch's secrets for FS.
 
 The secrets are derived when an epoch is created, i.e. after the implicit update following each modification. The update
 generates the last path secret $s_n$, which we now call the \emph{commit secret}. Then, the following secrets are

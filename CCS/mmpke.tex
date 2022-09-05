@@ -14,8 +14,8 @@ supports batching a number of encryption operations together, in order to improv
   \begin{description}[align=left, nosep]
   \item[]$\mmpkeKeyGen \getsl (\mmpkepk, \mmpkesk)$: Generates a new key pair.
   \item[]$\mmpkeEnc(\vec{\mmpkepk}, \vec{m})\getsl C$: On input of a vector of
-    public keys $\vec{\mmpkepk}$ and a vector of messages $\vec{m}$ of the same length, it outputs a \emph{multi-recipient ciphertext} $C$ encrypting each message in $\vec{m}$ to the corresponding key in $\vec{\mmpkepk}$.
-  \item[]$\mmpkeExt(C, i)\rightarrow c_i$: A deterministic function. On input a multi-recipient ciphertext $C$ and a position index $i$, outputs an \emph{individual ciphertext} $c_i$ for the $i$-th recipient.
+    public keys $\vec{\mmpkepk}$ and a vector of messages $\vec{m}$ of the same length, outputs a \emph{multi-recipient ciphertext} $C$ encrypting each message in $\vec{m}$ to the corresponding key in $\vec{\mmpkepk}$.
+  \item[]$\mmpkeExt(C, i)\rightarrow c_i$: A deterministic function. On input of a multi-recipient ciphertext $C$ and a position index $i$, outputs an \emph{individual ciphertext} $c_i$ for the $i$-th recipient.
   \item[]$\mmpkeDec(\mmpkesk,c)\rightarrow m\vee\bot$: On input of an individual ciphertext $c$ and a secret key $\mmpkesk$, outputs either the decrypted message $m$ or, in case decryption fails, $\bot$.
   \end{description}
 \end{definition}

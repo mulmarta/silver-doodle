@@ -79,8 +79,8 @@ The formal proof of \cref{thm:saik-security} and the definition of $\funcPKI$ ar
 \newcommand{\ucideal}{\textnormal{\textsc{ideal}}}
 \newcommand{\ucreal}{\textnormal{\textsc{real}}}
 \begin{restatable}{theorem}{itkSec}\label{thm:saik-security}
-	Let $\funcCGKA$ be the CGKA functionality with predicates \KwConf{} and \KwAuth{} defined in \cref{fig:safe}. Let $\saik$ be instantiated with an mmPKE \mmPKE, a signature scheme \sigscheme and \mac, and with the \hkdf functions modelled as a random oracle \hash.
-	Let $\Adv$ be any environment. Denote the output of $\Adv$ from the real execution with \saik and the hybrid functionality $\funcPKI$ from \cref{fig:aks} as $\ucreal_{\saik, \funcPKI}(\Adv)$ and the output of $\Adv$ from the ideal execution with $\funcCGKA$ and a simulator $\ucsim$ as $\ucideal_{\funcCGKA, \ucsim}(\Adv)$.
+	Let $\funcCGKA$ be the CGKA functionality with predicates \KwConf{} and \KwAuth{} defined in as in the text (formally in \cite{EPRINT:AHKM21}). Let $\saik$ be instantiated with an mmPKE \mmPKE, a signature scheme \sigscheme and \mac, and with the \hkdf functions modelled as a random oracle \hash.
+	Let $\Adv$ be any environment. Denote the output of $\Adv$ from the real execution with \saik (and, formally, the hybrid functionality $\funcPKI$ from \cite{EPRINT:AHKM21}) as $\ucreal_{\saik, \funcPKI}(\Adv)$ and the output of $\Adv$ from the ideal execution with $\funcCGKA$ and a simulator $\ucsim$ as $\ucideal_{\funcCGKA, \ucsim}(\Adv)$.
 	%
 	There exists a simulator $\ucsim$ and adversaries $\Bdv[1]$ to $\Bdv[4]$ such that
 	\begin{align*}

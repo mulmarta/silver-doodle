@@ -170,7 +170,7 @@ In order to make the security notion tractable, we made the following simplifica
 %	$\funcCGKA$ does not keep track of whether parties were corrupted before or after outputting the group keys. This information is necessary to enforce that parties' states contain no information about group keys after outputting them. This property is important for FS of the messaging protocol building on saCGKA but it is also trivially achieved by all protocols we are aware of.
 	
 	\item [No randomness corruptions]
-	Our model does not capture attacks where the adversary exposes or modifies the randomness used by the protocol.
+	Our model does not capture the adversary exposing or modifying randomness used by the protocol.
 	Capturing such attacks for (sa)CGKA causes a significant headache when defining the formal security notion. For instance, the model needs to special-case scenarios where the adversary leaks the state of a party $A$, uses it with randomness $r$ to compute and inject a message to a party $B$, and then makes $A$ use $r$ to re-compute the injected message.
 	
 	One can easily adapt the special-casing of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} to our model. We chose not to do this for simplicity and because well-designed protocols, including \protITK and \saik, naturally have protections against bad randomness.(Looking ahead, these protocols mix a fresh ``commit'' secret for the new epoch with the ``init'' secret from the old epoch, which mitigates sampling the fresh secret with bad randomness.) Therefore, capturing the additional attack vector typically does not fundamentally improve the analysis.
