@@ -97,7 +97,7 @@ We note that SAIK is \emph{very} flexible as to kinds of policies that are possi
 		& tree-worst-case &  $N(\log(N)\cdot\pkSize + N\cdot \ctxSize)$ & $N\log(N) \cdot \pkSize + N\cdot\ctxSize + \mCtxSize(N)$  & $N\cdot(\pkSize + \ctxSize) + \mCtxSize(N)$ \\
 		\hline
 	\end{tabulary}
-	\caption{Sender and receiver bandwidth for a group of size $N$ expressed as the number of ciphertexts and public keys included in the packet (apart from this, packets include only a constant-size header).
+	\caption{Sender, receiver and total bandwidth for a group of size $N$ expressed as the number of ciphertexts and public keys included in the packet (apart from this, packets include only a constant-size header).
 		$\pkSize$ denotes the size of a public key (the same for PKE and mmPKE). $\mCtxSize(X)$ denotes the size of an mmPKE multi-recipient ciphertext with overall number of receivers $X$. Note that for the DH-based construction $X$ fully determines the size (i.e., it is not affected by who gets which message). $\ctxSize$ denotes the size of a PKE ciphertext, equal to the size of an individual ciphertext in the DH-based construction.
 	}
 	\label{tab:bandwidth1}

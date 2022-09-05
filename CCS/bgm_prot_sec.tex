@@ -52,7 +52,7 @@ In the propose-commit syntax, an (sa)CGKA protocol takes the following inputs fr
 Observe that if an application always commits a single proposal immediately after creating it, the propose-commit syntax collapses to our (sa)CGKA syntax.
 
 \paragraph{Proposals in \saik.}
-\saik deals with proposals in the same way as \protITK. First, computes the proposal content $\hgact$ which identifies the proposed modification:
+\saik deals with proposals in the same way as \protITK. First, it computes the proposal content $\hgact$ which identifies the proposed modification:
 \begin{description}
 	\item[Add proposal:] To add $\id_t$, query $(\keyword{GetPk},\id_t) \text{ to } \funcKB$, receive $(\mmpkepk_t, $ $\rsvk_t, \mmpkepk_t')$ and set $\hgact = \literal{add}\md\id_t\md(\mmpkepk_t, \rsvk_t, \mmpkepk_t')$.
 	\item[Remove proposal:] To remove $\id_t$, set $\hgact = \literal{rem}\md\id_t$.

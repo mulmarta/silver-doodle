@@ -1,18 +1,22 @@
 \documentclass[sigconf]{acmart}
 
 \fancyhf{} % Remove fancy page headers
-\fancyhead[C]{Anonymous submission \#399 to ACM CCS 2022} % TODO: replace 9999 with your paper number
+%\fancyhead[C]{Anonymous submission \#399 to ACM CCS 2022} % TODO: replace 9999 with your paper number
 \fancyfoot[C]{\thepage}
 
-\setcopyright{none} % No copyright notice required for submissions
-\acmConference[Anonymous Submission to ACM CCS 2022]{ACM Conference on Computer and Communications Security}{Due 2 May 2022}{London, TBD}
-\acmYear{2022}
+% \setcopyright{none} % No copyright notice required for submissions
+\acmConference[ACM CCS 2022]{ACM Conference on Computer and Communications Security}{November 7-11, 2022}{Los Angeles, U.S.A.}
 
-\settopmatter{printacmref=false, printccs=true, printfolios=true} % We want page numbers on submissions
+%\settopmatter{printacmref=false, printccs=true, printfolios=true} % We want page numbers on submissions
 
 \newif\ifWorkInProgress
 %\WorkInProgresstrue
 \WorkInProgressfalse
+
+\setcopyright{acmcopyright}
+\copyrightyear{2022}
+\acmYear{2022}
+\acmDOI{XXXXXXX.XXXXXXX}
 
 %-------------------------------------------------------------------------------
 \input{sty/packages}
@@ -43,6 +47,22 @@
 	\state{NY}
 	\country{USA}
 }
+\author{Dominik Hartmann}
+\email{dominik.hartmann@rub.de}
+\orcid{0000-0002-0379-7903}
+\affiliation{%
+	\institution{Ruhr-University Bochum}
+	\city{Bochum}
+	\country{Germany}
+}
+\author{Eike Kiltz}
+\email{eike.kiltz@rub.de}
+\orcid{0000-0003-1178-048X}
+\affiliation{%
+  \institution{Ruhr-University Bochum}
+  \city{Bochum}
+  \country{Germany}
+}
 \author{Marta Mularczyk}
 \email{mulmarta@amazon.com}
 \orcid{0000-0002-9462-1275}
@@ -52,6 +72,7 @@
 	\state{NY}
 	\country{USA}
 }
+\renewcommand{\shortauthors}{Alwen et al.}
 
 \begin{abstract}
 \input{abstract}
