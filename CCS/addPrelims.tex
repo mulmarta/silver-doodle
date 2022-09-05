@@ -75,58 +75,7 @@ random coins.
 \subsection{Multi-Recipient Multi-Message PKE(mmPKE) Definitions}\label{app:mmpke}
 The notion of \mmindrcca security for \mmPKE is described by the experiment in \cref{fig:mmpke_rcca}.
 
-\begin{figure}[!tbp]
-  \begin{gamebox}{\mmindrcca}
-    \begin{minipage}[t]{\linewidth}
-      \algoHead{$\text{Exp}^{\mmindrcca}_{\mmPKE, \nUsers, b}(\Adv = (\Adv[1], \Adv[2]))$}
-      \begin{algorithmic}
-        \For{$\idxUser\in[\nUsers]$}
-           $(\mmpkepk_\idxUser, \mmpkesk_\idxUser)\gets \mmpkeKeyGen()$
-        \EndFor
-        \State $\term{Corr} \gets \emptyset$
-        \State \mbox{$(\vec\mmpkepk^*,\vec m_0^*,\vec m_1^*,\mathit{st}) \gets \Adv[1]^{\oracle{Dec}_1, \oracle{Cor}}((\mmpkepk_i)_{i\in[\nUsers]})$}
 
-        \State \KwReq{} $\abs{\vec m_0^*}=\abs{\vec m_1^*}=\abs{\vec\mmpkepk^*}$
-        \State $c^* \getsr \mmpkeEnc(\vec\mmpkepk^*,\vec{m}_b^*)$
-
-        \State $b' \gets \Adv[2]^{\oracle{Dec}_2, \oracle{Cor}}(c^*,\mathit{st})$
-        \State \KwReq{} $\leak(\vec{m_0}) = \leak(\vec{m_1})$
-        \State \KwReq{} $\forall j : \vec \mmpkepk^*[j] \in \{\mmpkepk_i : i\in[\nUsers]\} \setminus \term{Corr} \lor m_0^*[j]=m_1^*[j]$
-        \State \Return $b'$
-      \end{algorithmic}
-    \end{minipage}
-
-  \medskip
-    \begin{minipage}[t]{.4\linewidth}
-      \algoHead{Oracle $\oracle{Dec}_1(i,c)$}
-      \begin{algorithmic}
-        \State \KwReq{} $\idxUser\in[\nUsers]$
-        \State \Return $\mmpkeDec(\vec\mmpkesk[i],c)$
-      \end{algorithmic}
-
-      \medskip
-      \algoHead{Oracle $\oracle{Cor}(\idxUser)$}
-      \begin{algorithmic}
-        \State \KwReq{} $\idxUser\in[\nUsers]$
-        \State $\term{Corr} \setadd \idxUser$
-        \State \Return $\mmpkesk_\idxUser$
-      \end{algorithmic}
-    \end{minipage}\hfill\begin{minipage}[t]{.59\linewidth}
-      \algoHead{Oracle $\oracle{Dec}_2(i,c)$}
-      \begin{algorithmic}
-        \State \KwReq{} $\idxUser\in[\nUsers]$
-        \State $m \gets \mmpkeDec(\vec\mmpkesk[i],c)$
-        \If{$\exists j : \vec\mmpkepk^*[j] = \mmpkepk_i $ \\\strut\hfill $\land\ m \in \{\vec m_0^*[j], \vec m_1^*[j]\}$}
-        \State \Return $\literal{test}$
-        \Else\
-        \Return $m$
-        \EndIf
-      \end{algorithmic}
-    \end{minipage}
-  \end{gamebox}
-  \caption{\mmindrcca security game for \mmPKE with leakage function  $\leak(\vec m) = (\len(\vec m[1]), \dots, \len(\vec m[n]))$.}
-  \label{fig:mmpke_rcca}
-\end{figure}
 
 We define the security of an \mmPKE in a left-right style in the following Definition~\ref{def:mmindrcca}.
 
@@ -158,6 +107,8 @@ A DEM is the symmetric equivalent of a PKE scheme. We recall it in Definition \r
   \end{definition}
 
   Analogue to mmPKE, we consider \indrcca security for DEMs. It is described in Definition~\ref{def:dem_rcca}.
+  
+  
 
   \begin{definition}\label{def:dem_rcca}
     The advantage of an adversary \Adv against the \indrcca security of a DEM \dem is defined as
@@ -167,6 +118,59 @@ A DEM is the symmetric equivalent of a PKE scheme. We recall it in Definition \r
     \end{multline*}
     where $\experiment{\indrcca}{\dem, b}(\Adv)$ is defined in \cref{fig:dem_rcca}.
   \end{definition}
+
+\begin{figure}[!tbp]
+	\begin{gamebox}{\mmindrcca}
+		\begin{minipage}[t]{\linewidth}
+			\algoHead{$\text{Exp}^{\mmindrcca}_{\mmPKE, \nUsers, b}(\Adv = (\Adv[1], \Adv[2]))$}
+			\begin{algorithmic}
+				\For{$\idxUser\in[\nUsers]$}
+				$(\mmpkepk_\idxUser, \mmpkesk_\idxUser)\gets \mmpkeKeyGen()$
+				\EndFor
+				\State $\term{Corr} \gets \emptyset$
+				\State \mbox{$(\vec\mmpkepk^*,\vec m_0^*,\vec m_1^*,\mathit{st}) \gets \Adv[1]^{\oracle{Dec}_1, \oracle{Cor}}((\mmpkepk_i)_{i\in[\nUsers]})$}
+				
+				\State \KwReq{} $\abs{\vec m_0^*}=\abs{\vec m_1^*}=\abs{\vec\mmpkepk^*}$
+				\State $c^* \getsr \mmpkeEnc(\vec\mmpkepk^*,\vec{m}_b^*)$
+				
+				\State $b' \gets \Adv[2]^{\oracle{Dec}_2, \oracle{Cor}}(c^*,\mathit{st})$
+				\State \KwReq{} $\leak(\vec{m_0}) = \leak(\vec{m_1})$
+				\State \KwReq{} $\forall j : \vec \mmpkepk^*[j] \in \{\mmpkepk_i : i\in[\nUsers]\} \setminus \term{Corr} \lor m_0^*[j]=m_1^*[j]$
+				\State \Return $b'$
+			\end{algorithmic}
+		\end{minipage}
+		
+		\medskip
+		\begin{minipage}[t]{.4\linewidth}
+			\algoHead{Oracle $\oracle{Dec}_1(i,c)$}
+			\begin{algorithmic}
+				\State \KwReq{} $\idxUser\in[\nUsers]$
+				\State \Return $\mmpkeDec(\vec\mmpkesk[i],c)$
+			\end{algorithmic}
+			
+			\medskip
+			\algoHead{Oracle $\oracle{Cor}(\idxUser)$}
+			\begin{algorithmic}
+				\State \KwReq{} $\idxUser\in[\nUsers]$
+				\State $\term{Corr} \setadd \idxUser$
+				\State \Return $\mmpkesk_\idxUser$
+			\end{algorithmic}
+		\end{minipage}\hfill\begin{minipage}[t]{.59\linewidth}
+			\algoHead{Oracle $\oracle{Dec}_2(i,c)$}
+			\begin{algorithmic}
+				\State \KwReq{} $\idxUser\in[\nUsers]$
+				\State $m \gets \mmpkeDec(\vec\mmpkesk[i],c)$
+				\If{$\exists j : \vec\mmpkepk^*[j] = \mmpkepk_i $ \\\strut\hfill $\land\ m \in \{\vec m_0^*[j], \vec m_1^*[j]\}$}
+				\State \Return $\literal{test}$
+				\Else\
+				\Return $m$
+				\EndIf
+			\end{algorithmic}
+		\end{minipage}
+	\end{gamebox}
+	\caption{\mmindrcca security game for \mmPKE with leakage function  $\leak(\vec m) = (\len(\vec m[1]), \dots, \len(\vec m[n]))$.}
+	\label{fig:mmpke_rcca}
+\end{figure}
 
   \begin{figure}[!tbh]
     \begin{gamebox}{\indrcca for \dem}
@@ -205,7 +209,7 @@ A DEM is the symmetric equivalent of a PKE scheme. We recall it in Definition \r
 Message authentication codes are defined in Definition~\ref{def:mac}.
 
 \begin{definition}\label{def:mac}
-  A message authentication code $\mac = (\mactag,$ $ \macvrf)$ consist of a keyspace $\mackeyspace$ and the following two
+  A message authentication code $\mac = (\mactag,$ $ \macvrf)$ consist of a keyspace $\mackeyspace$ and the following
   algorithms:
   \begin{itemize}[align=left]
     \item[$\mactag(k, m)\getsl \mtag$:] The tagging algorithm takes a key $k$ and a message $m$ and outputs

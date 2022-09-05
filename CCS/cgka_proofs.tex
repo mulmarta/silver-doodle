@@ -49,10 +49,10 @@ In the reminder of this section, we construct the simulator $\ucsim^2$ and show 
 \begin{theorem}
   For any environment $\Adv$, there exists an adversary $\Bdv$ such that
   \begin{equation*}\normalfont
-    \left\lvert\begin{array}{c}
+   \begin{array}{c}
     \Pr\left[\ucideal_{\funcCGKA^2, \ucsim^2}(\Adv) \Rightarrow 1\right] \\- \Pr\left[\ucideal_{\funcCGKA^1,
       \ucsim^1}(\Adv) \Rightarrow 1\right]
-    \end{array}\right\lvert
+    \end{array}
     \leq \textnormal{Adv}^{\gamefont{CR}}_{\hash}(\Bdv) + q_e/2^\kappa,
   \end{equation*}
   where $\hash$ models the \hkdfexp and \hkdfext functions and $q_e$ denotes an upper bound on the number of epochs.
@@ -92,7 +92,7 @@ It remains to show that if $\Adv$ triggers $\variable{BreaksCons}$, then a reduc
 Let $\Adv$ be any environment and assume that at the end of hybrid 2 with $\Adv$ there are no hash between values hashed by $\ucsim^2$ while running \saik on behalf of honest parties. We show that in this case $\variable{BreaksCons}$ cannot occur. This proves the claim, because if there was a hash collision between values hashed by honest parties, then $\Bdv$ could extract them by emulating $\ucsim^1$.
 
 Observe that if two parties transition to the same epoch $\hgnodeid$, then by definition of $\ucsim^2$ they compute the same $\epochSecret$. Recall that they compute $\epochSecret \gets \hash(\joinerSecret, \groupContext)$ (\cref{fig:prot-helpers2}), where $\groupContext=(\groupId, \treeHash, \id_s\md\hgact)$ (\cref{tab:prot-state}).
-Since there are no hash collisions, this means that the parties also agree on the following values:
+Since there are no hash collisions, this means that the parties also agree on:
 \begin{enumerate}[label=\alph*)]
   \item The creator $\hg_s$ of $\hgnodeid$, the action $\hgact$ it performed and the public part of the ratchet tree, included in $\treeHash$. This implies agreement on the roster, which is encoded in the tree leaves.
   \item The group key in $\hgnodeid$, derived as $\hash(\epochSecret, \literal{app})$.
@@ -107,12 +107,12 @@ Moreover, let $\epochSecret'$ denote the epoch secret of $\hgnodeid$'s parent. W
 
 \medskip\noindent Observe that the check $\hash(\initSecret', \commitSecret)=\joinerSecret$ is verified by current members transitioning to $\hgnodeid$ but not by joiners. However, joiners implicitly agree with current members on the parent $\hgnodeid'$. That is, if an $\id_r$ joins into $\hgnodeid$, then $\hgnodeid$ has parent $\hgnodeid'$ (unknown to $\id_r$) or no parent at all (for detached roots).
 
-We next show that agreement on a), b) and c) implies that $\variable{BreaksCons}$ does not occur. First, a) and b) imply that all parties joining an epoch $\hgnodeid$ output the same value, all parties transitioning there output the same, and afterwards all output the same key. Second, c) implies that HG is a forest, i.e., each epoch has one parent.
+We next show that agreement on a), b) and c) implies that $\variable{BreaksCons}$ does not occur. First, a) and b) imply that all parties joining an epoch $\hgnodeid$ output the same value, all parties transitioning there output the same, and afterwards all output the same key. Second, c) implies that HG is a forest, i.e., epoch has one parent.
 
 Third, we have to argue that parties' outputs are the same as computed by $\funcCGKA^2$. This is obvious for the key (always chosen by $\ucsim^2$ to match), sender and action. For the member set, we will show that the ratchet tree of parties in an epoch $\hgnodeid$ is consistent with $\hg[\hgnodeid].\hgm$ computed by $\funcCGKA^2$. We use induction on the distance of $\hgnodeid$ to the root. If $\hgnodeid$ is the main root, then the statement is true by definition and if it is a  detached roots, then $\ucsim^2$ chooses $\hgm$ to match the ratchet tree. For any non-root $\hgnodeid$, some party $\id$ must have transitioned there from its parent $\hgnodeid'$ (on Receive or Send). By induction hypothesis, the ratchet tree in $\hgnodeid'$ is consistent with $\hg[\hgnodeid].\hgm$. By agreement on $\hgact$ in a), $\id$ modifies the tree the same way as $\funcCGKA^2$ modifies $\hg[\hgnodeid].\hgm$, which proves the statement.
 
 \subsection{\saik Guarantees Confidentiality}\label{sec:protsec4}
-The third hybrid introduces confidentiality of group keys, which is formalized by restoring the original confidentiality predicate of $\funcCGKA$.
+The third hybrid introduces confidentiality, which is formalized by restoring the original confidentiality predicate of $\funcCGKA$.
 \begin{description}
 \item[] {\bf Hybrid 3: $\ucideal_{\funcCGKA^3, \ucsim^3}$.} The functionaliy $\funcCGKA^3$ uses the original \KwConf{} predicate from $\funcCGKA$. The simulator $\ucsim^3$ is the same as $\ucsim^2$.
 \end{description}
@@ -125,8 +125,7 @@ In the remainder of this section, we show that if \mmPKE is \mmowrcca secure, th
   \begin{multline*}
     \Pr\left[\ucideal_{\funcCGKA^3, \ucsim^3}(\Adv) \Rightarrow 1\right] - \Pr\left[\ucideal_{\funcCGKA^2,
         \ucsim^2}(\Adv) \Rightarrow 1\right]\\
-    \leq 4q_e^2q_h/2^\kappa \\
-    + q_e^2\log(q_n)\cdot\textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv),
+    \leq 4q_e^2q_h/2^\kappa + q_e^2\log(q_n)\cdot\textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv),
   \end{multline*}
   where the $\hkdf$ functions are modeled as a random oracle and where $q_n$, $q_h$ and $q_e$ are upper bounds on, respectively, the group size, the number of $\Adv$'s hash queries and the number of epochs.
 \label{thm:hybrid2}\end{theorem}
@@ -292,9 +291,9 @@ An epoch $\hgnodeid$ is confidential if $\safeGrpSecsSecure(\hgnodeid)$ is true 
 %    \Pr(\variable{SecsHashed}_{\hgnodeid>0})) \leq 3q_h/2^\kappa + \Pr(\variable{SecsHashed}_{\hgnodeid_p}) + \Pr(\variable{BreaksRCCA}_{\hgnodeid}) .
 %  \end{equation*}
 \label{thm:hybrid2-2}\end{lemma}
-To see that \cref{thm:hybrid2-2} implies \cref{thm:hybrid2-1}, observe that \cref{thm:hybrid2-2} implies
+\cref{thm:hybrid2-2} implies \cref{thm:hybrid2-1}, because by \cref{thm:hybrid2-2}
 \begin{align*}
-\Pr[&\secsHash_\hgnodeid]\\& \leq \sum_{i=0}^{\hgnodeid-1}(4q_h/2^\kappa + \Pr[\breaksRcca_i]) \\&\leq 4q_eq_h/2^\kappa + \Pr[\exists \hgnodeid : \breaksRcca_\hgnodeid] \\&\leq 4q_eq_h/2^\kappa + q_e\log(q_n)\cdot\textnormal{Adv}^\mmindrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv),
+\Pr[&\secsHash_\hgnodeid]\leq \sum_{i=0}^{\hgnodeid-1}(4q_h/2^\kappa + \Pr[\breaksRcca_i]) \\&\leq 4q_eq_h/2^\kappa + \Pr[\exists \hgnodeid : \breaksRcca_\hgnodeid] \\&\leq 4q_eq_h/2^\kappa + q_e\log(q_n)\cdot\textnormal{Adv}^\mmindrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv),
 \end{align*}
 where the first step follows from a) and b) in  \cref{thm:hybrid2-2}.
 We arrive at  \cref{thm:hybrid2-1}, since 
@@ -312,7 +311,7 @@ Observe that the only dependencies between $\initSecret$, $\epochSecret$, $\join
 
 Assume for a moment that $\hgnodeid$ is confidential. Then, no party in $\hgnodeid$ is corrupted, so dependency 1) does not exist. Recall that confidentiality requires either $\safeGrpSecsSecure(\hgnodeid_p)$ is true or $\safeRestoresGrpSec(\hgnodeid)$ is true. Observe that dependency 2) does not exist either unless one of the following events occurs:
 \begin{description}
-  \item[] {\bf Event $\initHash_{\hgnodeid_p}$ : } At the end of the experiment, the value of the predicate $\safeGrpSecsSecure(\hgnodeid_p)$ is true and $\initSecret_p$ (of $\hgnodeid_p$) is contained in some value inputted by $\Adv$ to the RO.
+  \item[] {\bf Event $\initHash_{\hgnodeid_p}$ : } At the end of the experiment, the value of $\safeGrpSecsSecure(\hgnodeid_p)$ is true and $\initSecret_p$ (of $\hgnodeid_p$) is contained in some value inputted by $\Adv$ to the RO.
   \item[] {\bf Event $\commitHash_{\hgnodeid}$ : } At the end of the experiment, the predicate $\safeRestoresGrpSec($ $\hgnodeid)$ is true and $\commitSecret$ (of $\hgnodeid$) is contained in some value inputted by $\Adv$ to RO.
 \end{description}
 
@@ -355,14 +354,14 @@ We construct two reductions $\Bdv[1]$ and $\Bdv[2]$ whose advantages bound the p
    $\Adv$ does not input $\initSecret^*$ with $\commitSecret^*$ to the RO.
 
   Therefore, we have
-  \begin{align*}\textnormal{Adv}^\mmindrcca_{\mmPKE,1,q_n}(&\Bdv[1]) \\ \geq& \Pr(\joinerHash_{\hgnodeid^*}) \\ \geq& 1/q_e\Pr(\exists \hgnodeid : \joinerHash_{\hgnodeid}).
+  \begin{align*}\textnormal{Adv}^\mmindrcca_{\mmPKE,1,q_n}(&\Bdv[1]) \geq \Pr(\joinerHash_{\hgnodeid^*}) \\ \geq& 1/q_e\Pr(\exists \hgnodeid : \joinerHash_{\hgnodeid}).
   \end{align*}
 \end{proof}
 
 \begin{lemma}
   There exists a reduction $\Bdv[2]$ such that
   \begin{align*}
-    \Pr(\exists \hgnodeid : &\commitHash_{\hgnodeid}) \\ \leq\ & q_e\cdot\textnormal{Adv}^\mmindrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[2]).
+    \Pr(\exists \hgnodeid : &\commitHash_{\hgnodeid}) \leq q_e\cdot\textnormal{Adv}^\mmindrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[2]).
   \end{align*}
 \end{lemma}
 \begin{proof}
@@ -548,7 +547,7 @@ We next bound the probability of symmetric forgery.
 \begin{lemma}
 There exist reductions $\Bdv[2]$ and $\Bdv[3]$ such that
 \begin{multline*}
-    \Pr[\forgess] \leq \  q_e\cdot \textnormal{Adv}^{\ufcma}_\mac(\Bdv[2]) \\+ q_e^3\log(q_n)\cdot \textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[3])\\+\  3q_e^2q_h/2^\kappa .
+    \Pr[\forgess] \leq \  q_e\cdot \textnormal{Adv}^{\ufcma}_\mac(\Bdv[2]) \\+ q_e^3\log(q_n)\cdot \textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[3])+  3q_e^2q_h/2^\kappa .
 \end{multline*}
 \end{lemma}
 
@@ -574,7 +573,7 @@ Next, we show that changing to hybrid \hybridThreeN does not affect the probabil
   There exists a reduction $\Bdv[3]$ such that
   \begin{multline*}
     \Pr(\forgessN) - \Pr(\forgess) \hspace*{16em}\\\leq q_e^3\log(q_n) \cdot
-    \textnormal{Adv}^{\mmowrcca}_{\mmPKE,q_e,q_e\log(q_n),q_n}(\Bdv[3]) \\
+    \textnormal{Adv}^{\mmowrcca}_{\mmPKE,q_e,q_e\log(q_n),q_n}(\Bdv[3]) 
     + 3q_e^3q_n/2^\kappa.
   \end{multline*}
 \end{claim}

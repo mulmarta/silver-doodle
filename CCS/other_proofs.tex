@@ -1,4 +1,4 @@
-\section{Security Proof for the mmPKE Construction}
+\section{Security of the mmPKE Scheme}
 
 % \subsection{Proof of \cref{thm:wacc_sec}}\label{sec:app-acc}
 % \accSec*
@@ -263,12 +263,9 @@
 	\caption{Description of adversary \Bdv[1] from \cref{thm:mmpke_security}.}
 	\label{fig:mmpkeBdv1}
 \end{figure*}
-  
-
   Additionally, for $i\in[n]$, we define the four hybrids $G_{i,0}$ to $G_{i,3}$. $G_{i,0}$ and $G_{i,3}$ are identical
   to $G_i$ and $G_{i+1}$ respectively. In $G_{i,1}$, we set the $i$-th DEM key to a random key and in $G_{i,2}$ we swap
   the plaintext in the $i$-th challenge ciphertext from $\vec{m}_0[i]$ to $\vec{m}_1[i]$.
-
   We will split the proofs into the following lemmas.
   \begin{lemma}\label{lem:mmpke_hop1}
     Let $n\in\N$. For all $1\leq i \le n$, there exists an adversary \Bdv[1] against the \sdh assumption s.t. for all adversaries \Adv
