@@ -84,10 +84,7 @@ The formal proof of \cref{thm:saik-security} can be found in \cref{sec:bgm_prot_
 	%
 	There exists a simulator $\ucsim$ and adversaries $\Bdv[1]$ to $\Bdv[4]$ such that
 	\begin{align*}
-		\Pr[\ucideal&_{\funcCGKA, \ucsim}(\Adv) = 1] - \Pr\left[\ucreal_{\saik, \funcPKI}(\Adv) = 1\right] \leq
-	\end{align*}
-
-	\begin{align*}
+		\Pr[\ucideal&_{\funcCGKA, \ucsim}(\Adv) = 1] - \Pr\left[\ucreal_{\saik, \funcPKI}(\Adv) = 1\right] \leq\\
 		&\textnormal{Adv}^{\gamefont{CR}}_{\hash}(\Bdv[1]) \\
 	% confidentiality
 	+\ & q_e^2(q_e+1) \log(q_n) \cdot\textnormal{Adv}^\mmowrcca_{\mmPKE,q_e\log(q_n),q_n}(\Bdv[2]) \\

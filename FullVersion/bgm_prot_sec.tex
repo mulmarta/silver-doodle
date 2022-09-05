@@ -71,8 +71,8 @@ A commit in \saik is almost identical to its \keyword{Send} input. It proceeds i
 	\end{itemize} 
 \end{enumerate}
 
-\paragraph{Processing a commit in \saik.}
-The receive procedure of \saik is modified analogous to its send procedure. In case the receiver is a member and is not removed, it first applies all proposed actions and then processes the committer's path the same way as the current \saik.
+\paragraph{Processing a commit in \saik}
+The receive procedure of \saik is modified analogous to its send procedure. In case the receiver is a member and is not removed, it applies all proposed actions and then processes the committer's path exactly like the current \saik.
 
 Finally, to join, a new member finds their public key in the list $(\mmpkepk'_1, \dots,\mmpkepk'_N)$ contained in the welcome data. Let $i$ denote the index of that key. They decrypt the $\joinerSecret$ as the $(N-i)$-th to last recipient of the mmPKE ciphertext. Then they proceed as in the current \saik.
 

@@ -97,7 +97,7 @@ Let \mmPKE be an mmPKE scheme with message space $\mathcal M$. For any adversary
   First, it is easy to see that if $\Adv$ does not violate any \KwReq{} statements in the emulation, then $\Bdv$ does not violate any \KwReq{} statements in the \mmindrcca game. In particular, $\vec m_0^*$ and $\vec m_1^*$ clearly have the same leakage.
   It is also easy to see that if $\Adv$ does not trivially win by corruptions then $\Bdv$ does not either.
 
-  Second, observe that if $\Bdv$'s challenger uses the bit $b=1$, then $\Bdv$ emulates $\Adv$'s experiment perfectly, unless $\Adv$ inputs to $\oracle{Dec}_2$ something that decrypts to $m_0^*$. The reason is that in this case $\Bdv$ replies with \literal{test} (forwarded from its oracle), while $\Adv$ should receive $m_0^*$. Since $m_0^*$ is random and independent of $\Adv$'s view, this happens with probability at most $1/\mathcal M$. Therefore, it is easy to see that
+  Second, observe that if $\Bdv$'s challenger uses the bit $b=1$, then $\Bdv$ emulates $\Adv$'s experiment perfectly, unless $\Adv$ inputs to $\oracle{Dec}_2$ something that decrypts to $m_0^*$. The reason is that in this case $\Bdv$ replies with \literal{test} (forwarded from its oracle), while $\Adv$ should receive $m_0^*$. Since $m_0^*$ is random and independent of $\Adv$'s view, this happens with probability at most $1/\mathcal M$. Thus, it is easy to see that
   \[\Pr\left[\experiment{\mmindrcca}{\mmPKE,N,n,1}(\Bdv)\Rightarrow 1\right] \leq \textnormal{Adv}^\mmindrcca_{\mmPKE,N,n}(\Adv) + \frac{1}{\mathcal M}.\]
 
   If $\Bdv$ is in the experiment with the bit $b=0$, then $m_1^*$ is independent of $\Adv$'s view, so the probability that it outputs $m'=m_1^*$ and hence also that $\Bdv$ outputs $1$ is at most $\frac{1}{\mathcal M}$.
