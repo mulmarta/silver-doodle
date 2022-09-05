@@ -1,4 +1,4 @@
-\documentclass[sigconf, anonymous]{acmart}
+\documentclass[sigconf]{acmart}
 
 \fancyhf{} % Remove fancy page headers
 \fancyhead[C]{Anonymous submission \#399 to ACM CCS 2022} % TODO: replace 9999 with your paper number
@@ -15,7 +15,7 @@
 \WorkInProgressfalse
 
 %-------------------------------------------------------------------------------
-\input{sty/packages}  %<-------------- Add new packages here
+\input{sty/packages}
 \input{sty/macros}
 \input{sty/notation}
 \input{sty/treekem-macros}
@@ -24,8 +24,34 @@
 
 %%\ccsPaper{9999} % TODO: replace with your paper number once obtained
 
+\copyrightyear{2022} 
+\acmYear{2022} 
+\setcopyright{rightsretained} 
+\acmConference[CCS '22]{Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security}{November 7--11, 2022}{Los Angeles, CA, USA}
+\acmBooktitle{Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security (CCS '22), November 7--11, 2022, Los Angeles, CA, USA}
+\acmDOI{10.1145/3548606.3560632}
+\acmISBN{978-1-4503-9450-5/22/11}
+
 \begin{document}
 \title{Server-Aided Continuous Group Key Agreement}
+
+\author{Joël Alwen}
+\email{alwenjo@amazon.com}
+\affiliation{%
+	\institution{AWS-Wickr}
+	\city{New York}
+	\state{NY}
+	\country{USA}
+}
+\author{Marta Mularczyk}
+\email{mulmarta@amazon.com}
+\orcid{0000-0002-9462-1275}
+\affiliation{%
+	\institution{AWS-Wickr}
+	\city{New York}
+	\state{NY}
+	\country{USA}
+}
 
 \begin{abstract}
 \input{abstract}
