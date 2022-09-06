@@ -8,8 +8,6 @@ This means that \protCMPKE only needs single-message multi-recipient PKE, \mPKE 
 To make a fair comparison, we instantiate \protCMPKE with the same DH-based \mPKE as \saik
 instead of the less efficient but post-quantum secure \mPKE
 given in \cite{hashimoto2021cmpke}.
-
-%Plots for sender and receiver bandwidth are in \cref{fig:plots}. All values are calculated and we provide the used
 %formulas in \cref{tab:bandwidth}.
 
 \paragraph{Methodology.}
@@ -33,40 +31,9 @@ best case, called the \emph{tree-best-case}, there are only $\log(N)$ public key
 leaves, as depicted in \cref{fig:tree-full}). However, in the worst case, called the \emph{tree-worst-case}, there can be
 $N$ public keys (this happens e.g. when all non-leaf nodes are blank; see \cref{fig:tree-blank}). In general, the number of public keys can be anything in between; see \cref{fig:tree-mixed}.
 
-
-%We break down the communication complexity into the \emph{sender bandwidth}, i.e., the size of the packet uploaded to the
-%server, and the \emph{maximum receiver bandwidth}, i.e., the maximum size of a (personalized) packet downloaded by a single
-%receiver. 
-%We remark that \cite{hashimoto2021cmpke} uses a more coarse-grained metric, namely, the \emph{total bandwidth}, i.e., the sum of the sizes of the uploaded packet and all downloaded packets.
-%Note that an upper bound on the total bandwidth can be easily recovered from our metric. We choose to split the bandwidth because it
-%allows us to compare not only the total network bandwidth but also the maximum bandwidth required by a single
-%client. This metric is of interest as a protocol with smaller maximum client bandwidth allows for weaker clients
-%overall. Looking ahead, \protCMPKE is more efficient in terms of total bandwidth while \saik has smaller maximum package size.
-%
-%There are two caveats when calculating the bandwidth requirements for \saik (and \protITK) due to the underlying tree
-%structure:
-%
-%We first note that for \saik, the receiver bandwidth (i.e. the number of fields in a packet) differs depending on
-%\emph{the position of the receiver in the ratchet tree}, relative to the sender. (The reason is that only public keys on
-%the path from the sender to the lowest common ancestor in the ratchet tree need to be downloaded.) Therefore, for all
-%protocols we compare the maximum receiver bandwidth over all members of the group. (For \protITK and \protCMPKE it makes
-%no difference.) Note that for \saik, the average receiver actually gets this maximum package as approximately half of the
-%receivers always need to download all public keys since they are in the opposite subtree of the sender relative to the
-%root of the tree.
-%
-%Another difficulty in making a meaningful comparison is that for \saik and \protITK the bandwidth can vary quite
-%significantly depending on \emph{the execution history}. The reason is that add and remove operations may destroy the
-%good properties of the ratchet tree (by ``blanking'' nodes), increasing the number of public keys to which some message must be encrypted. In the
-%best case, there are only $\log(N)$ public keys. Roughly, this happens when the ratchet has no blank nodes or unmerged
-%leaves, as depicted in \cref{fig:tree-full}. We call this ``tree-best-case''. However, in the worst case there can be
-%$N$ public keys. This happens e.g. when all non-leaf nodes are blank; see \cref{fig:tree-blank}. We call this
-%``tree-worst-case''. In general, the number of public keys can be anything in between; see \cref{fig:tree-mixed}.
-
 \input{fig_trees}
 
 Therefore, we compare each bandwidth in the tree-best-case and the tree-worst-case. Note that any other case results in a bandwidth between these cases.
-%the minimum and maximum bandwidth over all possible execution histories, i.e. in the
-%tree-best-case and the tree-worst-case.
 We remark that comparing the average over all histories of group operations would not be meaningful, since the probability of a given execution depends on user and administrator behavior, general application policies and runtime conditions, etc.
 It is an important topic of future research to
 better understand which kinds of policies governing when and which parties
@@ -103,7 +70,7 @@ We note that SAIK is \emph{very} flexible as to kinds of policies that are possi
 	\label{tab:bandwidth1}
 \end{minipage}
   \begin{minipage}[t]{.48\textwidth}
-	\begin{minipage}[t]{\linewidth}\includegraphics[width=\linewidth]{../plots/Final_Figures_Total}\end{minipage}
+	\begin{minipage}[t]{\linewidth}\includegraphics[width=\linewidth]{Final_Figures_Total}\end{minipage}
 	\caption{Bandwidth comparison of \saik, \protITK and \protCMPKE (instantiated with 256-bit
 		security). Lower lines denote the tree-best-case execution history, while upper lines denote the
 		tree-worst-case. All other possible cases are marked as the regions between the lines. Plot (a) shows the sender

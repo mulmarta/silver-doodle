@@ -1,7 +1,0 @@
-\section{The Authenticated Key Service Functionality (AKS)}\label{sec:pki}
-
-\input{fig_pki}
-The AKS is modeled as the functionality $\funcPKI$ in \cref{fig:aks}. Formally, \saik
-  works in the $\funcPKI$-hybrids model, i.e., $\funcPKI$ is available in the real world and emulated by the simulator in the ideal world.
-
-$\funcPKI$ works as follows. When a party $\id$ wants to fetch a key package of another party $\id'$, $\funcPKI$ generates a new key package for $\id'$ using \saik's key-package generation algorithm (formally, the algorithm is a parameter of $\funcPKI$). It sends (the public part of) the package to $\id$ and to the adversary. (Note that since $\funcPKI$ exists in the real world, the adversary should be thought of as the UC environment.) The secrets for the key package can be fetched by $\id_t$ later, when it decides to join the group. Once fetched, secrets are deleted, which means that $\funcPKI$ cannot be used as secure storage.

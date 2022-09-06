@@ -1,14 +1,6 @@
 % !TEX root = main.tex
 % !TeX spellcheck = en_US
 
-% Continuous Group Key Agreement (CGKA), also called Group Ratcheting, lies at
-% the heart of a new generation of End-to-End (E2E) secure group messaging
-% (SGM) protocols supporting very large groups. The communication model,
-% efficiency and security of these SGM protocols is inherited from their
-% underlying CGKA protocol. In particular, a primary cost limiting practically
-% viable group sizes is the communication complexity of certain CGKA
-% operations.
-
 \section{Introduction}
 End-to-end (E2E) secure applications have become one of the most widely used
 class of cryptographic applications on the internet with billions of daily
@@ -43,7 +35,6 @@ has imposed limits on real-world group sizes (generally at or below
 
 Consequently, a new generation of E2E protocols is being developed both in
 academia (e.g.~%
-%\cite{IST-MLS-papers,ETHZ-MLS-papers,Continous-CGKA-papers}
 \cite{CCS:CCGMM18,EC:AlwCorDod19,TCC:ACJM20,EPRINT:AlwJosMul20,C:ACDT20,TCC:AABNKPPW21,SP:ACC+21,hashimoto2021cmpke})
 and industry~\cite{MLS}. Their primary design goal is to support extremely
 large groups (e.g. 10s of thousands of users) while still meeting, or
@@ -56,12 +47,6 @@ property is sometimes termed the \emph{fair-weather complexity}. % of a protocol
 To date, the most important of these new E2E protocols is the IETF's upcoming
 secure group messaging (SGM) standard called the \emph{Messaging Layer
 Security} (MLS) protocol.
-% It is the product of a collaboration between
-% industry practitioners and academic cryptographers.
-% including Amazon, Cisco, Cloudlfare, Facebook, Mozilla,
-% Twitter, Wickr and Wire and academic cryptographers (e.g. from Alto
-% University, IST Austria, INRIA, MIT, Naval Postgraduate School, Oxford and
-% Royal Holloway).
 MLS is in the final stages of standardization and its core
 components are already seeing initial deployment~\cite{Cisco-Webex-MLS}.
 
@@ -85,15 +70,6 @@ indistinguishable from random to anyone else. Higher-level protocols
 typically (deterministically) expand the epoch key into a complete key
 schedule which in turn can be used to, say, protect application data sent
 between members (e.g. messages or VoiP data).
-% \footnote{E.g. many CGKAs also ensure agreement about the sequence of changes
-% making up the groups history. In contrast, \emph{concurrent} CGKAs ``only''
-% ensure agreement on the \emph{set} of changes making up the
-% history.~\cite{ConcurrentCGKAs} The new CGKAs in this work ensure agreement
-% on the sequence of changes.}
-% Moreover, the communication and computational complexity of the underlying
-% CGKA typically dominates the complexity of the higher-level E2E protocol (and
-% even the entire E2E secure application).
-%  \msnote{does this fit? I somehow needed a link with the previous paragraph}
 
 MLS too, is (implicitly) based on a CGKA, originally dubbed
 \emph{TreeKEM}~\cite{TreeKEM}. Since its inception, TreeKEM has undergone several
@@ -224,7 +200,6 @@ curves.\cite{rfc7748}. In practical terms, this means our proofs also apply
 to instantiations of~\cite{ASIACCS:PinPoeSch14} based on the X25519
 and X448 functions.
 
-%\paragraph{Authentication and Agreement.}
 \paragraph{Authentication.}
 Second, we modify the mechanisms used by \protITK to ensure members
 transitioning to a new epoch authenticate the sender announcing a new epoch.
@@ -233,20 +208,6 @@ signs a small tag which ``binds`` all salient properties of the new epoch, i.e.,
 secrets, the set of group members, the history of applied operations, etc.
 In fact, we use a tag that already exists in \protITK (called the 
 ``confirmation tag'').
-
-%Second, we modify the mechanisms used by \protITK to ensure members
-%transitioning to a new epoch authenticate who is making changes to the
-%group's properties when a new epoch is announced. Rather than sign the full
-%packet like in \protITK, a sender in \saik only signs a small tag common to
-%view of all receivers. This reduces the amount of data receivers must
-%download to verify the signature. We also modify how changes to the group's
-%properties are incorporated in the derivation of the new epoch key. Rather
-%include a hash of the full packet representing the change, \saik uses a hash
-%of a symbolic representation of the change. Proving this secure leverages the
-%new wiggle room in our CGKA security created by introducing semantic
-%agreement.
-%
-
 
 \paragraph{Performance Evaluation.}
 Finally, we compare the communication complexity of \saik, \protITK and the CGKA of
@@ -257,24 +218,6 @@ We note that the sender bandwidth of \protCMPKE grows linearly in the group size
 We find that compared to \protITK, \saik always requires less bandwidth (regardless of history and group size). However, compared to \protCMPKE, \saik requires slightly more receiver bandwidth but anywhere from the same to far less sender bandwidth. Concretely, in a group with 10K parties, \protCMPKE's sender bandwidth is 0.8MB while \saik and \protITK's bandwidths range between 3.6KB - 0.8MB and 4.4KB - 1.5MB, respectively (depending on the history). Meanwhile for receivers \protCMPKE and \saik require 0.8KB and 2KB respectively while \protITK requires between 4.4KB - 1.5\emph{MB}.
 
 In addition, we also compare the total bandwidth considered in \cite{hashimoto2021cmpke}, i.e., the size of the uploaded packet and all downloaded packets together. This metric reflects the resources required from the server, or equivalently from all clients together. We find that \saik requires more total bandwidth than \protCMPKE but \emph{much} less than \protITK.
-
-
-%Our estimates confirm that \saik is the best CGKA in terms of sender bandwidth. Specifically, for 10K parties, \saik decreases the bandwidth of \protITK from 4.8KB down to 4.0KB for the best-case history of group evolution (but independently from the receiver) and from 1.5MB to 0.8MB for the worst-case history. Meanwhile, \protCMPKE requires 0.8MB in all cases.
-%
-%For receivers, \protCMPKE achieves the smallest bandwidth that is independent of the group size. \saik is slightly worse with the receiver cost growing logarithmically in the group size. \protITK is overwhelmingly worse, as its receiver bandwidth scales between logarithmically and linearly in the group size, depending on group history. Specifically, this means that for 10K parties the receiver cost is 2.4KB for \protCMPKE, 3.0KB for \saik, and anywhere between 4.8KB and 1.5MB for \protITK. We note that the cost for \protITK is linear in natural scenarios, e.g., in a freshly created group.
-
-
-%Finally, we provide empirical data comparing the communication complexity for
-%senders and receivers running various instantiations of \saik and \protITK
-%for a variety of execution profiles. Our results show that for senders, \saik
-%reduces communication complexity (and halves the number of public key
-%operations) compared to \protITK. Specifically, for 10K parties, sender
-%communication complexity decreases from 4.4KB down to 3.6KB in the best case
-%and from 1.5MB to 0.77MB in the worst case. Meanwhile for receivers the
-%communication complexity goes from anywhere between logarithmic and even
-%linear in the group size of \protITK down to at most logarithmic for \saik. Concretely, in a freshly created group with
-%10K parties a receiver in a \protITK session needs to download 1.38MB to transition into a
-%new epoch while the same receiver in \saik downloads no more than 2.7KB.
 
 \paragraph{Outline.}
 The paper is structured as follows. \cref{sec:prelims}
@@ -367,34 +310,6 @@ Regarding the communication cost, \protCMPKE is designed to reduce the \emph{tot
 Accordingly, \protCMPKE has smaller total bandwidth than \saik. In fact, the maximum size of a downloaded packet is also smaller for \protCMPKE. However, the size of a sent packet is usually much bigger for \protCMPKE.
 In summary, \saik is designed to support clients with poor bandwidth, i.e., it minimizes the size of a single uploaded or downloaded packet. Thus, while the server load is a bit higher, the network requirements for clients are usually much lower.
 
-%Regarding the communication cost, the goal of \cite{hashimoto2021cmpke} is to minimize the total cost of an operation, i.e., the size of the sent packet and all downloaded packets together.
-% According to this metric, \protCMPKE beats both \saik and \protITK.
-%In contrast, in this work we look at a more fine-grained metric, namely, the cost for a single party, either the sender or a receiver. According to this metric, \protCMPKE and \saik are somewhat incomparable --- \protCMPKE is slightly better than \saik for a receiver but can be much worse for a sender.The choice of a better trade-off depends on the application.
-
-%(We also note that, technically, the fCGKA syntax implies linear cost for the senders.)
-
-%Concurrently and independently to this work~\cite{hashimoto2021cmpke} present
-%an interesting saCGKA and corresponding adaptation of the insider security
-%notion of~\cite{EPRINT:AlwJosMul20}. Like our work, they consider a server
-%that extracts receiver specific sub-packets from a senders full packet.
-%However, their security notion still enforces representational rather than
-%semantic agreement on the transcript history. They use a novel
-%multi-recipient (but not multi-message) PKE which is shown to be
-%post-quantum secure (though their CGKA is only proven classically secure).
-%
-%The efficiency of their protocol is incomparable to ours. While with \saik a
-%receiver's sub-packet contains between $1$ to $\log(n)$ public keys (for
-%groups of size $n$) in~\cite{hashimoto2021cmpke} a receiver never needs to
-%download more than a single public key. However, both the computational and
-%communication complexity for senders is \emph{always} linear in
-%$n$.\footnote{In fact, this complexity is roughly a half that of a CGKA
-%construction built from a network of 2-party double-ratchet channels similar
-%to the sender keys protocol used by WhatsApp.} Meanwhile \saik enjoys
-%logarithmic fair-weather complexity. That is, sender complexity may vary
-%between linear down logarithmic (or even constant). In all but the most
-%pathological executions, other than when a group is freshly created we expect
-%complexity to be roughly logarithmic for the vast majority of the execution.
-
 
 \paragraph{mmPKE.}
 mmPKE was introduced by Kurosawa~\cite{PKC:Kurosawa02} though their
@@ -408,12 +323,6 @@ when reusing coins across ciphertexts. Indeed, reusing coins this way can
 also reduce the computational complexity of encapsulation and the size of
 ciphertexts for KEMs as shown in the Multi-Recipient KEM (mKEM)
 of~\cite{SCN:Smart04,ICICS:CLQY18a,AC:KKPP20} for example.
-%which yield mmPKE via parallel execution and the KEM/DEM paradigm. Katsumata et.al. \cite{AC:KKPP20}
-%claim that their mKEM constructions can be used to increase efficiency in \protITK but do not give a formal proof.
-% which, similar to mmPKE, can be used to improve efficiency of \protITK.
-% \msnote{I downtoned a bit -- parallel mKEM yield mmPKE but with different
-% leakage. It's insecure according to \cite{ASIACCS:PinPoeSch14}.}
-%
 All previous security notions (for mmPKE and mKEM) allow an adversary to
 provide malicious keys (with or without knowing corresponding secret keys),
 but only \cite{hashimoto2021cmpke} allows for adaptive corruption of honest keys, which is necessary for
