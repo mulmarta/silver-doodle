@@ -14,17 +14,12 @@ Readers familiar with \protITK can jump directly to \cref{sec:intuition2} which 
 The operation of \protITK relies on a data structure called ratchet trees. A ratchet tree $\tree$ is a tree where leaves are assigned to group members, each storing its owner's identity and signature key pair. Moreover, most non-root nodes in $\tree$, store encryption key pairs. Nodes without a key pair are called \emph{blank}.
 
 \protITK maintains the following \emph{tree invariant}:
-%\begin{enumerate}[itemsep=0pt]
-%  \item[]
   {\it Each member knows the secret keys of the nodes on the path from their leaf to the root, and only those, as well as all public keys in $\tree$.}
-%\end{enumerate}
 This allows to efficiently encrypt messages to subgroups: If a node $v$ is not blank, then a message $m$ can be
 encrypted to all members in the subtree of a node $v$ by encrypting it under $v$'s public key. If $v$ is blank, then the
 same can be achieved by encrypting $m$ under each key in $v$'s \emph{resolution}, i.e., the minimal set of non-blank
 nodes covering all leaves in $v$'s subtree (Note that leaves are never blank, so there is always a resolution covering
 all leaves).
-
-%\saik uses generalized $q$-ary ratchet trees, generalizing binary trees used by \protITK (and all its variants). While in most applications $q=2$ is optimal, choosing $q>2$ is more efficient if \saik is instantiated with (an mmPKE built from) a post-quantum secure mKEM \cite{AC:KKPP20}.
 
 \paragraph{Ratchet tree evolution.}
 Each group modification corresponds to a modification of the ratchet tree $\tree$. Most importantly, an update performed by a member $\id$ corresponds to refreshing all key pairs with secret keys known to $\id$, i.e., those in the nodes on the path from $\id$'s leaf to the root. $\id$ generates the new key pairs and, to maintain the tree invariant, communicates the secret keys to some group members. This is done efficiently as follows.
@@ -42,7 +37,7 @@ Removing a member $\id_t$ corresponds to removing all keys known to it, i.e., bl
 Adding a member $\id_t$ corresponds to inserting a new leaf into $\tree$. The leaf's public signature and encryption keys are fetched from the AKS. Further, the new leaf becomes an \emph{unmerged leaf} of all nodes on the path from it to the root. A leaf $l$ being unmerged at a node $v$ indicates that the $l$'s owner doesn't know the secret key in $v$, so messages should be encrypted directly to $l$. When $v$'s key is refreshed during an update, its set of unmerged leaves is cleared.
 
 \paragraph{Key schedule.}
-Apart from the ratchet tree, all group members store a number of shared symmetric keys, unique to the current epoch. These are: the \emph{application secret} --- the group key exported to the E2E application, the \emph{membership key} used to authenticate sent messages and the \emph{init key} --- mixed in the next epoch's secrets for FS.
+Apart from the ratchet tree, all group members store a number of shared symmetric keys, unique to the current epoch. These are: \emph{application secret} --- the group key exported to the E2E application,  \emph{membership key} used to authenticate sent messages and the \emph{init key} --- mixed in the next epoch's secrets for FS.
 
 The secrets are derived when an epoch is created, i.e. after the implicit update following each modification. The update
 generates the last path secret $s_n$, which we now call the \emph{commit secret}. Then, the following secrets are
@@ -54,7 +49,7 @@ The context includes all relevant information about the epoch, e.g. (the hash of
 \paragraph{Joining.}
 When an $\id_t$ joins a group, the party inviting them encrypts to them two secrets under a key fetched from the AKS. First, this is $\id_t$'s path secret from the implicit update following the add. Second, this is the new joiner secret, from which $\id_t$ derives other epoch secrets.
 Importantly, the new member hashes the joiner secret with the context, which means that it agrees on the epoch's state with all current members transitioning to it.
-%\input{fig_state}
+
 \subsection{Intuition for the \saik Protocol}\label{sec:intuition2}
 \paragraph{mmPKE.}
 In \protITK, a member performing an update generates a sequence of path secrets $s_1, \dots, s_n$ and encrypts each $s_i$ to each public key from a set of recipient public keys $S_i$ using regular encryption.
@@ -79,30 +74,7 @@ is not extracted with the honest procedure (e.g., it has reordered fields), as l
 
 Therefore, instead of signing the whole message, in \saik we can sign and MAC only a single short tag that identifies the new epoch and is known to all members. In particular, this value is derived in the key schedule for the new epoch, alongside the other secrets, by hashing the epoch secret with an appropriate label.
 %
-This way of efficient authentication is enabled by our new security notion.% Note that existing definitions such as \cite{EPRINT:AlwJosMul20} require that the receiver authenticates the whole sent message, which cannot be done without downloading it.
-
-
-
-%\subsection{Authenticated Key Service (AKS)}
-%Formally, the Authenticated Key Service (AKS) is modeled as a UC functionality $\funcPKI$ (\saik works in the $\funcPKI$). Readers not familiar with UC can think of $\funcPKI$ as a trusted server communicating with instances of \saik executed by different parties, each identified by an $\id$, via secure channels.
-%
-%$\funcPKI$ is parameterized by a key-package generation algorithm $\genPKIkeys$ (which will be implemented by \saik). Each user $\id$ (more precisely, its protocol instance) can repeatedly send to $\funcPKI$ messages $(\keyword{GetPK}, \id')$. Upon such a message $\funcPKI$ generates a new key package $(\textit{PK}, \textit{SK})$for $\id'$ and sends the public part \textit{PK} to $\id$. $\funcPKI$ is not keeping public keys secret, so it also immediately reveals \textit{PK} to the adversary. Once online, $\id'$ can fetch the corresponding secret key by sending $\keyword{GetSK}(\textit{PK})$ to $\funcPKI$. The details of $\funcPKI$ can be found in \cref{sec:pki}.
-%
-%We note that in reality $\id'$ would generate the key pair itself and pre-upload it to the server. However, we decided to use an oversimplified PKI (see \cref{sec:simplifications}). So, since $\funcPKI$ is trusted, it does not matter that it generates keys for $\id'$. Further, doing this at the moment $\id$ fetches the keys corresponds to $\id'$ pre-uploading the necessary number of keys before the execution begins.
-%
-%\subsection{Ratchet Trees}
-%\input{prot_ratchet_tree}
-%
-%\subsection{\saik State and Algorithms}
-%\input{prot_state}
-%
-%%\subsection{\saik Algorithms}
-%\saik's algorithms are defined in \cref{fig:prot1,fig:prot-helpers2}. Apart from initialization, there are three main algorithms (the rest of the code are subroutines) exposed to a user (or a higher-level application). They are identified by keywords \keyword{Send}, \keyword{Receive} and \keyword{Key}, respectively. First, \keyword{Send} is used to create a new epoch. When the user inputs \keyword{Send} followed by the intended group modification (update, add or remove), the protocol applies the modification and returns a message, which the user can upload to the mailboxing service. Second, \keyword{Receive} is used to process messages downloaded from the mailboxing service. Third, using \keyword{Key} user obtains the current group key.
-%
-%The formal syntax of saCGKA protocols is defined as part of our security definition in \cref{sec:model}. In particular, an saCGKA protocol must expose the same interface as the ideal CGKA functionality.
-%
-%\input{fig_prot}
-
+This way of efficient authentication is enabled by our new security notion.
 
 \paragraph{Extraction procedure for the server.}
 The task of the mailboxing server is to extract a personalized packet for a group member Alice from a packet $C$
@@ -115,18 +87,6 @@ Observe that $i$ and the \lca are determined by the current epoch's ratchet tree
 it. Therefore, the server can obtain $i$ and the \lca in two ways: First, it can store all ratchet trees it needs
 (identified by the transcript hash leading to the epoch for which a tree is stored) and them itself. Second, it can ask
 Alice for $i$ and the \lca given that the sender is Bob. We note that the latter solution requires an additional round of interaction which may be problematic for some applications.
-%
-%\newcommand{\extract}{\method{extract}}
-%\subsection{Extraction Procedure for the Server}
-%Finally, we describe a procedure $\extract(C, \id) \to c$ used by the mailboxing service to take an uploaded message $C$ and compute the message $c$ delivered to user $\id$. Formally, this procedure is not part of our syntax or security definitions, since for simplicity our model does not consider correctness (see \cref{sec:simplifications}) and an untrusted service can anyway deliver arbitrary messages.
-%
-%Recall that $C$ contains the executed group operation $\hgact$ and the sender $\id_s$, a multi-recipient ciphertext $Ctxt$ and a vector of updated public keys $\updatedPks$. Roughly, $\extract$ only needs to compute $\id$'s individual mmPKE ciphertext $\mmpkeExtL(Ctxt, i)$ and the prefix of the first $j$ elements of $\updatedPks$. This requires that it knows the indices $i$ and $j$ for $\id$.
-%%
-%We notice that they can be easily computed using the public part of the ratchet tree, $\hgact$ and $\id_s$. Therefore, the indices can be obtained in two ways. First, the service can send $\hgact$ and $\id_s$ to $\id$, who replies with $i$ and $j$.  This requires interaction, but both $\id$ and the service are online at the time. Second, the service can store the current ratchet trees and compute $i$ and $j$ itself. The disadvantage of this is that it requires keeping a large state --- in case members are out of sync (e.g. a user is 10 epochs behind), the service needs to store one tree for each epoch which has an active member in it.
-%%
-%Once $i$ and $j$ are known, $\extract$ works as follows.
-%
-%If $\hgact = \hglu$, set  $ctxt = \mmpkeExtL(Ctxt, i)$ and $\redactedUpPks = (\updatedPks[1], \dots, \updatedPks[j])$. Output $c =  (\id_s, \hgact, \pathSecCtxtInd,\allowbreak  \redactedUpPks,\allowbreak  \sig)$, where $\sig$ is a field of $C$. If $\hgact = \hglr\md\id$, output $c =  (\id_s, \literal{removed}, \sig_t, \macsig_t)$ where $ \sig_t$ and $\macsig_t$ are taken from $C$. Finally, if $\hgact = \hgla\md\id$, $C$ contains $\variable{welcomeData}$, which in turn contains a ratchet tree. Based on this, compute $\id$'s index $i$ in $Ctxt$,  the number $n$ of recipients of $Ctxt$, and then $ctxt_1 = $ $\mmpkeExtL(Ctxt, i)$ and $ctxt_2 = \mmpkeExtL(Ctxt, n+1)$. Output $c =  (\id_s, \hgact, \encGroupSecret_1,\allowbreak  \encGroupSecret_2,\allowbreak  \variable{welcomeData})$.
 
 \input{fig_extract}
 

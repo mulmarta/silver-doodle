@@ -39,40 +39,15 @@ Using history graphs we can list intuitive security properties of saCGKA.
 \begin{description}[itemsep=2pt,topsep=2pt,parsep=2pt]
   \item[Consistency] Any two parties in the same epoch $E$ agree on the group state, i.e., the set of current members, the group key, the last group modification and the previous epoch. One consequence of consistency is agreement on the history: the parties reached $E$ by executing the same sequence of group modifications since the latter one joined.
   \item[Confidentiality] An epoch is confidential if the adversary has no information about its group key. Corruptions may destroy confidentiality in certain epochs. saCGKA security is parameterized by a \emph{confidentiality predicate} which identifies confidential epochs in an execution.
-  %The predicate formalizes the confidentiality guarantees achieved by a protocol.
   \item[Authenticity] Authenticity for a party $A$ in an epoch $E$ is preserved if the following holds: If a party in $E$ transitions to a child epoch $E'$ and identifies $A$ as the sender creating $E'$, then $A$ indeed created $E'$. An active adversary may destroy authenticity in certain cases. saCGKA security is parameterized by an \emph{authenticity predicate} which decides if authenticity of a party $A$ in epoch $E$ is preserved.
 \end{description}
-The confidentiality and authenticity predicates % formalize security achieved by a particular protocol. They
-generalize forward-secrecy and post-compromise security.
-%The formal, simulation-based security of saCGKA (implying the above guarantees) is presented in \cref{sec:model} due to space limitations.
-
-%\subsection{Formal Security Model}
-%We introduce a formal simulation-based security model for saCGKA, which implies the guarantees sketched above. Due to space limitations, the model is in  \cref{sec:model}.
-%
-%We note that it is necessary to introduce a new model, since we would not be able to prove security of \saik in any existing model formalizing realistic security (i.e., one that takes into account insider attacks) \cite{TCC:ACJM20,EPRINT:AlwJosMul20}. The reason is that these models are unnecessarily strong in that they require agreement on the history of all message strings. Our new model is more realistic, requiring agreement on semantics of all messages. This enables \saik's optimizations.\footnote{A
-%  good analogy is CCA and RCCA security of encryption. CCA is too strong and cannot be proved e.g. for schemes with
-%  rerandomizable ciphertexts. RCCA is often more appropriate as it is sufficient for most applications and can be proved for such schemes}
-%
-%Further, to make our notion tractable, we make a number of simplifications
-%listed and justified in \cref{sec:simplifications}. Most importantly, we
-%simplify the syntax (\protITK uses a so-called propose/commit syntax with 3
-%different types of messages; \saik can be easily modified to fit that
-%syntax). Further, we do not formally capture correctness, i.e., the guarantee
-%that messages sent in an honest execution are always accepted. Nevertheless,
-%of course \saik is correct as can be followed directly by inspection. A third
-%important simplification is assuming a fully trusted PKI. In contrast, the
-%notion of \cite{EPRINT:AlwJosMul20} is more realistic in that it considers an
-%untrusted PKI, giving different guarantees depending on whether honest or
-%corrupt keys are used. We note that the same technique used there to model
-%the untrusted PKI can be used in our definition too. However, just as in
-%their work, this significantly grows the complexity of the definition.
+The confidentiality and authenticity predicates generalize forward-secrecy and post-compromise security.
 
 \subsection{Authenticated Key Service (AKS)}
-Most CGKA protocols, including \protITK and \saik, rely on a type of PKI called here the Authenticated Key Service (AKS). The AKS authentically distributes so-called one-time key packages (also called key bundles or pre-keys) used to add new members to the group without interacting with them. For simplicity, we use an idealized AKS which guarantees that a fresh, authentic, honestly generated key package of any user is always available. %We elaborate on this and all simplifications we made in \cref{sec:simplifications}.
-
+Most CGKA protocols, including \protITK and \saik, rely on a type of PKI called here the Authenticated Key Service (AKS). The AKS authentically distributes so-called one-time key packages (also called key bundles or pre-keys) used to add new members to the group without interacting with them. For simplicity, we use an idealized AKS which guarantees that a fresh, authentic, honestly generated key package of any user is always available.
 
 \subsection{Formal Model Intuition}
-We define security of saCGKA protocols in the UC framework. That is, a saCGKA protocol is secure if no environment $\Adv$ can distinguish between the real world where it interacts with parties executing the protocol and the ideal world where it interacts with the ideal saCGKA functionality and a simulator. Readers familiar with game-based security should think of $\Adv$ as the adversary (see also \cref{sec:uc} for some additional discussion).
+We define security of saCGKA protocols in the UC framework. That is, a saCGKA protocol is secure if no environment $\Adv$ can distinguish between the real world where it interacts with parties executing the protocol and the ideal world where it interacts with the ideal saCGKA functionality and a simulator. Readers familiar with game-based security should think of $\Adv$ as the adversary (see also~\cite{EPRINT:AHKM21} for some additional discussion).
 
 \paragraph{The real world.}
 In the real-world experiment, the following actions are available to $\Adv$: First, it can instruct parties to perform
@@ -102,9 +77,6 @@ injected epoch. Note that this notion has an RCCA flavor. For example,
 delivering an otherwise honestly generated message but with some semantically
 insignificant bits modified can lead the receiver to an honest epoch.
 
-%\paragraph{No correctness guarantee.}
-%We do not model correctness of CGKA protocols. That is, the simulator can always make a party reject a message. This greatly simplifies the definition, because now the mailboxing service's protocol is not part of the model. (But it should be described as part of the protocol.)
-
 \paragraph{Adaptive corruptions.}
 Our model allows $\Adv$ to adaptively decide which parties to corrupt, as long as this does not allow it to trivially distinguish the worlds. Specifically, $\Adv$ can trivially distinguish if a corruption allows it to compute the real group key in an epoch where $\funcCGKA$ already outputted to $\Adv$ a random key. Our statement quantifies over $\Adv$'s that do not trivially win.
 
@@ -130,16 +102,12 @@ a protocol function that outputs some unique epoch identifiers. Our ideal world 
 An important difference between our model and those of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} is that in \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} epochs are (uniquely) identified by messages creating them. This is problematic for saCGKA, because different receivers transition to a given epoch using different messages. Crucially, this means an injected message cannot be used to identify the injected epoch into which its receiver transitions.
 We deal with this in a clean way by allowing the simulator to identify epochs. That is, epoch identifiers are arbitrary as long as consistency, authenticity and confidentiality hold.
 
-%The right way to think about this is that in \cite{TCC:ACJM20,EPRINT:AlwJosMul20}, an epoch is identified by the \emph{representation} of the transcript leading to it. In contrast, in the saCGKA model, an epoch is identified by the transcript's \emph{semantics}, i.e., the sequence of operations leading to the current state. Therefore, saCGKA achieves the desired agreement goal more directly (especially that agreement on representation, e.g., ciphertexts does not always imply agreement on semantics).
-
 The work \cite{hashimoto2021cmpke}, which proposes a new CGKA where, similar to \saik, receivers get personalized packets, encountered the same problem with the existing models  \cite{TCC:ACJM20,EPRINT:AlwJosMul20}. In their new model, filtered CGKA (fCGKA), an epoch is identified by the sequence of \emph{packet headers} leading to it. The header is a part of the uploaded packet that is downloaded by all receivers. A protocol can be secure according to the fCGKA model only if the header it defines has the properties of a cryptographic commitment to the semantics of the packet.
 
 saCGKA generalizes fCGKA (and \cite{TCC:ACJM20,EPRINT:AlwJosMul20}) and provides additional flexibility. For instance,
 it enables CGKAs which, like \saik, assume PKE with the weaker RCCA security, while fCGKA still requires the stronger
 notion of CCA. We believe that in the future more CGKA protocols will take advantage of saCGKA's flexibility. For
 example, one may consider using a different packet-authenticator for each receiver with the goal of providing some level of unlinkability -- an adversary seeing only packets downloaded by participants cannot tell if they are in the same epoch (or group) or not.
-
-%We note that another solution would be to parameterize the saCGKA functionality by a relation on received messages that specifies if they lead to the same epoch (each protocol requires a different relation). One disadvantage of this is introducing an additional protocol-related parameter to the ideal world, which makes it more complicated. Moreover, it seems hard to define such a relation for \saik without changing the protocol. Indeed, this would require a public value received by each party that uniquely identifies the epoch. \saik's messages do not have an obvious candidate.
 
 \subsection{Simplifications}\label{sec:simplifications}
 In order to make the security notion tractable, we made the following simplifications compared to the models of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke}. 
@@ -154,43 +122,26 @@ In order to make the security notion tractable, we made the following simplifica
 	
 	In contrast, our model avoids the complexity of keeping track of the PKI keys in $\funcCGKA$, at the cost of more coarse-grained guarantees. For example, it no longer captures the (subtle) security guarantees provided by (the tree-signing of) \protITK to parties invited to fake groups created by the adversary (tree signing trivially works for \saik). We stress that our model does capture most active attacks, e.g. injecting valid-looking packets that add parties with arbitrary injected key packages.
 	
-	
-%	Compared with a realistic PKI in \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke}, we make two simplifications: First our AKS registers only honest keys. In contrast, in a typical implementation, parties generate key packages themselves and upload them to an untrusted server, authenticated with long-term so-called identity keys. This means that a realistic attacker model is one where parties can be corrupted before they join, in which case the secrets for their key packages and long-term keys leak. This allows an active adversary to inject arbitrary key packages on their behalf. Such abilities are not considered in our model. However, we stress that we do consider attacks where the adversary injects on behalf of current group members messages that add parties with arbitrary key packages.
-%	
-%	Second, our ideal world is oblivious to identity keys. This greatly simplifies it, however, it also means that our guarantees are less fine-grained than those in \cite{EPRINT:AlwJosMul20}. E.g., the tree signing mechanism analyzed in \cite{EPRINT:AlwJosMul20} is outside of our model. (Tree signing uses identity keys to give additional guarantees to parties joining into detached trees i.e., fake groups created by the adversary. It can be easily added to \saik.)
-%	
-%	Third, our AKS identifies key packages by public keys. Looking ahead, this means that a party adding $\id'$ has to send the whole public part of the package so that $\id'$ can identify it when it joins. In reality, this would be implemented by hashes.
-	
 	\item [Deleting group keys] To build a secure messaging protocol on top (sa)CGKA, it is important that (sa)CGKA removes from its state all information about the group key $K$ immediately after outputting it. The reason is that the messaging protocol will symetrically ratchet $K$ forward for FS. If the initial $K$ was kept in the (sa)CGKA state upon corruption, the adversary could recompute all symmetric ratchets in the current epoch, breaking FS.
 	%
 	Our $\funcCGKA$ does not enforce that $K$ is deleted, in order to avoid additional bookkeeping. All natural protocols, including \saik, can trivially delete $K$, as it is stored as a separate variable that is computationally independent of the rest of the state.
 	
-%	$\funcCGKA$ does not keep track of whether parties were corrupted before or after outputting the group keys. This information is necessary to enforce that parties' states contain no information about group keys after outputting them. This property is important for FS of the messaging protocol building on saCGKA but it is also trivially achieved by all protocols we are aware of.
-	
 	\item [No randomness corruptions]
-	Our model does not capture attacks where the adversary exposes or modifies the randomness used by the protocol.
+	Our model does not capture the adversary exposing or modifying randomness used by the protocol.
 	Capturing such attacks for (sa)CGKA causes a significant headache when defining the formal security notion. For instance, the model needs to special-case scenarios where the adversary leaks the state of a party $A$, uses it with randomness $r$ to compute and inject a message to a party $B$, and then makes $A$ use $r$ to re-compute the injected message.
 	
 	One can easily adapt the special-casing of \cite{TCC:ACJM20,EPRINT:AlwJosMul20,hashimoto2021cmpke} to our model. We chose not to do this for simplicity and because well-designed protocols, including \protITK and \saik, naturally have protections against bad randomness.(Looking ahead, these protocols mix a fresh ``commit'' secret for the new epoch with the ``init'' secret from the old epoch, which mitigates sampling the fresh secret with bad randomness.) Therefore, capturing the additional attack vector typically does not fundamentally improve the analysis.
-	
-%	 Considering this would make the model quite complicated. For example, it would require dealing with scenarios where the adversary computes a message in its head, injects it, and then makes a party re-compute it.
 	
 	\item [Simplified syntax]
 	To improve efficiency, \protITK and \protCMPKE of \cite{hashimoto2021cmpke} use the so-called propose-commit syntax, originally proposed by MLS. This means that parties first send messages that \emph{propose} adding or removing other members, or updating their own keys. This does not affect the group state immediately. Rather, a party can collect a list of proposals and send a \emph{commit} message which applies the proposed changes and creates a new epoch.
 	The advantage of this is avoiding the expensive operation of epoch creation after every group modification (modifications typically come in batches; for instance, lots of members are added immediately after group creation).
 	
-	Unfortunately, using this syntax requires lots of additional bookkeeping from $\funcCGKA$, such as keeping track of two types of history-graph nodes, one for proposals and one for commits (see  \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke}). Most protocols based on \protITK, such as \saik, can be easily adapted to the propose-commit syntax and benefit from the efficiency gain. The change is minimal and security proofs are clearly not affected. %We elaborate in \cref{?}.
-	
-
-%	 First, our syntax does not include a command for group creation. Instead, the creator starts as a single group member and adds other parties one by one. In reality, one would implement a more efficient solution where many parties can be added at once.
-%	For even better efficiency in cases many operations are executed at once, MLS uses the so-called propose-commit syntax.
-%	Unfortunately, this makes the syntax significantly more complex.
+	Unfortunately, using this syntax requires lots of additional bookkeeping from $\funcCGKA$, such as keeping track of two types of history-graph nodes, one for proposals and one for commits (see  \cite{EPRINT:AlwJosMul20,hashimoto2021cmpke}). Most protocols based on \protITK, such as \saik, can be easily adapted to the propose-commit syntax and benefit from the efficiency gain. The change is minimal and security proofs are clearly not affected.
 	
 	\item [No correctness guarantees] Our model does not capture correctness, i.e., the simulator can always make a
       party reject a message. Therefore, a protocol that does nothing is secure according to the notion. This greatly
       simplifies the definition and the fact that a protocol is correct typically easily follows by inspection (which is
       often the core argument in the proof of correctness).
-	%
 	This means that the protocol used by the mailboxing service to extract personalized packets is not part of the security notion -- a fully untrusted service may anyway deliver arbitrary packets. We note that the above protocol is still a part of saCGKA.
 \end{description}
 %%% Local Variables:
