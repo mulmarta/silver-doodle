@@ -1,0 +1,115 @@
+% !TEX root = main.tex
+% !TeX spellcheck = en_US
+
+\section{Extensions}\label{sec:extensions}
+In this section we describe extensions of \saik which we did not include for simplicity.% The first extension allows to achieve slightly better security predicates at a relatively small cost. The second extension deals with primitives with imperfect correctness, such as mmPKE based on lattices.
+
+% \subsection{Trading-off Server Computation for Communication}
+% Our new (sa)CGKA \saik assumes that the mailboxing service is a full featured server capable of performing the
+% individualization of messages responsible for the improved bandwidth of our protocol. This individualization mainly
+% consists of generating proofs of accumulation. We assume strong accumulators which allow creation of these proofs
+% without secret knowledge. However, we can trade off this server computation for increased sender communication by having the
+% sender pre-compute all proofs and send them along with the rest of the packet. Receiver communication is unaffected
+% by this change.
+
+% For the hash-based accumulator described in \cref{sec:accumulators}, an easy optimization is possible. Instead of
+% computing \emph{all} proofs individually, the sender can instead include the whole Huffman tree in its package. The
+% server then only selects the co-paths in the tree relevant for each user, which is similarly complex to selecting the
+% correct message for each user, which is exactly the task of a standard mailboxing service. This approach increases
+% communication by approximately $2N$ hashes, where $N$ is the number of receiving public keys, i.e. linear in the
+% number of group members in the worst case and logarithmic in the best case.
+
+% In conclusion, our saCGKA can be transformed into a regular CGKA at the cost of sender communication while avoiding
+% server computation.
+
+% Note that the variant where each submessage is signed individually requires less communication (i.e. $N$ signatures
+% instead of $2N$ hashes) than the transformed \saik variant and also doesn't require server computation. However,
+% computing each signature requires an expensive public key operation, leading to a shorter sender message, but more computation for the
+% sender than required by the server in \saik.
+
+\subsection{Better Security Predicates}\label{sec:ext-sec-predicates}
+We sketch the reason why \saik does not achieve the better security predicates and how it can be modified to achieve them.
+
+Roughly, \saik achieves the worse security predicates because of the following attack: Say $\id_s$, the only corrupted party, creates a new epoch $E$ adding a new member $\id$. According to \saik, in this case $\id_s$ fetches from the Authenticated Key Service, AKS, (a type of PKI setup) a public key $\mmpkepk$ for \mmPKE and a verification key $\spk$ for \sigscheme, both registered earlier by $\id$. In epochs after $E$, parties use $\mmpkepk$ to encrypt messages to $\id$ (even before $\id$ actually joins) and $\spk$ to verify messages from $\id$. Now the adversary $\Adv$ can create a fake epoch $E'$ adding $\id$ with the same $\mmpkepk$ and $\spk$. Then, $\id$ joins $E'$ and is corrupted, leaking $\mmpkesk$ and $\ssk$. This allows $\Adv$ to compute the group key in $E$ and inject messages to parties in $E$. However, the expectation is that this is not possible, since no party is corrupted in $E$ (and $\id_s$ healed).
+%
+The better security predicates (formally, the predicates in the full version~\cite{EPRINT:AHKM21}) achieve just this: security in an honest epoch $E$ does not depend on whether some member joins a fake group in $E'$.
+
+The following modification to \saik achieves better security: We note that in \saik, $\id$ registers in the AKS an additional public key $\mmpkepk'$ which is used to send secrets needed for joining. The corresponding $\mmpkesk'$ is deleted immediately after joining. In the modified \saik, when $\id_s$ adds $\id$, it generates for $\id$ new key pairs $(\mmpkepk_s,\mmpkesk_s)$ and $(\spk_s,\ssk_s)$. It sends $\mmpkesk_s$ and $\ssk_s$ to $\id$, encrypted under $\mmpkepk'$. Now messages to $\id$ are encrypted such that \emph{both} $\mmpkesk$ and $\mmpkesk_s$ are needed to decrypt them. In particular, to encrypt $m$, a sender chooses a random $r$ and encrypts $r$ under $\mmpkepk$ and $m \oplus r$ under $\mmpkepk_s$. Similarly, messages from $\id$ have two signatures, one verified under $\spk$, and one under $\spk_s$. As soon as $\id$ creates an epoch, it generates a new single \mmPKE key pair and a single \ers key pair.
+
+The attack is prevented, because even after corrupting $\id$ in $E'$, $\Adv$ does not know $\mmpkesk'$ needed to decrypt $\mmpkesk_s$ and $\ssk_s$. Therefore, confidentiality and authenticity in $E$ is not affected.
+
+\subsection{Primitives with Imperfect Correctness}
+While the proofs of \saik security assume primitives with perfect correctness, they can be easily modified to work with
+imperfect correctness. While most classically secure primitives have perfect correctness, many post-quantum
+constructions (e.g. from lattices) only have statistical correctness. So this extension can be seen as a preparation for
+when \saik has to be adapted to post-quantum security.
+
+This is achieved by adding one game hop where we
+abort in the new game if a correctness error occurs. This loses an additive term in the security bound that depends on
+the correctness parameter and the number of possible occurrences. Additionally, the usage of primitives with imperfect
+correctness generally yields imperfect correctness guarantees for the application as well (potentially with
+multiplicative correctness error when using multiple primitives). For completeness, we give definitions of imperfect
+correctness of the primitives used directly by \saik in this section.
+
+\begin{definition}
+We call an \mmPKE scheme \emph{$\delta$-correct}, if for all $n\in \N$, $(\mmpkepk_i,\mmpkesk_i)\in
+  \mmpkeKeyGen $ for $i\in[n]$,
+  $(m_1,\ldots, m_n)\in\mathcal{M}^n$ and $\forall j\in[n]$
+  \[
+    \Pr\left[
+      \begin{array}{c}
+        c_j\gets \mmpkeExt(j, C)\\
+        m_j \neq \mmpkeDec(\mmpkesk_j, c_j)
+      \end{array}
+      \middle\vert
+      C \getsr \mmpkeEnc\left(
+      \begin{array}{c}
+        (\mmpkepk_1,\ldots, \mmpkepk_n),\\(m_1,\ldots,m_n)
+      \end{array}
+      \right)
+    \right] \leq \delta
+  \]
+\end{definition}
+
+% \begin{definition}
+%   An HRS scheme \ers for a collection of reduction pattern classes $\rdclassset_n$ for $n\in\N$ is $\delta$-correct if for all $n \in \N$, $\rdclass \in \rdclassset_n$, $(\rd,w) \in \rdclass$ and message vectors $\vec m$ of length $n$, we have
+%   \begin{equation*}
+%     \Pr\left[\ersvrfy\left(
+%     \begin{array}{c}
+%       \ersvk, k, \rd(\vec{m}),\\ \rd, \sigma'
+%     \end{array}
+%     \right) \neq 1
+%     \middle\vert
+%     \begin{array}{c}
+%       (\erssk, \ersvk) \gets \erskeygen()\\
+%       k \getsr \bits^\kappa\\
+%       \sigma \gets \erssign(\erssk, k, \vec{m}, \rdclass) \\
+%       \sigma' \gets \ersred(\ersvk, \sigma, \vec{m},\rd)
+%     \end{array}
+%     \right] \leq \delta.
+%   \end{equation*}
+% \end{definition}
+
+% Below, we also define $\delta$-correct weighted accumulator. It is easy to see that our construction of \ers instantiated with a $\delta$-correct accumulator is also $\delta$-correct.
+
+% \begin{definition}
+%   A weighted accumulator scheme $\wacc$ is \emph{$\delta$-correct} if for every set $X$ of element-weight pairs $(x,w)$ and each $x$ s.t. $(x,\wc)\in X$, we have
+%   \[
+%   \Pr
+%   \left[
+%   \accVrfy(\accValue, x, \accProof) \neq 1
+%   \middle\vert
+%   \begin{array}{c}
+%     (\accValue, \accaux) \getsr \accEval(X) \\
+%     \accProof \getsr \accProve(\accValue, x, \accaux)
+%   \end{array}
+%   \right]\leq \delta.
+%   \]
+% \end{definition}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

@@ -1,0 +1,66 @@
+\begin{figure}[ht]
+  \begin{tikzpicture}[->,>=stealth',level/.style={sibling distance = 5cm/#1,
+      level distance = 1.3cm},scale=0.6, transform shape,
+    treenode/.style = {circle, draw=black, align=center, minimum size=1cm},
+    ctnode/.style = {rectangle, draw=black, align=center, minimum size=1cm},
+    packnode/.style = {rectangle, draw=black, align=center, minimum size=.75cm}]
+    \tikzstyle{level 1}=[level distance=1cm]
+    
+    \node[packnode](pack){$id_R$};
+    \node[packnode, right = 0cm of pack](pack2){act};
+    \node[packnode, right = 0cm of pack2](pack3){$sig$};
+    \node[packnode, right = 0cm of pack3](pack4){$ct_0$};
+    \node[packnode, right = 0cm of pack4](pack5){$ct_1,\ldots, {\color{orange}ct_4}, \ldots$};
+    \node[packnode, right = 0cm of pack5](pack6){${\color{blue}\mmpkepk_1,\mmpkepk_2,\mmpkepk_3},\mmpkepk_4, \ldots, \mmpkepk_{\text{root}}$};
+    
+    \node[below = 2.1cm of pack4, treenode](root){$\mmpkepk_4$}
+    child[draw=blue]{
+      node[treenode,draw=blue]{$\mmpkepk_3$}
+      child[draw=black]{
+        node[ctnode]{$ct_2$}
+      }
+      child[draw=blue]{
+        node[treenode,draw=blue]{$\mmpkepk_{2}$}
+        child{
+          node[treenode,draw=blue]{$\mmpkepk_{1}$}
+        }
+        child[draw=black]{
+          node[ctnode]{$ct_1$}
+        }
+      }
+    }
+    child[draw=orange]{
+      node[treenode]{$\bot$}
+      child[draw=black]{
+        node[ctnode]{$ct_3$}
+      }
+      child{
+        node[ctnode, draw=orange]{$ct_4$}
+        child[draw=black]{
+          node[treenode]{$\mmpkepk_{N-1}$}
+        }
+        child{
+          node[treenode]{$\mmpkepk_{id_R}$}
+        }
+      }
+    };
+    \node[above right = .1cm of root](dots){\huge$\iddots$};
+    \node[right = .6cm of dots]{\huge$\ddots$};
+    \node[above right = 1cm of root, treenode]{$\mmpkepk_{\text{root}}$};
+    \node at ($(root) + (0,-5)$)(arrow){\huge$\Downarrow$};
+    \node[packnode, below = .2cm of arrow] {$id_R, act, sig, ct_0, \color{orange}{ct_4}, \color{blue}{\mmpkepk_1,\mmpkepk_2,\mmpkepk_3}$};
+  \end{tikzpicture}  
+  \caption{Server extraction algorithm. Lowest common ancestor (LCA) pof $id_R$ and $id_S$ is $\mmpkepk_4$, so all blue
+    public keys are included in $id_R$'s packet. Since the sibling of $\mmpkepk_3$ is empty, there corresponding path
+    secret of $\mmpkepk_4$ is encrypted to its resolution, resulting in the two ciphertext.
+    % MM: Removed the part about c_0 since we din't use it in the main body
+%    parts $ct_3$ and $ct_4$. $id_R$ can decrypt $ct_4$, since it lies on its path (orange) to the LCA . The signature and
+%    header are included in every package, as well as the ciphertext-independent part ($ct_0$) of the \mmPKE encryption.
+}
+  \label{fig:extract-one}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
