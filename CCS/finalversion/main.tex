@@ -26,15 +26,39 @@
 \crefname{appendix}{App.}{Apps.}%
 \crefname{section}{Sec.}{Secs.}%
 
-%%\ccsPaper{9999} % TODO: replace with your paper number once obtained
+%% Author: Download image from 
+%% www.scomminc.com/pp/acmsig/cc_by4acm.png
+%% and place into a figures/figs folder related
+%% to your .tex source files 
+
+% Overwrite copyright field outside from cls file.
 
 \copyrightyear{2022} 
 \acmYear{2022} 
 \setcopyright{rightsretained} 
+
+%% These commands are specific for your submission.
 \acmConference[CCS '22]{Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security}{November 7--11, 2022}{Los Angeles, CA, USA}
 \acmBooktitle{Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security (CCS '22), November 7--11, 2022, Los Angeles, CA, USA}
 \acmDOI{10.1145/3548606.3560632}
 \acmISBN{978-1-4503-9450-5/22/11}
+
+
+% Overwrite copyright field outside from cls file.
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\maketitle}{\@copyrightpermission}{
+   \begin{minipage}{0.3\columnwidth}
+     \href{https://creativecommons.org/licenses/by/4.0/}{\includegraphics[width=0.90\textwidth]{figs/cc_by4acm.png}}
+   \end{minipage}\hfill
+   \begin{minipage}{0.7\columnwidth}
+     \href{https://creativecommons.org/licenses/by/4.0/}{This work is licensed under a Creative Commons Attribution International 4.0 License.}
+   \end{minipage}
+  
+   \vspace{5pt}
+}{}{}
+
+\makeatother
 
 \begin{document}
 \title{Server-Aided Continuous Group Key Agreement}
@@ -42,7 +66,7 @@
 \author{Joël Alwen}
 \email{alwenjo@amazon.com}
 \affiliation{%
-	\institution{AWS-Wickr}
+	\institution{AWS Wickr}
 	\city{New York}
 	\state{NY}
 	\country{USA}
@@ -51,7 +75,7 @@
 \email{dominik.hartmann@rub.de}
 \orcid{0000-0002-0379-7903}
 \affiliation{%
-	\institution{Ruhr-University Bochum}
+	\institution{Ruhr University Bochum}
 	\city{Bochum}
 	\country{Germany}
 }
@@ -59,7 +83,7 @@
 \email{eike.kiltz@rub.de}
 \orcid{0000-0003-1178-048X}
 \affiliation{%
-  \institution{Ruhr-University Bochum}
+  \institution{Ruhr University Bochum}
   \city{Bochum}
   \country{Germany}
 }
@@ -67,13 +91,16 @@
 \email{mulmarta@amazon.ch}
 \orcid{0000-0002-9462-1275}
 \affiliation{%
-	\institution{AWS-Wickr}
+	\institution{AWS Wickr}
 	\city{New York}
 	\state{NY}
 	\country{USA}
-}
-\renewcommand{\shortauthors}{Alwen, et al.}
-
+  }
+  
+%\renewcommand{\shortauthors}{Alwen, et al.}
+\renewcommand{\shortauthors}{Joël Alwen, Dominik Hartmann, Eike Kiltz, \& Marta Mularczyk}
+%% No italics
+%% If needed use a foot or author note to identify equal contribution
 
 \begin{abstract}
 \input{abstract}
@@ -121,7 +148,7 @@ Eike Kiltz was supported by the BMBF iBlockchain project, the Deutsche Forschung
 %--- Bibliography --------------------------------------------------------------
 \bibliographystyle{ACM-Reference-Format}
 \balance
-\bibliography{project,../cryptobib/abbrev3,../cryptobib/crypto}
+\bibliography{project,../../cryptobib/abbrev3,../../cryptobib/crypto}
 
 \end{document}
 
